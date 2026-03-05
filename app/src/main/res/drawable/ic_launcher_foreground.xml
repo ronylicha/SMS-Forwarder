@@ -3,9 +3,33 @@
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
-    android:viewportHeight="108"
-    android:tint="#FFFFFF">
+    android:viewportHeight="108">
+    <!-- Envelope body -->
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M42,34L54,34L54,42L66,42L66,54L74,54L74,66L66,66L66,74L54,74L54,66L42,66L42,74L34,74L34,66L34,54L42,54L42,42L34,42L34,34ZM46,46L46,50L42,50L42,58L46,58L46,62L50,62L50,66L58,66L58,62L62,62L62,58L66,58L66,50L62,50L62,46L58,46L58,42L50,42L50,46Z" />
+        android:fillAlpha="0.2"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2.5"
+        android:strokeLineJoin="round"
+        android:pathData="M30,38C30,35.79 31.79,34 34,34L74,34C76.21,34 78,35.79 78,38L78,68C78,70.21 76.21,72 74,72L34,72C31.79,72 30,70.21 30,68Z" />
+    <!-- Envelope flap -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M30,38L54,56L78,38" />
+    <!-- Forward arrow head -->
+    <path
+        android:strokeColor="#4FC3F7"
+        android:strokeWidth="3"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M68,58L80,53L68,48" />
+    <!-- Forward arrow line -->
+    <path
+        android:strokeColor="#4FC3F7"
+        android:strokeWidth="3"
+        android:strokeLineCap="round"
+        android:pathData="M56,53L78,53" />
 </vector>
