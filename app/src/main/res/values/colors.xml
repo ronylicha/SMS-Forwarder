@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary -->
+    <color name="primary">#FF1565C0</color>
+    <color name="primary_dark">#FF003258</color>
+    <color name="primary_light">#FFD1E4FF</color>
+
+    <!-- Secondary -->
+    <color name="secondary">#FF00796B</color>
+    <color name="secondary_dark">#FF00382F</color>
+    <color name="secondary_light">#FFB2DFDB</color>
+
+    <!-- Error -->
+    <color name="error">#FFD32F2F</color>
+    <color name="error_dark">#FF690005</color>
+    <color name="error_light">#FFFFDAD6</color>
+
+    <!-- Warning -->
+    <color name="warning">#FFE65100</color>
+    <color name="warning_light">#FFFFAB40</color>
+
+    <!-- Success -->
+    <color name="success">#FF2E7D32</color>
+    <color name="success_light">#FF81C784</color>
+
+    <!-- Neutral -->
+    <color name="background">#FFFDFBFF</color>
+    <color name="surface">#FFFDFBFF</color>
+    <color name="on_surface">#FF1A1C1E</color>
+    <color name="outline">#FF73777F</color>
+
+    <!-- Legacy compatibility -->
+    <color name="white">#FFFFFFFF</color>
+    <color name="black">#FF000000</color>
+</resources>

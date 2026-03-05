@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SMS Forwarder</string>
+
+    <!-- Navigation -->
+    <string name="nav_main">Accueil</string>
+    <string name="nav_settings">Parametres</string>
+    <string name="nav_history">Historique</string>
+    <string name="nav_filter">Filtres</string>
+    <string name="nav_stats">Statistiques</string>
+    <string name="nav_back">Retour</string>
+
+    <!-- Main Screen -->
+    <string name="main_title">SMS Forwarder</string>
+    <string name="main_service_active">Service actif</string>
+    <string name="main_service_inactive">Service inactif</string>
+    <string name="main_start_service">Demarrer le service</string>
+    <string name="main_stop_service">Arreter le service</string>
+    <string name="main_sms_forwarded_count">%d SMS transferes</string>
+    <string name="main_forwarding_active">Transfert actif</string>
+    <string name="main_forwarding_inactive">Transfert inactif</string>
+    <string name="main_destination">Destination</string>
+    <string name="main_destination_not_configured">Non configure</string>
+    <string name="main_configure_destination">Configurez un numero de destination pour activer le transfert</string>
+    <string name="main_sms_forwarded_label">SMS transferes</string>
+    <string name="main_btn_history">Historique</string>
+    <string name="main_btn_settings">Reglages</string>
+
+    <!-- Permissions -->
+    <string name="permission_sms_title">Permission SMS requise</string>
+    <string name="permission_sms_rationale">L\'application a besoin d\'acceder aux SMS pour les transferer vers le numero configure.</string>
+    <string name="permission_notification_title">Permission de notification requise</string>
+    <string name="permission_notification_rationale">L\'application a besoin d\'afficher des notifications pour le service de transfert en arriere-plan.</string>
+    <string name="permission_phone_title">Permission telephone requise</string>
+    <string name="permission_phone_rationale">L\'application a besoin d\'acceder a l\'etat du telephone pour gerer les SMS correctement.</string>
+    <string name="permission_grant">Autoriser</string>
+    <string name="permission_deny">Refuser</string>
+    <string name="permission_settings">Ouvrir les parametres</string>
+    <string name="permission_required_title">Permissions requises</string>
+    <string name="permission_required_description">SMS Forwarder a besoin des permissions suivantes pour fonctionner :</string>
+    <string name="permission_receive_sms_desc">Reception SMS : pour detecter les SMS entrants</string>
+    <string name="permission_send_sms_desc">Envoi SMS : pour transferer les SMS vers le numero configure</string>
+    <string name="permission_notification_desc">Notifications : pour afficher le service en arriere-plan</string>
+    <string name="permission_open_settings">Ouvrir les parametres</string>
+    <string name="permission_later">Plus tard</string>
+    <string name="permission_enable_in_settings">Veuillez activer ces permissions dans les parametres de l\'application.</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Parametres</string>
+    <string name="settings_forward_number">Numero de transfert</string>
+    <string name="settings_forward_number_hint">+33 6 XX XX XX XX</string>
+    <string name="settings_auto_start">Demarrage automatique</string>
+    <string name="settings_auto_start_desc">Demarrer le service au demarrage du telephone</string>
+    <string name="settings_forward_all">Transferer tous les SMS</string>
+    <string name="settings_forward_filtered">Transferer selon les filtres</string>
+    <string name="settings_save">Enregistrer</string>
+    <string name="settings_saved">Parametres enregistres</string>
+    <string name="settings_destination_title">Numero de destination</string>
+    <string name="settings_destination_label">Numero de destination</string>
+    <string name="settings_destination_saved">Numero enregistre</string>
+    <string name="settings_send_test">Envoyer un test</string>
+    <string name="settings_test_message">[SMS Forwarder] Ceci est un SMS de test.</string>
+    <string name="settings_test_success">SMS de test envoye avec succes</string>
+    <string name="settings_test_failed">Echec de l\'envoi : %s</string>
+    <string name="settings_filter_title">Filtrage</string>
+    <string name="settings_filter_none">Aucun filtre (tout transferer)</string>
+    <string name="settings_filter_whitelist">Liste blanche (transferer seulement les filtres)</string>
+    <string name="settings_filter_blacklist">Liste noire (bloquer les filtres)</string>
+    <string name="settings_manage_rules">Gerer les regles de filtrage</string>
+    <string name="settings_multisim_title">Multi-SIM</string>
+    <string name="settings_sim_default">SIM par defaut</string>
+    <string name="settings_sim_1">SIM 1</string>
+    <string name="settings_sim_2">SIM 2</string>
+    <string name="settings_about_title">A propos</string>
+    <string name="settings_version">Version</string>
+    <string name="settings_app_name">SMS Forwarder</string>
+    <string name="settings_phone_format_hint">Format attendu : +33 6 12 34 56 78</string>
+    <string name="settings_number_valid">Numero valide</string>
+    <string name="settings_number_invalid">Numero invalide</string>
+    <string name="settings_notification_access_title">Acces aux notifications</string>
+    <string name="settings_notification_access_description">Pour capturer les messages RCS (Google Messages, Samsung Messages), autorisez l\'acces aux notifications.</string>
+    <string name="settings_notification_access_enabled">Acces active</string>
+    <string name="settings_notification_access_disabled">Acces desactive</string>
+    <string name="settings_notification_access_button">Configurer l\'acces</string>
+
+    <!-- History -->
+    <string name="history_title">Historique</string>
+    <string name="history_empty">Aucun SMS transfere</string>
+    <string name="history_from">De : %s</string>
+    <string name="history_forwarded_to">Transfere a : %s</string>
+    <string name="history_status_success">Transfere</string>
+    <string name="history_status_failed">Echec</string>
+    <string name="history_status_pending">En attente</string>
+    <string name="history_search_placeholder">Rechercher par expediteur ou contenu...</string>
+    <string name="history_filter_all">Tous</string>
+    <string name="history_filter_sent">Envoyes</string>
+    <string name="history_filter_failed">Echoues</string>
+    <string name="history_filter_filtered">Filtres</string>
+    <string name="history_filter_pending">En attente</string>
+    <string name="history_no_results">Aucun resultat pour \"%s\"</string>
+    <string name="history_clear">Effacer</string>
+
+    <!-- Detail -->
+    <string name="detail_title">Detail SMS</string>
+    <string name="detail_info_title">Informations</string>
+    <string name="detail_sender">Expediteur</string>
+    <string name="detail_destination">Destination</string>
+    <string name="detail_received_at">Recu le</string>
+    <string name="detail_forwarded_at">Transfere le</string>
+    <string name="detail_retry_count">Tentatives</string>
+    <string name="detail_error">Erreur</string>
+    <string name="detail_content_title">Contenu du message</string>
+    <string name="detail_not_found">SMS introuvable</string>
+    <string name="detail_retry_button">Renvoyer ce SMS</string>
+    <string name="detail_retry_success">SMS renvoye avec succes</string>
+    <string name="detail_retry_failed">Echec du renvoi : %s</string>
+    <string name="detail_retry_not_found">SMS introuvable</string>
+    <string name="detail_retry_max_reached">Nombre maximum de tentatives atteint</string>
+
+    <!-- Status badges -->
+    <string name="status_sent">Envoye</string>
+    <string name="status_failed">Echoue</string>
+    <string name="status_pending">En attente</string>
+    <string name="status_filtered">Filtre</string>
+
+    <!-- Filters -->
+    <string name="filter_title">Filtres</string>
+    <string name="filter_add">Ajouter un filtre</string>
+    <string name="filter_empty">Aucun filtre configure</string>
+    <string name="filter_sender">Expediteur</string>
+    <string name="filter_keyword">Mot-cle</string>
+    <string name="filter_type_include">Inclure</string>
+    <string name="filter_type_exclude">Exclure</string>
+    <string name="filter_mode_title">Mode de filtrage</string>
+    <string name="filter_mode_none">Aucun</string>
+    <string name="filter_mode_whitelist">Liste blanche</string>
+    <string name="filter_mode_blacklist">Liste noire</string>
+    <string name="filter_mode_none_desc">Tous les SMS sont transferes sans filtrage.</string>
+    <string name="filter_mode_whitelist_desc">Seuls les SMS correspondant aux regles sont transferes.</string>
+    <string name="filter_mode_blacklist_desc">Les SMS correspondant aux regles sont bloques.</string>
+    <string name="filter_add_rule_title">Ajouter une regle</string>
+    <string name="filter_pattern_label">Numero ou mot-cle</string>
+    <string name="filter_pattern_placeholder">+33 6 12 34 56 78 ou mot-cle</string>
+    <string name="filter_type_whitelist">Liste blanche</string>
+    <string name="filter_type_blacklist">Liste noire</string>
+    <string name="filter_rules_active">Regles actives</string>
+    <string name="filter_no_rules">Aucune regle configuree</string>
+    <string name="filter_no_rules_hint">Ajoutez un numero ou un mot-cle ci-dessus</string>
+
+    <!-- Stats -->
+    <string name="stats_title">Statistiques</string>
+    <string name="stats_summary">Resume</string>
+    <string name="stats_total">Total</string>
+    <string name="stats_sent">Envoyes</string>
+    <string name="stats_failed">Echoues</string>
+    <string name="stats_filtered">Filtres</string>
+    <string name="stats_pending">En attente</string>
+    <string name="stats_success_rate">Taux de succes</string>
+    <string name="stats_daily_title">Historique par jour</string>
+    <string name="stats_period_7d">7j</string>
+    <string name="stats_period_14d">14j</string>
+    <string name="stats_period_30d">30j</string>
+    <string name="stats_no_data">Pas encore de statistiques</string>
+    <string name="stats_no_data_hint">Les statistiques apparaitront apres le premier transfert</string>
+    <string name="stats_no_data_period">Aucune donnee pour cette periode</string>
+    <string name="stats_legend_sent">Envoyes</string>
+    <string name="stats_legend_failed">Echoues</string>
+    <string name="stats_total_forwarded">Total transferes</string>
+    <string name="stats_total_failed">Total echoues</string>
+    <string name="stats_today">Aujourd\'hui</string>
+    <string name="stats_this_week">Cette semaine</string>
+
+    <!-- Export -->
+    <string name="export_csv_button">Exporter CSV</string>
+    <string name="export_csv_success">%d SMS exportes avec succes</string>
+    <string name="export_csv_error">Erreur lors de l\'export : %s</string>
+
+    <!-- Widget -->
+    <string name="widget_name">SMS Forwarder</string>
+    <string name="widget_description">Toggle rapide et compteur SMS</string>
+    <string name="widget_status_on">ON</string>
+    <string name="widget_status_off">OFF</string>
+    <string name="widget_counter_default">0 SMS</string>
+    <string name="widget_toggle_description">Activer/desactiver le transfert</string>
+
+    <!-- SIM Selector -->
+    <string name="sim_selector_title">Selection de la SIM</string>
+    <string name="sim_auto">Automatique (par defaut)</string>
+    <string name="sim_auto_desc">Utiliser la SIM par defaut du systeme</string>
+    <string name="sim_permission_required">La permission READ_PHONE_STATE est requise pour detecter les cartes SIM. Accordez cette permission dans les parametres de l\'application.</string>
+    <string name="sim_none_detected">Aucune carte SIM detectee.</string>
+
+    <!-- Notifications -->
+    <string name="channel_forwarding_name">Transfert SMS</string>
+    <string name="channel_forwarding_description">Notifications du service de transfert SMS en cours</string>
+    <string name="channel_status_name">Statut des transferts</string>
+    <string name="channel_status_description">Notifications de statut des SMS transferes</string>
+    <string name="notification_service_title">SMS Forwarder actif</string>
+    <string name="notification_service_text">En attente de SMS entrants...</string>
+    <string name="notification_forwarding_to">Transfert vers %1$s (%2$d SMS)</string>
+    <string name="notification_sms_forwarded_title">SMS transf\u00e9r\u00e9</string>
+    <string name="notification_forwarded">SMS transfere avec succes</string>
+    <string name="notification_forward_failed">Echec du transfert SMS</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_welcome">Bienvenue</string>
+    <string name="onboarding_title">Bienvenue sur\nSMS Forwarder</string>
+    <string name="onboarding_subtitle">Transferez automatiquement vos SMS vers un autre numero</string>
+    <string name="onboarding_description">Configurez le transfert automatique de vos SMS en quelques etapes simples.</string>
+    <string name="onboarding_step_permissions">Autorisations</string>
+    <string name="onboarding_step_number">Numero cible</string>
+    <string name="onboarding_step_filters">Filtres</string>
+    <string name="onboarding_next">Suivant</string>
+    <string name="onboarding_finish">Terminer</string>
+    <string name="onboarding_skip">Passer</string>
+    <string name="onboarding_feature_forward_title">Transfert automatique</string>
+    <string name="onboarding_feature_forward_desc">Chaque SMS recu est automatiquement renvoye vers le numero de votre choix</string>
+    <string name="onboarding_feature_filter_title">Filtrage intelligent</string>
+    <string name="onboarding_feature_filter_desc">Definissez des listes blanches ou noires pour controler quels SMS sont transferes</string>
+    <string name="onboarding_feature_history_title">Historique complet</string>
+    <string name="onboarding_feature_history_desc">Consultez l\'historique de tous les SMS transferes, avec leur statut et les details</string>
+    <string name="onboarding_warning_title">Informations importantes</string>
+    <string name="onboarding_warning_gsm">Les SMS sont transferes via le reseau GSM en clair. Ne transferez pas d\'informations hautement sensibles.</string>
+    <string name="onboarding_warning_2fa">Les codes de verification (2FA) seront egalement transferes. Assurez-vous que le numero de destination est de confiance.</string>
+    <string name="onboarding_continue">J\'ai compris, continuer</string>
+
+    <!-- Errors -->
+    <string name="error_generic">Une erreur est survenue</string>
+    <string name="error_no_number">Veuillez configurer un numero de transfert</string>
+    <string name="error_invalid_number">Numero de telephone invalide</string>
+    <string name="error_sms_send_failed">Impossible d\'envoyer le SMS</string>
+
+    <!-- Actions -->
+    <string name="action_delete">Supprimer</string>
+    <string name="action_edit">Modifier</string>
+    <string name="action_cancel">Annuler</string>
+    <string name="action_confirm">Confirmer</string>
+    <string name="action_retry">Reessayer</string>
+</resources>
