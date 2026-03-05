@@ -5,6 +5,7 @@
 ![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-Material%20You-blue)
 ![Android](https://img.shields.io/badge/Android-8.0%2B-green)
 ![Release](https://img.shields.io/badge/Release-v1.0.0-orange)
+![License](https://img.shields.io/badge/License-AGPL%20v3-blue)
 
 **Application Android de transfert automatique de SMS et RCS** vers un numero de telephone configure. Concue pour etre fiable, legere et respectueuse de la vie privee.
 
@@ -183,7 +184,9 @@ Voir la [Politique de confidentialite](docs/PRIVACY.md) pour plus de details.
 
 ## Licence
 
-Logiciel proprietaire. Tous droits reserves.
+Ce projet est distribue sous la licence **GNU Affero General Public License v3.0 (AGPL-3.0)**.
+Voir le fichier [LICENSE](LICENSE) pour les details.
+
 Copyright (c) 2026 QrCommunication.
 
 ---
