@@ -2,7 +2,7 @@ package com.qrcommunication.smsforwarder.util
 
 object PhoneValidator {
     // Format E.164: + suivi de 1-15 chiffres
-    private val E164_REGEX = Regex("^\\+[1-9]\\d{1,14}$")
+    private val E164_REGEX = Regex("^\\+[1-9]\\d{5,14}$")
     // Format local francais: 0X XX XX XX XX
     private val FRENCH_LOCAL_REGEX = Regex("^0[1-9](\\s?\\d{2}){4}$")
     // Format avec indicatif 0033

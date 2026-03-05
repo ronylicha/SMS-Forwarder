@@ -5,6 +5,15 @@ Toutes les modifications notables de ce projet sont documentees dans ce fichier.
 Le format est base sur [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 
+## [1.1.1] - 2026-03-05
+
+### Fixed
+
+- Correction de la dependance mockito-kotlin (5.8.0 n'existe pas, corrige en 5.4.0)
+- Ajout de `<uses-feature android:name="android.hardware.telephony">` pour la compatibilite ChromeOS (lint error)
+- Ajout de `unitTests.isReturnDefaultValues = true` pour corriger les RuntimeException dans les tests JVM
+- Correction de la regex E.164 dans PhoneValidator pour rejeter les numeros trop courts (ex: `+33`)
+
 ## [1.0.0] - 2026-03-04
 
 ### Added
