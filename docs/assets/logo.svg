@@ -1,0 +1,17 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background rounded rectangle -->
+  <rect width="512" height="512" rx="114" fill="#1565C0"/>
+  <rect x="4" y="4" width="504" height="504" rx="110" stroke="rgba(255,255,255,0.12)" stroke-width="8" fill="none"/>
+
+  <!-- Envelope body -->
+  <path d="M142 180C142 169.5 150.5 161 161 161H351C361.5 161 370 169.5 370 180V322C370 332.5 361.5 341 351 341H161C150.5 341 142 332.5 142 322V180Z" fill="rgba(255,255,255,0.15)" stroke="white" stroke-width="12" stroke-linejoin="round"/>
+
+  <!-- Envelope flap -->
+  <path d="M142 180L256 265L370 180" stroke="white" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Forward arrow line -->
+  <line x1="265" y1="251" x2="370" y2="251" stroke="#4FC3F7" stroke-width="14" stroke-linecap="round"/>
+
+  <!-- Forward arrow head -->
+  <path d="M322 275L380 251L322 227" fill="none" stroke="#4FC3F7" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

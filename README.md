@@ -1,11 +1,17 @@
-# SMS Forwarder
+<p align="center">
+  <img src="docs/assets/logo.svg" width="128" height="128" alt="SMS Forwarder Logo">
+</p>
 
-![API 26+](https://img.shields.io/badge/API-26%2B-brightgreen)
-![Kotlin](https://img.shields.io/badge/Kotlin-2.0-purple)
-![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-Material%20You-blue)
-![Android](https://img.shields.io/badge/Android-8.0%2B-green)
-![Release](https://img.shields.io/badge/Release-v1.0.0-orange)
-![License](https://img.shields.io/badge/License-AGPL%20v3-blue)
+<h1 align="center">SMS Forwarder</h1>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/API-26%2B-brightgreen" alt="API 26+">
+  <img src="https://img.shields.io/badge/Kotlin-2.0-purple" alt="Kotlin">
+  <img src="https://img.shields.io/badge/Jetpack%20Compose-Material%20You-blue" alt="Jetpack Compose">
+  <img src="https://img.shields.io/badge/Android-8.0%2B-green" alt="Android">
+  <img src="https://img.shields.io/badge/Release-v1.1.1-orange" alt="Release">
+  <img src="https://img.shields.io/badge/License-AGPL%20v3-blue" alt="License">
+</p>
 
 **Application Android de transfert automatique de SMS et RCS** vers un numero de telephone configure. Concue pour etre fiable, legere et respectueuse de la vie privee.
 
