@@ -1,0 +1,51 @@
+<svg width="1024" height="500" viewBox="0 0 1024 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1024" y2="500" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0D47A1"/>
+      <stop offset="100%" stop-color="#1565C0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1024" height="500" fill="url(#bg)"/>
+
+  <!-- Subtle pattern dots -->
+  <circle cx="50" cy="50" r="3" fill="rgba(255,255,255,0.05)"/>
+  <circle cx="150" cy="100" r="3" fill="rgba(255,255,255,0.05)"/>
+  <circle cx="100" cy="200" r="3" fill="rgba(255,255,255,0.05)"/>
+  <circle cx="900" cy="400" r="3" fill="rgba(255,255,255,0.05)"/>
+  <circle cx="950" cy="150" r="3" fill="rgba(255,255,255,0.05)"/>
+  <circle cx="850" cy="80" r="3" fill="rgba(255,255,255,0.05)"/>
+
+  <!-- App icon (scaled down) -->
+  <g transform="translate(100, 130) scale(0.47)">
+    <rect width="512" height="512" rx="114" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.2)" stroke-width="6"/>
+    <!-- Envelope body -->
+    <path d="M142 180C142 169.5 150.5 161 161 161H351C361.5 161 370 169.5 370 180V322C370 332.5 361.5 341 351 341H161C150.5 341 142 332.5 142 322V180Z" fill="rgba(255,255,255,0.15)" stroke="white" stroke-width="12" stroke-linejoin="round"/>
+    <!-- Envelope flap -->
+    <path d="M142 180L256 265L370 180" stroke="white" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- Forward arrow line -->
+    <line x1="265" y1="251" x2="370" y2="251" stroke="#4FC3F7" stroke-width="14" stroke-linecap="round"/>
+    <!-- Forward arrow head -->
+    <path d="M322 275L380 251L322 227" fill="none" stroke="#4FC3F7" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- App name -->
+  <text x="420" y="210" font-family="sans-serif" font-weight="700" font-size="56" fill="white" letter-spacing="1">SMS Forwarder</text>
+
+  <!-- Tagline -->
+  <text x="420" y="270" font-family="sans-serif" font-weight="400" font-size="28" fill="rgba(255,255,255,0.8)">Transfert automatique de SMS et RCS</text>
+
+  <!-- Feature pills -->
+  <rect x="420" y="310" width="160" height="40" rx="20" fill="rgba(79,195,247,0.2)" stroke="#4FC3F7" stroke-width="2"/>
+  <text x="500" y="336" font-family="sans-serif" font-weight="500" font-size="16" fill="#4FC3F7" text-anchor="middle">100% Local</text>
+
+  <rect x="600" y="310" width="160" height="40" rx="20" fill="rgba(79,195,247,0.2)" stroke="#4FC3F7" stroke-width="2"/>
+  <text x="680" y="336" font-family="sans-serif" font-weight="500" font-size="16" fill="#4FC3F7" text-anchor="middle">Zero Tracking</text>
+
+  <rect x="780" y="310" width="160" height="40" rx="20" fill="rgba(79,195,247,0.2)" stroke="#4FC3F7" stroke-width="2"/>
+  <text x="860" y="336" font-family="sans-serif" font-weight="500" font-size="16" fill="#4FC3F7" text-anchor="middle">Open Source</text>
+
+  <!-- Bottom tagline -->
+  <text x="512" y="450" font-family="sans-serif" font-weight="300" font-size="18" fill="rgba(255,255,255,0.5)" text-anchor="middle">par QrCommunication</text>
+</svg>

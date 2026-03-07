@@ -1,0 +1,53 @@
+SMS Forwarder transfere automatiquement vos SMS et RCS entrants vers le numero de telephone de votre choix. Aucun compte requis. Aucun serveur. Tout reste sur votre appareil.
+
+Ideal pour :
+- Recevoir vos SMS pro sur un second telephone
+- Surveiller les SMS d'un proche (avec son accord)
+- Ne jamais manquer un code de verification important
+- Centraliser les SMS de plusieurs lignes
+
+TRANSFERT FIABLE
+- Triple capture des messages : BroadcastReceiver SMS + ContentObserver RCS + NotificationListener
+- Deduplication intelligente pour eviter les doublons
+- Gestion des SMS longs (multi-parties, plus de 160 caracteres)
+- Retry automatique x3 avec delai progressif en cas d'echec
+- Retransmission manuelle depuis l'historique
+- Protection anti-boucle (detection automatique de votre numero SIM)
+
+FILTRAGE AVANCE
+- Liste blanche : transferer uniquement certains numeros ou mots-cles
+- Liste noire : bloquer certains expediteurs ou contenus
+- Combinez les deux pour un controle precis
+
+INTERFACE MODERNE
+- Design Material You avec couleurs dynamiques (Android 12+)
+- Mode sombre automatique (suit le theme systeme)
+- Historique complet avec recherche et filtres par statut
+- Statistiques detaillees avec graphique journalier
+- Widget Android pour activer/desactiver le transfert en un tap
+
+CONFIGURATION FLEXIBLE
+- Support multi-SIM : choisissez la carte SIM d'envoi
+- Export CSV de l'historique complet
+- SMS de test pour valider votre configuration
+- Onboarding guide au premier lancement
+
+FIABILITE MAXIMALE
+- Foreground Service avec notification persistante
+- Redemarrage automatique apres reboot de l'appareil
+- Fonctionne en arriere-plan sans interruption
+
+RESPECT DE VOTRE VIE PRIVEE
+- Zero collecte de donnees, zero analytics, zero tracking
+- Aucune connexion internet requise
+- Stockage 100% local sur votre appareil
+- Transit SMS via le reseau de votre operateur uniquement
+- Code source ouvert (licence AGPL v3)
+
+PERMISSIONS UTILISEES
+- SMS : pour recevoir, lire et transferer les messages
+- Telephone : pour la detection multi-SIM et la protection anti-boucle
+- Notifications : pour capturer les messages RCS et afficher l'etat du service
+
+Developpe par QrCommunication.
+Code source disponible sur GitHub.

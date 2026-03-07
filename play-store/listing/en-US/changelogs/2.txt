@@ -1,0 +1,6 @@
+v1.1.1:
+- Improved RCS capture via NotificationListener
+- Fixed keyword filtering
+- Optimized message deduplication
+- Improved Foreground Service stability
+- Minor bug fixes and performance improvements

@@ -1,0 +1,53 @@
+SMS Forwarder automatically forwards your incoming SMS and RCS messages to a phone number of your choice. No account required. No server. Everything stays on your device.
+
+Perfect for:
+- Receiving work SMS on a second phone
+- Monitoring a family member's SMS (with their consent)
+- Never missing an important verification code
+- Centralizing SMS from multiple phone lines
+
+RELIABLE FORWARDING
+- Triple message capture: SMS BroadcastReceiver + RCS ContentObserver + NotificationListener
+- Smart deduplication to prevent duplicate forwards
+- Long SMS support (multi-part messages over 160 characters)
+- Automatic retry x3 with progressive delay on failure
+- Manual resend from message history
+- Anti-loop protection (automatic SIM number detection)
+
+ADVANCED FILTERING
+- Whitelist: forward only specific numbers or keywords
+- Blacklist: block certain senders or content
+- Combine both for precise control
+
+MODERN INTERFACE
+- Material You design with dynamic colors (Android 12+)
+- Automatic dark mode (follows system theme)
+- Full history with search and status filters
+- Detailed statistics with daily chart
+- Android widget to toggle forwarding with one tap
+
+FLEXIBLE CONFIGURATION
+- Multi-SIM support: choose which SIM card sends forwarded messages
+- CSV export of complete history
+- Test SMS to validate your setup
+- Guided onboarding on first launch
+
+MAXIMUM RELIABILITY
+- Foreground Service with persistent notification
+- Automatic restart after device reboot
+- Runs in the background without interruption
+
+PRIVACY FIRST
+- Zero data collection, zero analytics, zero tracking
+- No internet connection required
+- 100% local storage on your device
+- SMS transit via your carrier network only
+- Open source code (AGPL v3 license)
+
+PERMISSIONS USED
+- SMS: to receive, read, and forward messages
+- Phone: for multi-SIM detection and anti-loop protection
+- Notifications: to capture RCS messages and display service status
+
+Developed by QrCommunication.
+Source code available on GitHub.
