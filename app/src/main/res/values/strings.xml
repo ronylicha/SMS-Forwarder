@@ -71,6 +71,13 @@
     <string name="settings_sim_default">SIM par defaut</string>
     <string name="settings_sim_1">SIM 1</string>
     <string name="settings_sim_2">SIM 2</string>
+    <string name="settings_receiving_sim_title">SIM de reception</string>
+    <string name="settings_receiving_sim_description">Choisissez de quelles cartes SIM les SMS recus seront transferes.</string>
+    <string name="settings_receiving_sim_all">Toutes les SIM</string>
+    <string name="settings_receiving_sim_1_only">SIM 1 uniquement</string>
+    <string name="settings_receiving_sim_2_only">SIM 2 uniquement</string>
+    <string name="settings_sending_sim_title">SIM d\'envoi</string>
+    <string name="settings_sending_sim_description">Choisissez quelle carte SIM utiliser pour envoyer les SMS transferes.</string>
     <string name="settings_about_title">A propos</string>
     <string name="settings_version">Version</string>
     <string name="settings_app_name">SMS Forwarder</string>
@@ -82,6 +89,22 @@
     <string name="settings_notification_access_enabled">Acces active</string>
     <string name="settings_notification_access_disabled">Acces desactive</string>
     <string name="settings_notification_access_button">Configurer l\'acces</string>
+
+    <!-- App Whitelist -->
+    <string name="settings_app_whitelist_title">Applications tierces</string>
+    <string name="settings_app_whitelist_description">Transférez les notifications d\'applications tierces (VoIP, messageries) par SMS.</string>
+    <string name="settings_app_whitelist_status_active">Active - %d app(s) surveillee(s)</string>
+    <string name="settings_app_whitelist_status_inactive">Desactive</string>
+    <string name="settings_app_whitelist_manage">Gerer les applications</string>
+    <string name="app_whitelist_title">Applications surveillees</string>
+    <string name="app_whitelist_enable_title">Surveillance des notifications</string>
+    <string name="app_whitelist_enable_description">Transferer les notifications des applications selectionnees par SMS.</string>
+    <string name="app_whitelist_added_apps">Applications ajoutees</string>
+    <string name="app_whitelist_empty">Aucune application ajoutee.\nAppuyez sur + pour en ajouter.</string>
+    <string name="app_whitelist_add">Ajouter une application</string>
+    <string name="app_whitelist_not_installed">Non installee</string>
+    <string name="app_whitelist_picker_title">Selectionner une application</string>
+    <string name="app_whitelist_search">Rechercher une application…</string>
 
     <!-- History -->
     <string name="history_title">Historique</string>

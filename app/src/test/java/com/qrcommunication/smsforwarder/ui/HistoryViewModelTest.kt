@@ -4,6 +4,8 @@ import com.qrcommunication.smsforwarder.data.local.entity.SmsRecord
 import com.qrcommunication.smsforwarder.data.local.entity.SmsStatus
 import com.qrcommunication.smsforwarder.data.repository.SmsRepository
 import com.qrcommunication.smsforwarder.domain.usecase.GetHistoryUseCase
+import com.qrcommunication.smsforwarder.domain.usecase.RetryResult
+import com.qrcommunication.smsforwarder.domain.usecase.RetrySmsUseCase
 import com.qrcommunication.smsforwarder.ui.history.HistoryViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -26,6 +28,7 @@ class HistoryViewModelTest {
 
     private val getHistoryUseCase: GetHistoryUseCase = mock()
     private val smsRepository: SmsRepository = mock()
+    private val retrySms: RetrySmsUseCase = mock()
     private val testDispatcher = StandardTestDispatcher()
 
     private val sampleRecords = listOf(
@@ -66,7 +69,60 @@ class HistoryViewModelTest {
     }
 
     private fun createViewModel(): HistoryViewModel {
-        return HistoryViewModel(getHistoryUseCase, smsRepository)
+        return HistoryViewModel(getHistoryUseCase, smsRepository, retrySms)
+    }
+
+    @Test
+    fun retry_success_setsFeedbackMessage() = runTest {
+        whenever(getHistoryUseCase.getAllRecords()).thenReturn(flowOf(sampleRecords))
+        whenever(getHistoryUseCase.getRecordCount()).thenReturn(flowOf(3))
+        whenever(retrySms.invoke(2L)).thenReturn(RetryResult.Success)
+
+        val viewModel = createViewModel()
+        advanceUntilIdle()
+        viewModel.retry(2L)
+        advanceUntilIdle()
+
+        assertEquals("Renvoye avec succes", viewModel.uiState.value.retryFeedback)
+    }
+
+    @Test
+    fun retry_failure_setsErrorFeedback() = runTest {
+        whenever(getHistoryUseCase.getAllRecords()).thenReturn(flowOf(sampleRecords))
+        whenever(getHistoryUseCase.getRecordCount()).thenReturn(flowOf(3))
+        whenever(retrySms.invoke(2L)).thenReturn(RetryResult.Failed("network down"))
+
+        val viewModel = createViewModel()
+        advanceUntilIdle()
+        viewModel.retry(2L)
+        advanceUntilIdle()
+
+        val msg = viewModel.uiState.value.retryFeedback
+        assertNotNull(msg)
+        assertTrue(msg!!.contains("network down"))
+    }
+
+    @Test
+    fun filterByDateRange_filtersRecordsByReceivedAt() = runTest {
+        val now = System.currentTimeMillis()
+        val records = listOf(
+            SmsRecord(id = 1, sender = "a", content = "old", receivedAt = now - 10_000_000L,
+                status = SmsStatus.SENT.value, destination = "+33600000000"),
+            SmsRecord(id = 2, sender = "b", content = "recent", receivedAt = now,
+                status = SmsStatus.SENT.value, destination = "+33600000000"),
+        )
+        whenever(getHistoryUseCase.getAllRecords()).thenReturn(flowOf(records))
+        whenever(getHistoryUseCase.getRecordCount()).thenReturn(flowOf(2))
+
+        val viewModel = createViewModel()
+        advanceUntilIdle()
+
+        viewModel.filterByDateRange(now - 1_000_000L, now + 1_000L)
+        advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertEquals(1, state.records.size)
+        assertEquals("recent", state.records[0].content)
     }
 
     @Test

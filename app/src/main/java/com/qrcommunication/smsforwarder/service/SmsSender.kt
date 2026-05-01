@@ -44,22 +44,24 @@ class SmsSender @Inject constructor(
     }
 
     private fun getSmsManager(): SmsManager {
+        val systemSmsManager = context.getSystemService(SmsManager::class.java)
+            ?: error("SmsManager indisponible sur cet appareil")
+
         val simSlot = preferencesManager.selectedSimSlot
-        return if (simSlot >= 0 && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-            try {
-                val subscriptionManager = context.getSystemService(SubscriptionManager::class.java)
-                val subscriptionInfo = subscriptionManager?.activeSubscriptionInfoList?.getOrNull(simSlot)
-                if (subscriptionInfo != null) {
-                    SmsManager.getSmsManagerForSubscriptionId(subscriptionInfo.subscriptionId)
-                } else {
-                    context.getSystemService(SmsManager::class.java) ?: SmsManager.getDefault()
-                }
-            } catch (e: SecurityException) {
-                Log.w(TAG, "Cannot access SIM info, using default SmsManager", e)
-                context.getSystemService(SmsManager::class.java) ?: SmsManager.getDefault()
+        if (simSlot < 0 || android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.S) {
+            return systemSmsManager
+        }
+        return try {
+            val subscriptionManager = context.getSystemService(SubscriptionManager::class.java)
+            val subscriptionInfo = subscriptionManager?.activeSubscriptionInfoList?.getOrNull(simSlot)
+            if (subscriptionInfo != null) {
+                systemSmsManager.createForSubscriptionId(subscriptionInfo.subscriptionId)
+            } else {
+                systemSmsManager
             }
-        } else {
-            context.getSystemService(SmsManager::class.java) ?: SmsManager.getDefault()
+        } catch (e: SecurityException) {
+            Log.w(TAG, "Cannot access SIM info, using default SmsManager", e)
+            systemSmsManager
         }
     }
 

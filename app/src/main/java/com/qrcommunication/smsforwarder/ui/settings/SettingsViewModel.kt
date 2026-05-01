@@ -6,6 +6,7 @@ import android.telephony.SubscriptionManager
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.qrcommunication.smsforwarder.data.preferences.PreferencesManager
+import com.qrcommunication.smsforwarder.domain.model.RetryPolicy
 import com.qrcommunication.smsforwarder.service.SmsSender
 import com.qrcommunication.smsforwarder.util.PhoneValidator
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,10 +25,14 @@ data class SettingsUiState(
     val testResult: String? = null,
     val filterMode: String = "NONE",
     val selectedSimSlot: Int = -1,
+    val receivingSimSlot: Int = -1,
     val isDualSim: Boolean = false,
     val isSaved: Boolean = false,
     val appVersion: String = "1.0.0",
-    val isNotificationAccessEnabled: Boolean = false
+    val isNotificationAccessEnabled: Boolean = false,
+    val isAppWhitelistEnabled: Boolean = false,
+    val appWhitelistCount: Int = 0,
+    val retryPolicy: RetryPolicy = RetryPolicy(),
 )
 
 @HiltViewModel
@@ -60,10 +65,33 @@ class SettingsViewModel @Inject constructor(
                 isNumberValid = destination.isNotBlank() && PhoneValidator.isValid(destination),
                 filterMode = preferencesManager.filterMode,
                 selectedSimSlot = preferencesManager.selectedSimSlot,
+                receivingSimSlot = preferencesManager.receivingSimSlot,
                 isDualSim = isDualSim,
-                appVersion = version
+                appVersion = version,
+                isAppWhitelistEnabled = preferencesManager.isAppWhitelistEnabled,
+                appWhitelistCount = preferencesManager.appWhitelistPackages.size,
+                retryPolicy = preferencesManager.retryPolicy,
             )
         }
+    }
+
+    fun updateRetryMaxAttempts(value: Int) = updateRetryPolicy {
+        it.copy(maxAttempts = value.coerceIn(1, 10))
+    }
+
+    fun updateRetryInitialDelay(ms: Long) = updateRetryPolicy {
+        it.copy(initialDelayMs = ms.coerceAtLeast(1_000L))
+    }
+
+    fun updateRetryBackoff(value: Double) = updateRetryPolicy {
+        it.copy(backoffMultiplier = value.coerceIn(1.0, 5.0))
+    }
+
+    private fun updateRetryPolicy(transform: (RetryPolicy) -> RetryPolicy) {
+        val current = _uiState.value.retryPolicy
+        val updated = transform(current)
+        preferencesManager.retryPolicy = updated
+        _uiState.update { it.copy(retryPolicy = updated) }
     }
 
     fun updateDestination(number: String) {
@@ -123,6 +151,11 @@ class SettingsViewModel @Inject constructor(
         _uiState.update { it.copy(selectedSimSlot = slot) }
     }
 
+    fun setReceivingSimSlot(slot: Int) {
+        preferencesManager.receivingSimSlot = slot
+        _uiState.update { it.copy(receivingSimSlot = slot) }
+    }
+
     fun clearTestResult() {
         _uiState.update { it.copy(testResult = null) }
     }
@@ -137,7 +170,13 @@ class SettingsViewModel @Inject constructor(
             "enabled_notification_listeners"
         )
         val isEnabled = enabledListeners?.contains(application.packageName) == true
-        _uiState.update { it.copy(isNotificationAccessEnabled = isEnabled) }
+        _uiState.update {
+            it.copy(
+                isNotificationAccessEnabled = isEnabled,
+                isAppWhitelistEnabled = preferencesManager.isAppWhitelistEnabled,
+                appWhitelistCount = preferencesManager.appWhitelistPackages.size
+            )
+        }
     }
 
     private fun checkDualSim(): Boolean {

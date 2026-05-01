@@ -14,10 +14,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Cached
 import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.SimCard
+import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -44,7 +46,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -59,6 +61,10 @@ import com.qrcommunication.smsforwarder.ui.components.PhoneNumberField
 fun SettingsScreen(
     onNavigateBack: () -> Unit,
     onNavigateToFilters: () -> Unit,
+    onNavigateToAppWhitelist: () -> Unit = {},
+    onNavigateToRules: () -> Unit = {},
+    onNavigateToDiagnostics: () -> Unit = {},
+    onNavigateToNotifications: () -> Unit = {},
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -233,6 +239,7 @@ fun SettingsScreen(
 
             // Dual SIM section
             if (uiState.isDualSim) {
+                // SIM de reception (filtre)
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(
@@ -255,11 +262,70 @@ fun SettingsScreen(
                                 tint = MaterialTheme.colorScheme.primary
                             )
                             Text(
-                                text = "Multi-SIM",
+                                text = "SIM de reception",
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold
                             )
                         }
+
+                        Text(
+                            text = "Choisissez de quelles cartes SIM les SMS recus seront transferes.",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+
+                        FilterModeOption(
+                            label = "Toutes les SIM",
+                            selected = uiState.receivingSimSlot == -1,
+                            onClick = { viewModel.setReceivingSimSlot(-1) }
+                        )
+                        FilterModeOption(
+                            label = "SIM 1 uniquement",
+                            selected = uiState.receivingSimSlot == 0,
+                            onClick = { viewModel.setReceivingSimSlot(0) }
+                        )
+                        FilterModeOption(
+                            label = "SIM 2 uniquement",
+                            selected = uiState.receivingSimSlot == 1,
+                            onClick = { viewModel.setReceivingSimSlot(1) }
+                        )
+                    }
+                }
+
+                // SIM d'envoi
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surface
+                    )
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.SimCard,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                            Text(
+                                text = "SIM d'envoi",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+
+                        Text(
+                            text = "Choisissez quelle carte SIM utiliser pour envoyer les SMS transferes.",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
 
                         FilterModeOption(
                             label = "SIM par defaut",
@@ -362,6 +428,100 @@ fun SettingsScreen(
                 }
             }
 
+            // Third-party apps section
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                )
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Notifications,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                        Text(
+                            text = stringResource(R.string.settings_app_whitelist_title),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+
+                    Text(
+                        text = stringResource(R.string.settings_app_whitelist_description),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Info,
+                                contentDescription = null,
+                                modifier = Modifier.size(16.dp),
+                                tint = if (uiState.isAppWhitelistEnabled) {
+                                    MaterialTheme.colorScheme.primary
+                                } else {
+                                    MaterialTheme.colorScheme.onSurfaceVariant
+                                }
+                            )
+                            Text(
+                                text = if (uiState.isAppWhitelistEnabled) {
+                                    stringResource(R.string.settings_app_whitelist_status_active, uiState.appWhitelistCount)
+                                } else {
+                                    stringResource(R.string.settings_app_whitelist_status_inactive)
+                                },
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = if (uiState.isAppWhitelistEnabled) {
+                                    MaterialTheme.colorScheme.primary
+                                } else {
+                                    MaterialTheme.colorScheme.onSurfaceVariant
+                                }
+                            )
+                        }
+                    }
+
+                    FilledTonalButton(
+                        onClick = onNavigateToAppWhitelist,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(stringResource(R.string.settings_app_whitelist_manage))
+                    }
+                }
+            }
+
+            // Retry policy section
+            RetryPolicyCard(
+                policy = uiState.retryPolicy,
+                onMaxAttemptsChange = viewModel::updateRetryMaxAttempts,
+                onInitialDelayChange = viewModel::updateRetryInitialDelay,
+                onBackoffChange = viewModel::updateRetryBackoff,
+            )
+
+            // Advanced navigation section
+            AdvancedNavigationCard(
+                onNavigateToRules = onNavigateToRules,
+                onNavigateToDiagnostics = onNavigateToDiagnostics,
+                onNavigateToNotifications = onNavigateToNotifications,
+            )
+
             // About section
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -447,5 +607,110 @@ private fun FilterModeOption(
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(start = 4.dp)
         )
+    }
+}
+
+@Composable
+private fun RetryPolicyCard(
+    policy: com.qrcommunication.smsforwarder.domain.model.RetryPolicy,
+    onMaxAttemptsChange: (Int) -> Unit,
+    onInitialDelayChange: (Long) -> Unit,
+    onBackoffChange: (Double) -> Unit,
+) {
+    com.qrcommunication.smsforwarder.ui.components.common.SettingsCard(
+        title = "Politique de retry",
+        icon = Icons.Filled.Cached,
+    ) {
+        Text(
+            text = "Comportement automatique en cas d'echec du transfert.",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+
+        Text(
+            text = "Tentatives max : ${policy.maxAttempts}",
+            style = MaterialTheme.typography.bodyMedium,
+        )
+        androidx.compose.material3.Slider(
+            value = policy.maxAttempts.toFloat(),
+            onValueChange = { onMaxAttemptsChange(it.toInt()) },
+            valueRange = 1f..10f,
+            steps = 8,
+        )
+
+        Text("Delai initial", style = MaterialTheme.typography.bodyMedium)
+        DelayChips(
+            current = policy.initialDelayMs,
+            options = listOf(
+                30_000L to "30s",
+                60_000L to "1min",
+                300_000L to "5min",
+                900_000L to "15min",
+            ),
+            onSelect = onInitialDelayChange,
+        )
+
+        Text("Multiplicateur backoff", style = MaterialTheme.typography.bodyMedium)
+        BackoffChips(
+            current = policy.backoffMultiplier,
+            options = listOf(1.5, 2.0, 3.0),
+            onSelect = onBackoffChange,
+        )
+    }
+}
+
+@Composable
+private fun DelayChips(
+    current: Long,
+    options: List<Pair<Long, String>>,
+    onSelect: (Long) -> Unit,
+) {
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        options.forEach { (value, label) ->
+            androidx.compose.material3.FilterChip(
+                selected = current == value,
+                onClick = { onSelect(value) },
+                label = { Text(label) },
+            )
+        }
+    }
+}
+
+@Composable
+private fun BackoffChips(
+    current: Double,
+    options: List<Double>,
+    onSelect: (Double) -> Unit,
+) {
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        options.forEach { value ->
+            androidx.compose.material3.FilterChip(
+                selected = kotlin.math.abs(current - value) < 0.01,
+                onClick = { onSelect(value) },
+                label = { Text("x$value") },
+            )
+        }
+    }
+}
+
+@Composable
+private fun AdvancedNavigationCard(
+    onNavigateToRules: () -> Unit,
+    onNavigateToDiagnostics: () -> Unit,
+    onNavigateToNotifications: () -> Unit,
+) {
+    com.qrcommunication.smsforwarder.ui.components.common.SettingsCard(
+        title = "Avance",
+        icon = Icons.Filled.Tune,
+    ) {
+        FilledTonalButton(onClick = onNavigateToRules, modifier = Modifier.fillMaxWidth()) {
+            Text("Regles de transfert")
+        }
+        FilledTonalButton(onClick = onNavigateToDiagnostics, modifier = Modifier.fillMaxWidth()) {
+            Text("Diagnostics")
+        }
+        FilledTonalButton(onClick = onNavigateToNotifications, modifier = Modifier.fillMaxWidth()) {
+            Text("Centre de notifications")
+        }
     }
 }

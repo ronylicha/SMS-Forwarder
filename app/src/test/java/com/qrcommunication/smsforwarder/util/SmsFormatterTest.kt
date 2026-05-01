@@ -29,6 +29,22 @@ class SmsFormatterTest {
     }
 
     @Test
+    fun format_withAppLabel_usesNotifPrefix() {
+        val timestamp = 1709564400000L
+        val expectedDate = dateFormat.format(Date(timestamp))
+        val result = SmsFormatter.format("ignored", timestamp, "Hello", appLabel = "WhatsApp")
+        assertEquals("[Notif WhatsApp | $expectedDate] Hello", result)
+    }
+
+    @Test
+    fun format_withoutAppLabel_usesSenderPrefix() {
+        val timestamp = 1709564400000L
+        val expectedDate = dateFormat.format(Date(timestamp))
+        val result = SmsFormatter.format("+33612345678", timestamp, "Hello", appLabel = null)
+        assertEquals("[De: +33612345678 | $expectedDate] Hello", result)
+    }
+
+    @Test
     fun formatForwardedSms_specialCharacters() {
         val timestamp = 1709564400000L
         val expectedDate = dateFormat.format(Date(timestamp))

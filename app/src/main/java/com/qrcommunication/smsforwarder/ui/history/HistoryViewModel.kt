@@ -2,10 +2,13 @@ package com.qrcommunication.smsforwarder.ui.history
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.qrcommunication.smsforwarder.data.local.entity.DestinationType
 import com.qrcommunication.smsforwarder.data.local.entity.SmsRecord
 import com.qrcommunication.smsforwarder.data.local.entity.SmsStatus
 import com.qrcommunication.smsforwarder.data.repository.SmsRepository
 import com.qrcommunication.smsforwarder.domain.usecase.GetHistoryUseCase
+import com.qrcommunication.smsforwarder.domain.usecase.RetryResult
+import com.qrcommunication.smsforwarder.domain.usecase.RetrySmsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,13 +24,18 @@ data class HistoryUiState(
     val isLoading: Boolean = true,
     val searchQuery: String = "",
     val selectedStatusFilter: SmsStatus? = null,
-    val totalCount: Int = 0
+    val selectedDestinationFilter: DestinationType? = null,
+    val dateRangeStart: Long? = null,
+    val dateRangeEnd: Long? = null,
+    val totalCount: Int = 0,
+    val retryFeedback: String? = null,
 )
 
 @HiltViewModel
 class HistoryViewModel @Inject constructor(
     private val getHistoryUseCase: GetHistoryUseCase,
-    private val smsRepository: SmsRepository
+    private val smsRepository: SmsRepository,
+    private val retrySms: RetrySmsUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HistoryUiState())
@@ -46,23 +54,49 @@ class HistoryViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true) }
 
             val state = _uiState.value
-            val flow = when {
+            val baseFlow = when {
                 state.searchQuery.isNotBlank() -> getHistoryUseCase.searchRecords(state.searchQuery)
                 state.selectedStatusFilter != null -> getHistoryUseCase.getRecordsByStatus(state.selectedStatusFilter)
                 else -> getHistoryUseCase.getAllRecords()
             }
 
-            flow.catch { _ ->
+            baseFlow.catch { _ ->
                 _uiState.update { it.copy(isLoading = false) }
             }.collect { records ->
-                _uiState.update {
-                    it.copy(
-                        records = records,
-                        isLoading = false
-                    )
-                }
+                val filtered = records
+                    .let { applyDestinationFilter(it, state.selectedDestinationFilter) }
+                    .let { applyDateRangeFilter(it, state.dateRangeStart, state.dateRangeEnd) }
+                _uiState.update { it.copy(records = filtered, isLoading = false) }
             }
         }
+    }
+
+    private fun applyDestinationFilter(
+        records: List<SmsRecord>,
+        filter: DestinationType?,
+    ): List<SmsRecord> {
+        if (filter == null) return records
+        return records.filter { inferDestinationType(it.destination) == filter }
+    }
+
+    private fun applyDateRangeFilter(
+        records: List<SmsRecord>,
+        startMs: Long?,
+        endMs: Long?,
+    ): List<SmsRecord> {
+        if (startMs == null && endMs == null) return records
+        val effectiveStart = startMs ?: Long.MIN_VALUE
+        val effectiveEnd = endMs ?: Long.MAX_VALUE
+        return records.filter { it.receivedAt in effectiveStart..effectiveEnd }
+    }
+
+    /**
+     * Heuristique : URL avec scheme = WEBHOOK, sinon SMS.
+     * On evite ainsi une migration DB pour stocker explicitement le type.
+     */
+    private fun inferDestinationType(destination: String): DestinationType = when {
+        destination.contains("://") -> DestinationType.WEBHOOK
+        else -> DestinationType.SMS
     }
 
     private fun observeTotalCount() {
@@ -76,28 +110,38 @@ class HistoryViewModel @Inject constructor(
     }
 
     fun search(query: String) {
-        _uiState.update {
-            it.copy(
-                searchQuery = query,
-                selectedStatusFilter = null
-            )
-        }
+        _uiState.update { it.copy(searchQuery = query, selectedStatusFilter = null) }
         loadRecords()
     }
 
     fun filterByStatus(status: SmsStatus?) {
-        _uiState.update {
-            it.copy(
-                selectedStatusFilter = status,
-                searchQuery = ""
-            )
-        }
+        _uiState.update { it.copy(selectedStatusFilter = status, searchQuery = "") }
         loadRecords()
     }
 
-    fun deleteAll() {
-        viewModelScope.launch {
-            smsRepository.deleteAllRecords()
-        }
+    fun filterByDestination(type: DestinationType?) {
+        _uiState.update { it.copy(selectedDestinationFilter = type) }
+        loadRecords()
     }
+
+    fun filterByDateRange(startMs: Long?, endMs: Long?) {
+        _uiState.update { it.copy(dateRangeStart = startMs, dateRangeEnd = endMs) }
+        loadRecords()
+    }
+
+    fun clearDateRange() = filterByDateRange(null, null)
+
+    fun retry(recordId: Long) = viewModelScope.launch {
+        val message = when (val result = retrySms(recordId)) {
+            RetryResult.Success -> "Renvoye avec succes"
+            RetryResult.NotFound -> "SMS introuvable"
+            RetryResult.MaxRetriesReached -> "Nombre maximum de tentatives atteint"
+            is RetryResult.Failed -> "Echec : ${result.error}"
+        }
+        _uiState.update { it.copy(retryFeedback = message) }
+    }
+
+    fun clearRetryFeedback() = _uiState.update { it.copy(retryFeedback = null) }
+
+    fun deleteAll() = viewModelScope.launch { smsRepository.deleteAllRecords() }
 }

@@ -45,5 +45,9 @@ data class SmsRecord(
     val errorMessage: String? = null,
 
     @ColumnInfo(name = "retry_count")
-    val retryCount: Int = 0
+    val retryCount: Int = 0,
+
+    /** Id de la ForwardingRule qui a declenche le transfert (null = fallback global). */
+    @ColumnInfo(name = "rule_id")
+    val ruleId: Long? = null,
 )

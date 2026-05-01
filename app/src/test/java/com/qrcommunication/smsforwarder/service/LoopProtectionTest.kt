@@ -8,6 +8,7 @@ import org.junit.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 
+@Suppress("DEPRECATION")
 class LoopProtectionTest {
 
     private val context: Context = mock()

@@ -177,11 +177,18 @@ private fun getAvailableSims(context: Context): List<SimInfo> {
             subscriptionManager.activeSubscriptionInfoList ?: emptyList()
 
         activeSubscriptions.map { info ->
+            val phone = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                runCatching { subscriptionManager.getPhoneNumber(info.subscriptionId) }
+                    .getOrNull().orEmpty()
+            } else {
+                @Suppress("DEPRECATION")
+                info.number.orEmpty()
+            }
             SimInfo(
                 slot = info.simSlotIndex,
                 displayName = info.displayName?.toString() ?: "SIM ${info.simSlotIndex + 1}",
                 carrierName = info.carrierName?.toString() ?: "",
-                phoneNumber = info.number ?: ""
+                phoneNumber = phone,
             )
         }
     } catch (_: SecurityException) {

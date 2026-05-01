@@ -1,6 +1,8 @@
 package com.qrcommunication.smsforwarder.service
 
 import android.content.Context
+import android.os.Build
+import android.telephony.SubscriptionManager
 import android.telephony.TelephonyManager
 import android.util.Log
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -9,7 +11,7 @@ import javax.inject.Singleton
 
 @Singleton
 class LoopProtection @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
 ) {
     companion object {
         private const val TAG = "LoopProtection"
@@ -21,25 +23,31 @@ class LoopProtection @Inject constructor(
             return true
         }
 
-        val localNumbers = getLocalPhoneNumbers()
         val normalizedDestination = normalizeNumber(destination)
-        for (localNumber in localNumbers) {
-            if (normalizeNumber(localNumber) == normalizedDestination) {
-                Log.w(TAG, "SIM loop detected: destination matches local SIM number")
-                return true
-            }
+        return getLocalPhoneNumbers().any { normalizeNumber(it) == normalizedDestination }.also {
+            if (it) Log.w(TAG, "SIM loop detected: destination matches local SIM number")
         }
-
-        return false
     }
 
+    /**
+     * Recupere les numeros locaux des SIM. Sur API 33+, utilise SubscriptionManager.getPhoneNumber
+     * qui requiert READ_PHONE_NUMBERS. Sur API < 33, fallback sur TelephonyManager.line1Number
+     * (deprecated mais seul moyen disponible).
+     */
     private fun getLocalPhoneNumbers(): List<String> {
         val numbers = mutableListOf<String>()
         try {
-            val telephonyManager = context.getSystemService(TelephonyManager::class.java)
-            val line1 = telephonyManager?.line1Number
-            if (!line1.isNullOrBlank()) {
-                numbers.add(line1)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                val subscriptionManager = context.getSystemService(SubscriptionManager::class.java)
+                val activeSubs = subscriptionManager?.activeSubscriptionInfoList.orEmpty()
+                for (sub in activeSubs) {
+                    val number = subscriptionManager?.getPhoneNumber(sub.subscriptionId)
+                    if (!number.isNullOrBlank()) numbers.add(number)
+                }
+            } else {
+                @Suppress("DEPRECATION")
+                val line1 = context.getSystemService(TelephonyManager::class.java)?.line1Number
+                if (!line1.isNullOrBlank()) numbers.add(line1)
             }
         } catch (e: SecurityException) {
             Log.w(TAG, "Cannot read phone number, loop detection limited", e)

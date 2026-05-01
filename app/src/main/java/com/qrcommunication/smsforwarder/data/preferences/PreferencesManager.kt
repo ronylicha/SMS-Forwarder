@@ -1,13 +1,14 @@
 package com.qrcommunication.smsforwarder.data.preferences
 
 import android.content.Context
+import com.qrcommunication.smsforwarder.domain.model.RetryPolicy
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class PreferencesManager @Inject constructor(
-    @ApplicationContext context: Context
+    @ApplicationContext context: Context,
 ) {
     private val prefs = context.getSharedPreferences("sms_forwarder_prefs", Context.MODE_PRIVATE)
 
@@ -35,6 +36,44 @@ class PreferencesManager @Inject constructor(
         get() = prefs.getInt(KEY_SIM_SLOT, -1)
         set(value) = prefs.edit().putInt(KEY_SIM_SLOT, value).apply()
 
+    var receivingSimSlot: Int
+        get() = prefs.getInt(KEY_RECEIVING_SIM_SLOT, -1)
+        set(value) = prefs.edit().putInt(KEY_RECEIVING_SIM_SLOT, value).apply()
+
+    var isAppWhitelistEnabled: Boolean
+        get() = prefs.getBoolean(KEY_APP_WHITELIST_ENABLED, false)
+        set(value) = prefs.edit().putBoolean(KEY_APP_WHITELIST_ENABLED, value).apply()
+
+    var appWhitelistPackages: Set<String>
+        get() = prefs.getStringSet(KEY_APP_WHITELIST_PACKAGES, emptySet()) ?: emptySet()
+        set(value) = prefs.edit().putStringSet(KEY_APP_WHITELIST_PACKAGES, value).apply()
+
+    /** Politique de retry serialisee en 4 cles distinctes (pas de JSON). */
+    var retryPolicy: RetryPolicy
+        get() = RetryPolicy(
+            maxAttempts = prefs.getInt(KEY_RETRY_MAX_ATTEMPTS, RetryPolicy.DEFAULT_MAX_ATTEMPTS),
+            initialDelayMs = prefs.getLong(KEY_RETRY_INITIAL_DELAY, RetryPolicy.DEFAULT_INITIAL_DELAY_MS),
+            backoffMultiplier = prefs.getFloat(
+                KEY_RETRY_BACKOFF,
+                RetryPolicy.DEFAULT_BACKOFF.toFloat(),
+            ).toDouble(),
+            maxDelayMs = prefs.getLong(KEY_RETRY_MAX_DELAY, RetryPolicy.DEFAULT_MAX_DELAY_MS),
+        )
+        set(value) = prefs.edit()
+            .putInt(KEY_RETRY_MAX_ATTEMPTS, value.maxAttempts)
+            .putLong(KEY_RETRY_INITIAL_DELAY, value.initialDelayMs)
+            .putFloat(KEY_RETRY_BACKOFF, value.backoffMultiplier.toFloat())
+            .putLong(KEY_RETRY_MAX_DELAY, value.maxDelayMs)
+            .apply()
+
+    fun addAppToWhitelist(packageName: String) {
+        appWhitelistPackages = appWhitelistPackages + packageName
+    }
+
+    fun removeAppFromWhitelist(packageName: String) {
+        appWhitelistPackages = appWhitelistPackages - packageName
+    }
+
     fun incrementSmsCount() {
         smsForwardedCount = smsForwardedCount + 1
     }
@@ -50,5 +89,12 @@ class PreferencesManager @Inject constructor(
         private const val KEY_FILTER_MODE = "filter_mode"
         private const val KEY_SMS_COUNT = "sms_forwarded_count"
         private const val KEY_SIM_SLOT = "selected_sim_slot"
+        private const val KEY_RECEIVING_SIM_SLOT = "receiving_sim_slot"
+        private const val KEY_APP_WHITELIST_ENABLED = "app_whitelist_enabled"
+        private const val KEY_APP_WHITELIST_PACKAGES = "app_whitelist_packages"
+        private const val KEY_RETRY_MAX_ATTEMPTS = "retry_max_attempts"
+        private const val KEY_RETRY_INITIAL_DELAY = "retry_initial_delay_ms"
+        private const val KEY_RETRY_BACKOFF = "retry_backoff"
+        private const val KEY_RETRY_MAX_DELAY = "retry_max_delay_ms"
     }
 }

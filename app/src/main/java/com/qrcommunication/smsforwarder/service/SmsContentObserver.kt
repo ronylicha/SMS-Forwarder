@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.provider.Telephony
+import android.telephony.SubscriptionManager
 import android.util.Log
 
 /**
@@ -14,7 +15,7 @@ import android.util.Log
  */
 class SmsContentObserver(
     private val context: Context,
-    private val onNewMessage: (sender: String, body: String, timestamp: Long) -> Unit
+    private val onNewMessage: (sender: String, body: String, timestamp: Long, simSlot: Int) -> Unit
 ) : ContentObserver(Handler(Looper.getMainLooper())) {
 
     companion object {
@@ -67,7 +68,8 @@ class SmsContentObserver(
                     Telephony.Sms._ID,
                     Telephony.Sms.ADDRESS,
                     Telephony.Sms.BODY,
-                    Telephony.Sms.DATE
+                    Telephony.Sms.DATE,
+                    Telephony.Sms.SUBSCRIPTION_ID
                 ),
                 "${Telephony.Sms._ID} > ?",
                 arrayOf(lastProcessedId.toString()),
@@ -80,16 +82,28 @@ class SmsContentObserver(
                     val sender = it.getString(1) ?: "Unknown"
                     val body = it.getString(2) ?: ""
                     val timestamp = it.getLong(3)
+                    val subscriptionId = it.getInt(4)
+                    val simSlot = resolveSimSlot(subscriptionId)
 
                     if (id > lastProcessedId) {
                         lastProcessedId = id
-                        Log.d(TAG, "New message detected via ContentObserver from: $sender (id=$id)")
-                        onNewMessage(sender, body, timestamp)
+                        Log.d(TAG, "New message detected via ContentObserver from: $sender (id=$id, simSlot=$simSlot)")
+                        onNewMessage(sender, body, timestamp, simSlot)
                     }
                 }
             }
         } catch (e: SecurityException) {
             Log.e(TAG, "Cannot read SMS inbox", e)
+        }
+    }
+
+    private fun resolveSimSlot(subscriptionId: Int): Int {
+        if (subscriptionId < 0) return -1
+        return try {
+            val subscriptionManager = context.getSystemService(SubscriptionManager::class.java)
+            subscriptionManager?.getActiveSubscriptionInfo(subscriptionId)?.simSlotIndex ?: -1
+        } catch (e: SecurityException) {
+            -1
         }
     }
 }

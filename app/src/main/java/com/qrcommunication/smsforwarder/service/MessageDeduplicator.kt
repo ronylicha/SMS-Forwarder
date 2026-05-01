@@ -14,7 +14,6 @@ class MessageDeduplicator @Inject constructor() {
 
     companion object {
         private const val TAG = "MessageDeduplicator"
-        private const val TIMESTAMP_WINDOW_MS = 5000L
         private const val MAX_CACHE_SIZE = 500
         private const val EXPIRY_MS = 60_000L
     }
@@ -41,8 +40,7 @@ class MessageDeduplicator @Inject constructor() {
     }
 
     private fun generateHash(sender: String, content: String, timestampMs: Long): String {
-        val roundedTimestamp = (timestampMs / TIMESTAMP_WINDOW_MS) * TIMESTAMP_WINDOW_MS
-        val raw = "$sender|${content.take(100)}|$roundedTimestamp"
+        val raw = "$sender|${content.take(100)}"
         return raw.hashCode().toString()
     }
 

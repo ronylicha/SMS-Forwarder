@@ -14,8 +14,8 @@ android {
         applicationId = "com.qrcommunication.smsforwarder"
         minSdk = 26
         targetSdk = 35
-        versionCode = 2
-        versionName = "1.1.1"
+        versionCode = 5
+        versionName = "1.3.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         vectorDrawables {
@@ -65,6 +65,7 @@ android {
 
     testOptions {
         unitTests.isReturnDefaultValues = true
+        unitTests.isIncludeAndroidResources = true
     }
 
     packaging {
@@ -112,6 +113,10 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.mockito.kotlin)
     testImplementation(libs.coroutines.test)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.test.core)
+    testImplementation(libs.test.ext.junit)
+    testImplementation(libs.json)
     androidTestImplementation(libs.junit)
     androidTestImplementation(libs.test.core)
     androidTestImplementation(libs.test.ext.junit)
