@@ -1113,5 +1113,20 @@
             });
         })();
     </script>
+    <style>
+        /* Critical slider fix — must come after Tailwind CDN injects its styles */
+        .phone-slider {
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+        }
+        .phone-slider img {
+            flex: 0 0 100% !important;
+            width: 100% !important;
+            height: 100% !important;
+            max-width: none !important;
+            max-height: none !important;
+        }
+    </style>
 </body>
 </html>
