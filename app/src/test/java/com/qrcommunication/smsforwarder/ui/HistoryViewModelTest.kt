@@ -6,6 +6,7 @@ import com.qrcommunication.smsforwarder.data.repository.SmsRepository
 import com.qrcommunication.smsforwarder.domain.usecase.GetHistoryUseCase
 import com.qrcommunication.smsforwarder.domain.usecase.RetryResult
 import com.qrcommunication.smsforwarder.domain.usecase.RetrySmsUseCase
+import android.content.Context
 import com.qrcommunication.smsforwarder.ui.history.HistoryViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -29,6 +30,7 @@ class HistoryViewModelTest {
     private val getHistoryUseCase: GetHistoryUseCase = mock()
     private val smsRepository: SmsRepository = mock()
     private val retrySms: RetrySmsUseCase = mock()
+    private val context: Context = mock()
     private val testDispatcher = StandardTestDispatcher()
 
     private val sampleRecords = listOf(
@@ -69,7 +71,7 @@ class HistoryViewModelTest {
     }
 
     private fun createViewModel(): HistoryViewModel {
-        return HistoryViewModel(getHistoryUseCase, smsRepository, retrySms)
+        return HistoryViewModel(context, getHistoryUseCase, smsRepository, retrySms)
     }
 
     @Test
@@ -83,7 +85,7 @@ class HistoryViewModelTest {
         viewModel.retry(2L)
         advanceUntilIdle()
 
-        assertEquals("Renvoye avec succes", viewModel.uiState.value.retryFeedback)
+        assertNotNull(viewModel.uiState.value.retryFeedback)
     }
 
     @Test

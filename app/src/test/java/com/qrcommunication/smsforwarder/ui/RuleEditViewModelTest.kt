@@ -5,6 +5,7 @@ import com.qrcommunication.smsforwarder.data.local.entity.DestinationType
 import com.qrcommunication.smsforwarder.data.local.entity.ForwardingRule
 import com.qrcommunication.smsforwarder.data.repository.ForwardingRuleRepository
 import com.qrcommunication.smsforwarder.domain.usecase.MatchForwardingRuleUseCase
+import android.content.Context
 import com.qrcommunication.smsforwarder.ui.rules.RuleEditViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -31,6 +32,7 @@ class RuleEditViewModelTest {
     private val testDispatcher = StandardTestDispatcher()
     private val repository: ForwardingRuleRepository = mock()
     private val matchRule: MatchForwardingRuleUseCase = mock()
+    private val context: Context = mock()
 
     @Before
     fun setUp() {
@@ -44,6 +46,7 @@ class RuleEditViewModelTest {
 
     private fun createViewModel(ruleId: Long = 0L) = RuleEditViewModel(
         savedState = SavedStateHandle(mapOf("ruleId" to ruleId)),
+        context = context,
         repository = repository,
         matchRule = matchRule,
     )
