@@ -1119,12 +1119,30 @@
             function fixSlider() {
                 var slider = document.getElementById('phone-slider');
                 if (!slider) return;
-                slider.style.cssText += ';display:flex !important;flex-direction:row !important;flex-wrap:nowrap !important;';
-                slider.querySelectorAll('img').forEach(function(img) {
-                    img.style.cssText += ';flex:0 0 100% !important;width:100% !important;height:100% !important;max-width:none !important;max-height:none !important;object-fit:cover !important;display:block !important;';
+                // Ensure slider fills phone-screen and is flex row
+                slider.style.position = 'absolute';
+                slider.style.top = '0';
+                slider.style.left = '0';
+                slider.style.right = '0';
+                slider.style.bottom = '0';
+                slider.style.display = 'flex';
+                slider.style.flexDirection = 'row';
+                slider.style.flexWrap = 'nowrap';
+                slider.style.overflow = 'hidden';
+                // Force each image to exact slider dimensions
+                var imgs = slider.querySelectorAll('img');
+                var parent = slider.parentElement;
+                var parentH = parent ? parent.clientHeight : 536;
+                imgs.forEach(function(img) {
+                    img.style.flex = '0 0 100%';
+                    img.style.width = '100%';
+                    img.style.height = parentH + 'px';
+                    img.style.maxWidth = 'none';
+                    img.style.maxHeight = 'none';
+                    img.style.objectFit = 'cover';
+                    img.style.display = 'block';
                 });
             }
-            // Run on DOMContentLoaded and after a delay to catch Tailwind's async injection
             if (document.readyState !== 'loading') {
                 fixSlider();
             } else {
