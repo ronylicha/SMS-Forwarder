@@ -1,5 +1,6 @@
 package com.qrcommunication.smsforwarder.service
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.telephony.SubscriptionManager
@@ -34,6 +35,7 @@ class LoopProtection @Inject constructor(
      * qui requiert READ_PHONE_NUMBERS. Sur API < 33, fallback sur TelephonyManager.line1Number
      * (deprecated mais seul moyen disponible).
      */
+    @SuppressLint("MissingPermission")
     private fun getLocalPhoneNumbers(): List<String> {
         val numbers = mutableListOf<String>()
         try {

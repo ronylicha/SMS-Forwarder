@@ -175,14 +175,15 @@ fun RuleEditScreen(
                 enabled = !uiState.isSaving,
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Text(if (uiState.isSaving) "Enregistrement..." else stringResource(R.string.rule_edit_save))
+                Text(if (uiState.isSaving) stringResource(R.string.rule_edit_saving) else stringResource(R.string.rule_edit_save))
             }
         }
     }
 }
 
+@Composable
 private fun DestinationType.toLabel(): String = when (this) {
-    DestinationType.SMS -> "SMS"
+    DestinationType.SMS -> stringResource(R.string.rule_edit_sms_type_label)
     DestinationType.WEBHOOK -> stringResource(R.string.rule_edit_webhook_type_label)
 }
 

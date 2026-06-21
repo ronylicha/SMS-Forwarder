@@ -412,8 +412,6 @@
     <string name="onboarding_feature_rules">Regles de routage par expediteur ou mot-cle</string>
     <string name="notif_empty_desc">Les erreurs de regles, problemes de destinations et alertes apparaitront ici.</string>
 
-    <string name="history_filter_all">Tous</string>
-    <string name="history_filter_filtered">Filtres</string>
     <string name="history_all_destinations">Toutes destinations</string>
     <string name="main_unread_count">%d non lues</string>
     <string name="main_no_new_events">Aucun nouvel evenement</string>
@@ -431,8 +429,6 @@
     <string name="filter_none_desc_short">Tous les SMS sont transferes sans filtrage.</string>
     <string name="main_transfer_active_short">Transfert actif</string>
     <string name="main_transfer_inactive_short">Transfert inactif</string>
-    <string name="onboarding_finish">Terminer</string>
-    <string name="onboarding_next">Suivant</string>
     <string name="onboarding_feature_multi_dest">Destinations multiples : SMS, webhook, email</string>
     <string name="onboarding_feature_history">Historique complet et retry manuel</string>
     <string name="onboarding_perm_receive_sms_title">Reception SMS</string>
@@ -453,4 +449,6 @@
     <string name="filter_whitelist_desc">Seuls les SMS correspondant aux regles sont transferes.</string>
     <string name="filter_blacklist_desc">Les SMS correspondant aux regles sont bloques.</string>
     <string name="main_not_configured">Non configure</string>
+    <string name="rule_edit_sms_type_label">SMS</string>
+    <string name="rule_edit_saving">Enregistrement...</string>
 </resources>

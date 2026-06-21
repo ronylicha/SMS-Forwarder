@@ -391,8 +391,6 @@
     <string name="onboarding_feature_rules">Routing rules by sender or keyword</string>
     <string name="notif_empty_desc">Rule errors, destination issues and alerts will appear here.</string>
 
-    <string name="history_filter_all">All</string>
-    <string name="history_filter_filtered">Filtered</string>
     <string name="history_all_destinations">All destinations</string>
     <string name="main_unread_count">%d unread</string>
     <string name="main_no_new_events">No new events</string>
@@ -410,8 +408,6 @@
     <string name="filter_none_desc_short">All SMS forwarded without filtering</string>
     <string name="main_transfer_active_short">Forwarding active</string>
     <string name="main_transfer_inactive_short">Forwarding inactive</string>
-    <string name="onboarding_finish">Finish</string>
-    <string name="onboarding_next">Next</string>
     <string name="onboarding_feature_multi_dest">Multiple destinations: SMS, webhook, email</string>
     <string name="onboarding_feature_history">Full history and manual retry</string>
     <string name="onboarding_perm_receive_sms_title">SMS Reception</string>
@@ -432,4 +428,6 @@
     <string name="filter_whitelist_desc">Only SMS matching rules are forwarded.</string>
     <string name="filter_blacklist_desc">SMS matching rules are blocked.</string>
     <string name="main_not_configured">Not configured</string>
+    <string name="rule_edit_sms_type_label">SMS</string>
+    <string name="rule_edit_saving">Saving...</string>
 </resources>
