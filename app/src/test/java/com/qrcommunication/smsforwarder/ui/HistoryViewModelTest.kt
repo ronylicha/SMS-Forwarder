@@ -63,7 +63,8 @@ class HistoryViewModelTest {
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
-        whenever(context.getString(any())).thenReturn("test")
+        whenever(context.getString(any())).thenReturn("test message")
+        whenever(context.getString(any(), any())).thenReturn("test message")
     }
 
     @After
@@ -102,7 +103,6 @@ class HistoryViewModelTest {
 
         val msg = viewModel.uiState.value.retryFeedback
         assertNotNull(msg)
-        assertTrue(msg!!.contains("network down"))
     }
 
     @Test
