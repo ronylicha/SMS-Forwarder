@@ -1048,7 +1048,8 @@
 
             function goTo(index) {
                 current = index;
-                slider.style.transform = 'translateX(-' + (current * 100) + '%)';
+                var screenWidth = slider.parentElement.clientWidth;
+                slider.style.transform = 'translateX(-' + (current * screenWidth) + 'px)';
                 dots.forEach(function(d, i) {
                     d.classList.toggle('active', i === current);
                 });
@@ -1119,6 +1120,9 @@
             function fixSlider() {
                 var slider = document.getElementById('phone-slider');
                 if (!slider) return;
+                var parent = slider.parentElement;
+                var w = parent ? parent.clientWidth : 250;
+                var h = parent && parent.clientHeight > 0 ? parent.clientHeight : 536;
                 slider.style.position = 'absolute';
                 slider.style.top = '0';
                 slider.style.left = '0';
@@ -1128,12 +1132,9 @@
                 slider.style.flexDirection = 'row';
                 slider.style.flexWrap = 'nowrap';
                 slider.style.overflow = 'hidden';
-                var h = 536;
-                var parent = slider.parentElement;
-                if (parent && parent.clientHeight > 0) h = parent.clientHeight;
                 slider.querySelectorAll('img').forEach(function(img) {
-                    img.style.flex = '0 0 100%';
-                    img.style.width = '256px';
+                    img.style.flex = '0 0 ' + w + 'px';
+                    img.style.width = w + 'px';
                     img.style.height = h + 'px';
                     img.style.maxWidth = 'none';
                     img.style.maxHeight = 'none';
