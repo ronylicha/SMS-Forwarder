@@ -1,5 +1,7 @@
 # Guide utilisateur — SMS Forwarder
 
+🇫🇷 Français | 🇬🇧 [English](USER_GUIDE_EN.md)
+
 ## Table des matieres
 
 1. [Qu'est-ce que SMS Forwarder ?](#1-quest-ce-que-sms-forwarder-)

@@ -1,5 +1,7 @@
 # Politique de confidentialite — SMS Forwarder
 
+🇫🇷 Français | 🇬🇧 [English](PRIVACY_EN.md)
+
 *Derniere mise a jour : 4 mars 2026*
 
 ## Introduction

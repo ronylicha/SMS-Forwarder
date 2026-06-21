@@ -1,5 +1,7 @@
 # Base de données — SMS Forwarder
 
+🇫🇷 Français | 🇬🇧 [English](DATABASE_EN.md)
+
 ## Table des matières
 
 - [Vue d'ensemble](#vue-densemble)

@@ -1,5 +1,7 @@
 # FAQ — SMS Forwarder
 
+🇫🇷 Français | 🇬🇧 [English](FAQ_EN.md)
+
 Questions frequentes sur l'utilisation de SMS Forwarder.
 
 ---

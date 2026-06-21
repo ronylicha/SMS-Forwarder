@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>SMS Forwarder — Automatic SMS, RCS and notification forwarding</title>
+    <meta name="description" content="Free Android app for automatic forwarding of SMS, RCS and app notifications. Configurable rules, webhook, real-time dashboard. 100% local.">
+    <meta property="og:title" content="SMS Forwarder v1.3.1">
+    <meta property="og:description" content="Forward your SMS, RCS and app notifications automatically. Rules, webhook, real-time dashboard.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://ronylicha.github.io/SMS-Forwarder/en/">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'display': ['Space Grotesk', 'sans-serif'],
+                        'body': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'surface': 'rgba(255,255,255,0.05)',
+                        'surface-hover': 'rgba(255,255,255,0.08)',
+                        'border-glass': 'rgba(255,255,255,0.1)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Space Grotesk', sans-serif'; }
+
+        /* Safe area for phones with nav bar / gesture bar */
+        body {
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+        }
+        nav#navbar {
+            padding-top: env(safe-area-inset-top, 0px);
+            padding-left: env(safe-area-inset-left, 0px);
+            padding-right: env(safe-area-inset-right, 0px);
+        }
+        footer {
+            padding-bottom: calc(3rem + env(safe-area-inset-bottom, 0px));
+        }
+        section#download .relative > .max-w-3xl {
+            padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px));
+        }
+
+        .glass {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+        }
+        .glass:hover {
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(255,255,255,0.15);
+        }
+
+        .glass-static {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+        }
+
+        .navbar-scrolled {
+            background: rgba(15,23,42,0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6, #8B5CF6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .glow-emerald {
+            box-shadow: 0 0 30px rgba(16,185,129,0.3), 0 0 60px rgba(16,185,129,0.1);
+        }
+        .glow-emerald:hover {
+            box-shadow: 0 0 40px rgba(16,185,129,0.4), 0 0 80px rgba(16,185,129,0.15);
+        }
+
+        .glow-card {
+            transition: box-shadow 200ms ease, background 200ms ease, border-color 200ms ease;
+        }
+        .glow-card:hover {
+            box-shadow: 0 0 30px rgba(59,130,246,0.1), 0 0 60px rgba(59,130,246,0.05);
+        }
+
+        .step-connector {
+            position: relative;
+        }
+        .step-connector::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: -2rem;
+            width: 2rem;
+            height: 2px;
+            background: linear-gradient(90deg, #3B82F6, #8B5CF6);
+        }
+
+        .phone-mockup {
+            width: 280px;
+            height: 560px;
+            border-radius: 40px;
+            border: 3px solid rgba(255,255,255,0.15);
+            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+        .phone-notch {
+            width: 100px;
+            height: 24px;
+            background: #0F172A;
+            border-radius: 0 0 16px 16px;
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+        }
+        .phone-screen {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            right: 12px;
+            bottom: 12px;
+            border-radius: 28px;
+            background: linear-gradient(180deg, #1E293B 0%, #0F172A 100%);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 300ms ease, padding 300ms ease;
+        }
+        .faq-answer.open {
+            max-height: 300px;
+            padding-bottom: 1.25rem;
+        }
+        .faq-chevron {
+            transition: transform 200ms ease;
+        }
+        .faq-chevron.open {
+            transform: rotate(180deg);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            .scroll-smooth { scroll-behavior: auto; }
+        }
+
+        @media (max-width: 1023px) {
+            .step-connector::after { display: none; }
+        }
+
+        .history-item {
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            padding: 8px 10px;
+            margin-bottom: 6px;
+        }
+
+        /* Screenshot slider in phone mockup */
+        .phone-slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: row;
+            transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .phone-slider img {
+            flex: 0 0 100%;
+            min-width: 100%;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top center;
+        }
+        .slider-dots {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            margin-top: 16px;
+        }
+        .slider-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            transition: background 200ms ease, transform 200ms ease;
+        }
+        .slider-dot.active {
+            background: #3B82F6;
+            transform: scale(1.3);
+        }
+        .slider-dot:hover {
+            background: rgba(255,255,255,0.4);
+        }
+        .slider-dot.active:hover {
+            background: #3B82F6;
+        }
+
+        /* Play Store badge */
+        .play-store-btn {
+            background: #000;
+            border: 1.5px solid rgba(255,255,255,0.2);
+            transition: border-color 200ms ease, opacity 200ms ease;
+        }
+        .play-store-btn:hover {
+            border-color: rgba(255,255,255,0.4);
+            opacity: 0.9;
+        }
+
+        /* Badge "New" */
+        .badge-new {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(16,185,129,0.15);
+            color: #34D399;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-50 font-body antialiased">
+
+    <!-- ======================== NAVBAR ======================== -->
+    <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 sm:h-20">
+                <!-- Logo -->
+                <a href="#" class="flex items-center gap-2.5 cursor-pointer">
+                    <svg width="36" height="36" viewBox="0 0 108 108" fill="none" xmlns="http://www.w3.org/2000/svg" class="shrink-0">
+                        <rect width="108" height="108" rx="24" fill="#1565C0"/>
+                        <rect x="2" y="2" width="104" height="104" rx="22" stroke="rgba(255,255,255,0.15)" stroke-width="2" fill="none"/>
+                        <path d="M30 38C30 35.79 31.79 34 34 34H74C76.21 34 78 35.79 78 38V68C78 70.21 76.21 72 74 72H34C31.79 72 30 70.21 30 68V38Z" fill="rgba(255,255,255,0.15)" stroke="white" stroke-width="2.5" stroke-linejoin="round"/>
+                        <path d="M30 38L54 56L78 38" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M68 58L80 53L68 48" fill="none" stroke="#4FC3F7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        <line x1="56" y1="53" x2="78" y2="53" stroke="#4FC3F7" stroke-width="3" stroke-linecap="round"/>
+                    </svg>
+                    <span class="font-display font-bold text-lg sm:text-xl text-slate-50">SMS Forwarder</span>
+                </a>
+
+                <!-- Desktop nav links -->
+                <div class="hidden md:flex items-center gap-8">
+                    <a href="#features" class="text-slate-400 hover:text-slate-50 transition-colors duration-200 text-sm font-medium cursor-pointer">Features</a>
+                    <a href="#rules" class="text-slate-400 hover:text-slate-50 transition-colors duration-200 text-sm font-medium cursor-pointer">Rules &amp; Webhook</a>
+                    <a href="#how-it-works" class="text-slate-400 hover:text-slate-50 transition-colors duration-200 text-sm font-medium cursor-pointer">How it works</a>
+                    <a href="#download" class="text-slate-400 hover:text-slate-50 transition-colors duration-200 text-sm font-medium cursor-pointer">Download</a>
+                    <a href="#faq" class="text-slate-400 hover:text-slate-50 transition-colors duration-200 text-sm font-medium cursor-pointer">FAQ</a>
+                </div>
+
+                <!-- Language selector -->
+                <div class="hidden md:flex items-center gap-1 text-sm">
+                    <a href="../index.html" class="text-slate-400 hover:text-slate-50">FR</a>
+                    <span class="text-slate-600">/</span>
+                    <a href="index.html" class="text-slate-50 font-semibold">EN</a>
+                </div>
+
+                <!-- CTA Button -->
+                <a href="https://github.com/ronylicha/SMS-Forwarder/releases/download/v1.3.1/SmsForwarder-v1.3.1-release.apk"
+                   class="hidden sm:inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-white font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors duration-200 cursor-pointer">
+                    <i data-lucide="download" class="w-4 h-4"></i>
+                    Download
+                </a>
+
+                <!-- Mobile menu button -->
+                <button id="mobile-menu-btn" class="md:hidden p-2 text-slate-400 hover:text-slate-50 cursor-pointer" aria-label="Menu">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <!-- Mobile menu -->
+            <div id="mobile-menu" class="hidden md:hidden pb-4">
+                <div class="flex flex-col gap-3 glass-static p-4 mt-2">
+                    <a href="#features" class="text-slate-400 hover:text-slate-50 transition-colors duration-200 text-sm font-medium cursor-pointer py-1">Features</a>
+                    <a href="#rules" class="text-slate-400 hover:text-slate-50 transition-colors duration-200 text-sm font-medium cursor-pointer py-1">Rules &amp; Webhook</a>
+                    <a href="#how-it-works" class="text-slate-400 hover:text-slate-50 transition-colors duration-200 text-sm font-medium cursor-pointer py-1">How it works</a>
+                    <a href="#download" class="text-slate-400 hover:text-slate-50 transition-colors duration-200 text-sm font-medium cursor-pointer py-1">Download</a>
+                    <a href="#faq" class="text-slate-400 hover:text-slate-50 transition-colors duration-200 text-sm font-medium cursor-pointer py-1">FAQ</a>
+                    <!-- Language selector (mobile) -->
+                    <div class="flex items-center gap-1 text-sm py-1">
+                        <a href="../index.html" class="text-slate-400 hover:text-slate-50">FR</a>
+                        <span class="text-slate-600">/</span>
+                        <a href="index.html" class="text-slate-50 font-semibold">EN</a>
+                    </div>
+                    <a href="https://github.com/ronylicha/SMS-Forwarder/releases/download/v1.3.1/SmsForwarder-v1.3.1-release.apk"
+                       class="inline-flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-white font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors duration-200 cursor-pointer mt-2">
+                        <i data-lucide="download" class="w-4 h-4"></i>
+                        Download
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ======================== HERO ======================== -->
+    <section class="relative min-h-screen flex items-center pt-20 overflow-hidden">
+        <!-- Background gradient -->
+        <div class="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800"></div>
+        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-violet-500/10 rounded-full blur-3xl"></div>
+
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
+            <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+                <!-- Left content -->
+                <div class="flex-1 text-center lg:text-left">
+                    <!-- Version badge -->
+                    <div class="inline-flex items-center gap-2 glass-static px-4 py-2 mb-6">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <span class="text-slate-300 text-sm font-medium">v1.3.1 — Dashboard, rules &amp; webhook</span>
+                    </div>
+
+                    <h1 class="font-display font-bold text-4xl sm:text-5xl lg:text-6xl leading-tight mb-6">
+                        <span class="gradient-text">Forward your SMS, RCS</span>
+                        <br>
+                        <span class="text-slate-50">and app notifications</span>
+                    </h1>
+                    <p class="text-slate-400 text-lg sm:text-xl max-w-xl mx-auto lg:mx-0 mb-8 leading-relaxed">
+                        An Android app that intercepts every message and forwards it to the number or webhook of your choice. Configurable rules, real-time dashboard, 100% local.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                        <!-- Play Store -->
+                        <a id="play-store-hero" href="https://play.google.com/store/apps/details?id=com.qrcommunication.smsforwarder" target="_blank" rel="noopener noreferrer"
+                           class="play-store-btn inline-flex items-center justify-center gap-3 text-white font-semibold text-lg px-8 py-4 rounded-2xl cursor-pointer">
+                            <svg viewBox="0 0 24 24" class="w-6 h-6" fill="currentColor"><path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.199l2.302 2.302c.486.282.8.8.8 1.39s-.314 1.108-.8 1.39l-2.302 1.302-2.532-2.532 2.532-2.852zM5.864 2.658L16.8 8.99l-2.302 2.302-8.635-8.635z"/></svg>
+                            Google Play
+                        </a>
+                        <!-- APK -->
+                        <a href="https://github.com/ronylicha/SMS-Forwarder/releases/download/v1.3.1/SmsForwarder-v1.3.1-release.apk"
+                           class="inline-flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-white font-semibold text-lg px-8 py-4 rounded-2xl transition-all duration-200 glow-emerald cursor-pointer">
+                            <i data-lucide="download" class="w-5 h-5"></i>
+                            Download APK
+                        </a>
+                    </div>
+                    <div class="flex justify-center lg:justify-start mt-3">
+                        <a href="https://github.com/ronylicha/SMS-Forwarder"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="inline-flex items-center gap-2 text-slate-400 hover:text-slate-200 text-sm transition-colors duration-200 cursor-pointer">
+                            <i data-lucide="github" class="w-4 h-4"></i>
+                            Source code on GitHub
+                        </a>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="flex flex-wrap justify-center lg:justify-start gap-6 sm:gap-8 mt-10 pt-10 border-t border-slate-800">
+                        <div class="text-center">
+                            <div class="font-display font-bold text-2xl text-slate-50">6.8 MB</div>
+                            <div class="text-slate-500 text-sm mt-1">APK size</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="font-display font-bold text-2xl text-slate-50">Android 8.0+</div>
+                            <div class="text-slate-500 text-sm mt-1">Compatibility</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="font-display font-bold text-2xl text-slate-50">185 Tests</div>
+                            <div class="text-slate-500 text-sm mt-1">Coverage</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="font-display font-bold text-2xl text-slate-50">AGPL-3.0</div>
+                            <div class="text-slate-500 text-sm mt-1">License</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Phone mockup with screenshot slider -->
+                <div class="flex-shrink-0">
+                    <div class="phone-mockup">
+                        <div class="phone-notch"></div>
+                        <div class="phone-screen" style="display:block;">
+                            <div id="phone-slider" class="phone-slider">
+                                <img src="assets/screenshots/1-dashboard-active.jpg" alt="Dashboard - Active forwarding" width="256" height="512" loading="eager">
+                                <img src="assets/screenshots/2-history.jpg" alt="History of forwarded SMS" width="256" height="512" loading="lazy">
+                                <img src="assets/screenshots/3-settings.jpg" alt="Settings and filtering" width="256" height="512" loading="lazy">
+                                <img src="assets/screenshots/4-filters.jpg" alt="Filter management" width="256" height="512" loading="lazy">
+                                <img src="assets/screenshots/5-stats.jpg" alt="Forwarding statistics" width="256" height="512" loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Slider dots -->
+                    <div class="slider-dots" id="slider-dots">
+                        <button class="slider-dot active" data-slide="0" aria-label="Screenshot 1"></button>
+                        <button class="slider-dot" data-slide="1" aria-label="Screenshot 2"></button>
+                        <button class="slider-dot" data-slide="2" aria-label="Screenshot 3"></button>
+                        <button class="slider-dot" data-slide="3" aria-label="Screenshot 4"></button>
+                        <button class="slider-dot" data-slide="4" aria-label="Screenshot 5"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================== FEATURES ======================== -->
+    <section id="features" class="relative py-20 sm:py-28">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-14">
+                <h2 class="font-display font-bold text-3xl sm:text-4xl text-slate-50 mb-4">Everything you need</h2>
+                <p class="text-slate-400 text-lg max-w-2xl mx-auto">A complete message-forwarding app, designed to be reliable, configurable and respectful of your privacy.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Feature 1 -->
+                <div class="glass glow-card p-6 sm:p-8">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center">
+                            <i data-lucide="layout-dashboard" class="w-6 h-6 text-blue-500"></i>
+                        </div>
+                        <span class="badge-new">New</span>
+                    </div>
+                    <h3 class="font-display font-semibold text-xl text-slate-50 mb-2">Real-time dashboard</h3>
+                    <p class="text-slate-400 leading-relaxed">24h stats (sent / failed), overall success rate, active rules and unread notifications badge. Everything updates live via Flow.</p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="glass glow-card p-6 sm:p-8">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-12 h-12 rounded-xl bg-violet-500/10 flex items-center justify-center">
+                            <i data-lucide="git-branch" class="w-6 h-6 text-violet-500"></i>
+                        </div>
+                        <span class="badge-new">New</span>
+                    </div>
+                    <h3 class="font-display font-semibold text-xl text-slate-50 mb-2">Forwarding rules</h3>
+                    <p class="text-slate-400 leading-relaxed">Create rules with sender criteria (regex) + keyword, per-rule destination (SMS or webhook), priority and activation. Interactive test with a sample SMS.</p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="glass glow-card p-6 sm:p-8">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center">
+                            <i data-lucide="webhook" class="w-6 h-6 text-emerald-500"></i>
+                        </div>
+                        <span class="badge-new">New</span>
+                    </div>
+                    <h3 class="font-display font-semibold text-xl text-slate-50 mb-2">HTTP POST webhook</h3>
+                    <p class="text-slate-400 leading-relaxed">Send each message as JSON to any endpoint <code class="text-emerald-400 text-sm bg-emerald-500/10 px-1.5 py-0.5 rounded">{ sender, content, receivedAt }</code>. Zero external dependencies.</p>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="glass glow-card p-6 sm:p-8">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-12 h-12 rounded-xl bg-orange-500/10 flex items-center justify-center">
+                            <i data-lucide="smartphone" class="w-6 h-6 text-orange-500"></i>
+                        </div>
+                        <span class="badge-new">New</span>
+                    </div>
+                    <h3 class="font-display font-semibold text-xl text-slate-50 mb-2">Third-party app monitoring</h3>
+                    <p class="text-slate-400 leading-relaxed">Forward notifications from WhatsApp, Telegram, Allo, Ringover, Onoff... as SMS to your number or via webhook.</p>
+                </div>
+
+                <!-- Feature 5 -->
+                <div class="glass glow-card p-6 sm:p-8">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center">
+                            <i data-lucide="message-square" class="w-6 h-6 text-blue-500"></i>
+                        </div>
+                    </div>
+                    <h3 class="font-display font-semibold text-xl text-slate-50 mb-2">SMS + RCS forwarding</h3>
+                    <p class="text-slate-400 leading-relaxed">Triple capture via BroadcastReceiver, ContentObserver and NotificationListener so you never miss a message, including RCS.</p>
+                </div>
+
+                <!-- Feature 6 -->
+                <div class="glass glow-card p-6 sm:p-8">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-12 h-12 rounded-xl bg-violet-500/10 flex items-center justify-center">
+                            <i data-lucide="refresh-cw" class="w-6 h-6 text-violet-500"></i>
+                        </div>
+                        <span class="badge-new">New</span>
+                    </div>
+                    <h3 class="font-display font-semibold text-xl text-slate-50 mb-2">Configurable retry</h3>
+                    <p class="text-slate-400 leading-relaxed">Max attempts (1-10), initial delay (30s / 1min / 5min / 15min), backoff multiplier (x1.5 / x2 / x3). Every message eventually gets through.</p>
+                </div>
+
+                <!-- Feature 7 -->
+                <div class="glass glow-card p-6 sm:p-8">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center">
+                            <i data-lucide="bell-ring" class="w-6 h-6 text-blue-500"></i>
+                        </div>
+                        <span class="badge-new">New</span>
+                    </div>
+                    <h3 class="font-display font-semibold text-xl text-slate-50 mb-2">Notification center</h3>
+                    <p class="text-slate-400 leading-relaxed">Alerts persisted in database: rule errors, unreachable destination, battery warnings. Mark as read individually or all at once.</p>
+                </div>
+
+                <!-- Feature 8 -->
+                <div class="glass glow-card p-6 sm:p-8">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center">
+                            <i data-lucide="activity" class="w-6 h-6 text-blue-500"></i>
+                        </div>
+                        <span class="badge-new">New</span>
+                    </div>
+                    <h3 class="font-display font-semibold text-xl text-slate-50 mb-2">Diagnostics screen</h3>
+                    <p class="text-slate-400 leading-relaxed">Audit of permissions, battery optimization, notification access, network connectivity. Each check provides a deep-link to system settings.</p>
+                </div>
+
+                <!-- Feature 9 -->
+                <div class="glass glow-card p-6 sm:p-8">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center">
+                            <i data-lucide="shield-check" class="w-6 h-6 text-blue-500"></i>
+                        </div>
+                    </div>
+                    <h3 class="font-display font-semibold text-xl text-slate-50 mb-2">100% local &amp; open source</h3>
+                    <p class="text-slate-400 leading-relaxed">No data sent to any server, zero analytics, zero tracking. Source code open under AGPL-3.0, verifiable on GitHub.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================== RULES & WEBHOOK SHOWCASE ======================== -->
+    <section id="rules" class="relative py-20 sm:py-28">
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-slate-800/30 to-transparent"></div>
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-14">
+                <h2 class="font-display font-bold text-3xl sm:text-4xl text-slate-50 mb-4">Forwarding rules &amp; Webhook</h2>
+                <p class="text-slate-400 text-lg max-w-2xl mx-auto">A powerful routing system: each message is analyzed, matched against your rules, then sent to the right destination.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Rules -->
+                <div class="glass-static p-8">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 rounded-lg bg-violet-500/10 flex items-center justify-center">
+                            <i data-lucide="git-branch" class="w-5 h-5 text-violet-500"></i>
+                        </div>
+                        <h3 class="font-display font-semibold text-xl text-slate-50">Configurable rules (CRUD)</h3>
+                    </div>
+                    <ul class="space-y-3">
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5"></i>
+                            <span class="text-slate-400"><strong class="text-slate-200">Sender in regex</strong> — filter by number, pattern or prefix</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5"></i>
+                            <span class="text-slate-400"><strong class="text-slate-200">Keyword</strong> — additional condition on the content</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5"></i>
+                            <span class="text-slate-400"><strong class="text-slate-200">Per-rule destination</strong> — SMS or webhook, independent from the global destination</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5"></i>
+                            <span class="text-slate-400"><strong class="text-slate-200">Priority &amp; activation</strong> — order your rules, enable / disable without deleting</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5"></i>
+                            <span class="text-slate-400"><strong class="text-slate-200">Interactive test</strong> — validate a rule with a sample SMS before activating it</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Webhook -->
+                <div class="glass-static p-8">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+                            <i data-lucide="webhook" class="w-5 h-5 text-emerald-500"></i>
+                        </div>
+                        <h3 class="font-display font-semibold text-xl text-slate-50">JSON HTTP POST webhook</h3>
+                    </div>
+                    <p class="text-slate-400 leading-relaxed mb-4">
+                        Plug SMS Forwarder into your API, your Slack bot, an n8n workflow, or any HTTP service. The payload is sent as <code class="text-emerald-400 text-sm bg-emerald-500/10 px-1.5 py-0.5 rounded">POST application/json</code> with no external dependency (native HttpURLConnection).
+                    </p>
+                    <div class="bg-slate-950/80 rounded-xl border border-slate-800 p-4 font-mono text-xs leading-relaxed overflow-x-auto">
+                        <span class="text-slate-500">// POST https://your-endpoint.com/sms</span><br>
+                        <span class="text-emerald-400">{</span><br>
+                        &nbsp;&nbsp;<span class="text-blue-400">"sender"</span><span class="text-slate-500">:</span> <span class="text-amber-300">"+336****5678"</span><span class="text-slate-500">,</span><br>
+                        &nbsp;&nbsp;<span class="text-blue-400">"content"</span><span class="text-slate-500">:</span> <span class="text-amber-300">"Your code: 8472"</span><span class="text-slate-500">,</span><br>
+                        &nbsp;&nbsp;<span class="text-blue-400">"receivedAt"</span><span class="text-slate-500">:</span> <span class="text-amber-300">"2026-05-01T19:08:32Z"</span><span class="text-slate-500">,</span><br>
+                        &nbsp;&nbsp;<span class="text-blue-400">"sourceLabel"</span><span class="text-slate-500">:</span> <span class="text-amber-300">"WhatsApp"</span><span class="text-slate-500">,</span><br>
+                        &nbsp;&nbsp;<span class="text-blue-400">"originalDestination"</span><span class="text-slate-500">:</span> <span class="text-amber-300">"+336****0000"</span><br>
+                        <span class="text-emerald-400">}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- App monitoring row -->
+            <div class="mt-8 glass-static p-8">
+                <div class="flex flex-col lg:flex-row items-start gap-6">
+                    <div class="flex items-center gap-3 flex-shrink-0">
+                        <div class="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center">
+                            <i data-lucide="smartphone" class="w-5 h-5 text-orange-500"></i>
+                        </div>
+                        <h3 class="font-display font-semibold text-xl text-slate-50">Third-party app monitoring</h3>
+                    </div>
+                    <p class="text-slate-400 leading-relaxed flex-1">
+                        Add a whitelist of applications whose notifications will be intercepted and forwarded as SMS. The <code class="text-orange-400 text-sm bg-orange-500/10 px-1.5 py-0.5 rounded">sourceLabel</code> indicates the originating app in the webhook payload.
+                    </p>
+                    <div class="flex flex-wrap gap-2 flex-shrink-0">
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 text-sm font-medium">WhatsApp</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 text-sm font-medium">Telegram</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 text-sm font-medium">Allo</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 text-sm font-medium">Ringover</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 text-sm font-medium">Onoff</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================== HOW IT WORKS ======================== -->
+    <section id="how-it-works" class="relative py-20 sm:py-28">
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-14">
+                <h2 class="font-display font-bold text-3xl sm:text-4xl text-slate-50 mb-4">How it works</h2>
+                <p class="text-slate-400 text-lg max-w-2xl mx-auto">Three simple steps to start forwarding your messages.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-4">
+                <!-- Step 1 -->
+                <div class="relative lg:step-connector">
+                    <div class="glass-static p-8 text-center h-full">
+                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center mx-auto mb-5">
+                            <span class="font-display font-bold text-xl text-white">1</span>
+                        </div>
+                        <h3 class="font-display font-semibold text-xl text-slate-50 mb-3">Configure</h3>
+                        <p class="text-slate-400 leading-relaxed">A 4-step onboarding: welcome, permissions, destination number and test SMS. Each permission is explained individually.</p>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="relative lg:step-connector">
+                    <div class="glass-static p-8 text-center h-full">
+                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-500 to-violet-600 flex items-center justify-center mx-auto mb-5">
+                            <span class="font-display font-bold text-xl text-white">2</span>
+                        </div>
+                        <h3 class="font-display font-semibold text-xl text-slate-50 mb-3">Receive</h3>
+                        <p class="text-slate-400 leading-relaxed">The app automatically intercepts every SMS, RCS and app notification via triple capture. Rules analyze each message in real time.</p>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="relative">
+                    <div class="glass-static p-8 text-center h-full">
+                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center mx-auto mb-5">
+                            <span class="font-display font-bold text-xl text-white">3</span>
+                        </div>
+                        <h3 class="font-display font-semibold text-xl text-slate-50 mb-3">Forward</h3>
+                        <p class="text-slate-400 leading-relaxed">The message is routed to the right recipient (SMS or webhook) according to your rules. Full tracking in the history with filters and resend.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================== TECHNICAL SPECS ======================== -->
+    <section class="relative py-20 sm:py-28">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-14">
+                <h2 class="font-display font-bold text-3xl sm:text-4xl text-slate-50 mb-4">Technical specs</h2>
+                <p class="text-slate-400 text-lg max-w-2xl mx-auto">Built with the most modern Android technologies for optimal performance.</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Spec 1 -->
+                <div class="glass glow-card p-6 flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-violet-500/10 flex items-center justify-center flex-shrink-0">
+                        <i data-lucide="code-2" class="w-6 h-6 text-violet-500"></i>
+                    </div>
+                    <div>
+                        <div class="text-slate-500 text-sm">Language</div>
+                        <div class="font-display font-semibold text-slate-50">Kotlin 2.0</div>
+                    </div>
+                </div>
+
+                <!-- Spec 2 -->
+                <div class="glass glow-card p-6 flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-violet-500/10 flex items-center justify-center flex-shrink-0">
+                        <i data-lucide="layout" class="w-6 h-6 text-violet-500"></i>
+                    </div>
+                    <div>
+                        <div class="text-slate-500 text-sm">UI Framework</div>
+                        <div class="font-display font-semibold text-slate-50">Jetpack Compose</div>
+                    </div>
+                </div>
+
+                <!-- Spec 3 -->
+                <div class="glass glow-card p-6 flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-violet-500/10 flex items-center justify-center flex-shrink-0">
+                        <i data-lucide="boxes" class="w-6 h-6 text-violet-500"></i>
+                    </div>
+                    <div>
+                        <div class="text-slate-500 text-sm">Architecture</div>
+                        <div class="font-display font-semibold text-slate-50">MVVM + Hilt + Ports/Adapters</div>
+                    </div>
+                </div>
+
+                <!-- Spec 4 -->
+                <div class="glass glow-card p-6 flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-violet-500/10 flex items-center justify-center flex-shrink-0">
+                        <i data-lucide="database" class="w-6 h-6 text-violet-500"></i>
+                    </div>
+                    <div>
+                        <div class="text-slate-500 text-sm">Database</div>
+                        <div class="font-display font-semibold text-slate-50">Room v2 (SQLite)</div>
+                    </div>
+                </div>
+
+                <!-- Spec 5 -->
+                <div class="glass glow-card p-6 flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-violet-500/10 flex items-center justify-center flex-shrink-0">
+                        <i data-lucide="hard-drive" class="w-6 h-6 text-violet-500"></i>
+                    </div>
+                    <div>
+                        <div class="text-slate-500 text-sm">APK size</div>
+                        <div class="font-display font-semibold text-slate-50">6.8 MB</div>
+                    </div>
+                </div>
+
+                <!-- Spec 6 -->
+                <div class="glass glow-card p-6 flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-violet-500/10 flex items-center justify-center flex-shrink-0">
+                        <i data-lucide="test-tubes" class="w-6 h-6 text-violet-500"></i>
+                    </div>
+                    <div>
+                        <div class="text-slate-500 text-sm">Tests</div>
+                        <div class="font-display font-semibold text-slate-50">185 (unit + integration)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================== DOWNLOAD CTA ======================== -->
+    <section id="download" class="relative py-20 sm:py-28">
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-slate-800/30 to-transparent"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-emerald-500/5 rounded-full blur-3xl"></div>
+        <div class="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="font-display font-bold text-3xl sm:text-4xl lg:text-5xl text-slate-50 mb-5">
+                Ready to forward your messages?
+            </h2>
+            <p class="text-slate-400 text-lg sm:text-xl mb-10 max-w-xl mx-auto">
+                Download for free from GitHub Releases or Google Play. Open source, transparent, no account required.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
+                <!-- Play Store -->
+                <a id="play-store-download" href="https://play.google.com/store/apps/details?id=com.qrcommunication.smsforwarder" target="_blank" rel="noopener noreferrer"
+                   class="play-store-btn inline-flex items-center justify-center gap-3 text-white font-semibold text-lg px-10 py-5 rounded-2xl cursor-pointer w-full sm:w-auto">
+                    <svg viewBox="0 0 24 24" class="w-6 h-6" fill="currentColor"><path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.199l2.302 2.302c.486.282.8.8.8 1.39s-.314 1.108-.8 1.39l-2.302 1.302-2.532-2.532 2.532-2.852zM5.864 2.658L16.8 8.99l-2.302 2.302-8.635-8.635z"/></svg>
+                    Available on Google Play
+                </a>
+                <!-- APK -->
+                <a href="https://github.com/ronylicha/SMS-Forwarder/releases/download/v1.3.1/SmsForwarder-v1.3.1-release.apk"
+                   class="inline-flex items-center justify-center gap-3 bg-emerald-500 hover:bg-emerald-400 text-white font-semibold text-lg px-10 py-5 rounded-2xl transition-all duration-200 glow-emerald cursor-pointer w-full sm:w-auto">
+                    <i data-lucide="download" class="w-6 h-6"></i>
+                    Download APK v1.3.1
+                </a>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="https://github.com/ronylicha/SMS-Forwarder"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="inline-flex items-center gap-2 text-slate-400 hover:text-slate-200 transition-colors duration-200 cursor-pointer">
+                    <i data-lucide="github" class="w-5 h-5"></i>
+                    Source code on GitHub
+                </a>
+                <span class="hidden sm:inline text-slate-700">|</span>
+                <a href="https://github.com/ronylicha/SMS-Forwarder/releases"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="inline-flex items-center gap-2 text-slate-400 hover:text-slate-200 transition-colors duration-200 cursor-pointer">
+                    <i data-lucide="tag" class="w-5 h-5"></i>
+                    All releases
+                </a>
+                <span class="hidden sm:inline text-slate-700">|</span>
+                <div class="inline-flex items-center gap-2 glass-static px-4 py-2">
+                    <i data-lucide="scale" class="w-4 h-4 text-slate-400"></i>
+                    <span class="text-slate-400 text-sm">Open Source - AGPL-3.0</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================== FAQ ======================== -->
+    <section id="faq" class="relative py-20 sm:py-28">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-14">
+                <h2 class="font-display font-bold text-3xl sm:text-4xl text-slate-50 mb-4">Frequently asked questions</h2>
+                <p class="text-slate-400 text-lg">Everything you need to know before getting started.</p>
+            </div>
+
+            <div class="space-y-3">
+                <!-- FAQ 1 -->
+                <div class="glass-static overflow-hidden">
+                    <button class="faq-toggle w-full flex items-center justify-between p-5 sm:p-6 text-left cursor-pointer" aria-expanded="false">
+                        <span class="font-display font-semibold text-slate-50 pr-4">Does the app consume a lot of battery?</span>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 faq-chevron flex-shrink-0"></i>
+                    </button>
+                    <div class="faq-answer px-5 sm:px-6">
+                        <p class="text-slate-400 leading-relaxed">No. The app uses BroadcastReceivers and an optimized foreground service. It only consumes battery when a message is received and forwarded. While idle, the impact is negligible. The Diagnostics screen lets you check battery optimization at a glance.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ 2 -->
+                <div class="glass-static overflow-hidden">
+                    <button class="faq-toggle w-full flex items-center justify-between p-5 sm:p-6 text-left cursor-pointer" aria-expanded="false">
+                        <span class="font-display font-semibold text-slate-50 pr-4">Do forwarded SMS cost money?</span>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 faq-chevron flex-shrink-0"></i>
+                    </button>
+                    <div class="faq-answer px-5 sm:px-6">
+                        <p class="text-slate-400 leading-relaxed">Each forwarded SMS is sent as a standard SMS from your phone and is deducted from your plan. Forwarding to an HTTP webhook, on the other hand, is free (uses your data connection). If you have an unlimited SMS plan, forwarding to a domestic number will come at no extra cost.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ 3 -->
+                <div class="glass-static overflow-hidden">
+                    <button class="faq-toggle w-full flex items-center justify-between p-5 sm:p-6 text-left cursor-pointer" aria-expanded="false">
+                        <span class="font-display font-semibold text-slate-50 pr-4">Is my data sent to a server?</span>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 faq-chevron flex-shrink-0"></i>
+                    </button>
+                    <div class="faq-answer px-5 sm:px-6">
+                        <p class="text-slate-400 leading-relaxed">The app runs 100% locally on your phone. There is no analytics, no tracking, no telemetry. If you configure a webhook, only the messages matching that rule are sent to the URL you have defined — you keep full control. The source code is open and verifiable on GitHub.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ 4 -->
+                <div class="glass-static overflow-hidden">
+                    <button class="faq-toggle w-full flex items-center justify-between p-5 sm:p-6 text-left cursor-pointer" aria-expanded="false">
+                        <span class="font-display font-semibold text-slate-50 pr-4">How do forwarding rules work?</span>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 faq-chevron flex-shrink-0"></i>
+                    </button>
+                    <div class="faq-answer px-5 sm:px-6">
+                        <p class="text-slate-400 leading-relaxed">Each incoming message is analyzed by your rules, in priority order. A rule can match on the sender (regex) and/or a keyword in the content. If a rule matches, the message is sent to the destination defined in that rule (SMS or webhook). If no rule matches, the fallback uses the global destination. You can test each rule interactively before activating it.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ 5 -->
+                <div class="glass-static overflow-hidden">
+                    <button class="faq-toggle w-full flex items-center justify-between p-5 sm:p-6 text-left cursor-pointer" aria-expanded="false">
+                        <span class="font-display font-semibold text-slate-50 pr-4">Can it forward WhatsApp, Telegram, etc. notifications?</span>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 faq-chevron flex-shrink-0"></i>
+                    </button>
+                    <div class="faq-answer px-5 sm:px-6">
+                        <p class="text-slate-400 leading-relaxed">Yes. The app intercepts notifications from the apps you add to the whitelist (WhatsApp, Telegram, Allo, Ringover, Onoff...). The notification content is then forwarded as an SMS or via webhook, with a <code class="text-orange-400 text-sm bg-orange-500/10 px-1.5 py-0.5 rounded">sourceLabel</code> indicating the originating app.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ 6 -->
+                <div class="glass-static overflow-hidden">
+                    <button class="faq-toggle w-full flex items-center justify-between p-5 sm:p-6 text-left cursor-pointer" aria-expanded="false">
+                        <span class="font-display font-semibold text-slate-50 pr-4">What happens after a phone reboot?</span>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 faq-chevron flex-shrink-0"></i>
+                    </button>
+                    <div class="faq-answer px-5 sm:px-6">
+                        <p class="text-slate-400 leading-relaxed">The app relaunches automatically thanks to a BootReceiver. Your configuration, rules and activation state are kept in the Room database. Forwarding resumes without any action on your part.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ 7 -->
+                <div class="glass-static overflow-hidden">
+                    <button class="faq-toggle w-full flex items-center justify-between p-5 sm:p-6 text-left cursor-pointer" aria-expanded="false">
+                        <span class="font-display font-semibold text-slate-50 pr-4">How do I avoid a forwarding loop?</span>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 faq-chevron flex-shrink-0"></i>
+                    </button>
+                    <div class="faq-answer px-5 sm:px-6">
+                        <p class="text-slate-400 leading-relaxed">The app automatically detects messages it has sent itself and excludes them from forwarding. In addition, the destination number is automatically added to the blacklist. It is therefore impossible to create an infinite loop.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ 8 -->
+                <div class="glass-static overflow-hidden">
+                    <button class="faq-toggle w-full flex items-center justify-between p-5 sm:p-6 text-left cursor-pointer" aria-expanded="false">
+                        <span class="font-display font-semibold text-slate-50 pr-4">Does the webhook work without an internet connection?</span>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 faq-chevron flex-shrink-0"></i>
+                    </button>
+                    <div class="faq-answer px-5 sm:px-6">
+                        <p class="text-slate-400 leading-relaxed">The webhook requires a data connection. On failure (network unavailable, endpoint unreachable), the app automatically retries according to your configurable retry policy (up to 10 attempts with exponential backoff). You can configure an SMS fallback for critical rules.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================== FOOTER ======================== -->
+    <footer class="relative border-t border-slate-800 py-12 sm:py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+                <!-- Brand -->
+                <div class="sm:col-span-2 lg:col-span-1">
+                    <div class="flex items-center gap-2.5 mb-4">
+                        <svg width="32" height="32" viewBox="0 0 108 108" fill="none" xmlns="http://www.w3.org/2000/svg" class="shrink-0">
+                            <rect width="108" height="108" rx="24" fill="#1565C0"/>
+                            <path d="M30 38C30 35.79 31.79 34 34 34H74C76.21 34 78 35.79 78 38V68C78 70.21 76.21 72 74 72H34C31.79 72 30 70.21 30 68V38Z" fill="rgba(255,255,255,0.15)" stroke="white" stroke-width="2.5" stroke-linejoin="round"/>
+                            <path d="M30 38L54 56L78 38" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M68 58L80 53L68 48" fill="none" stroke="#4FC3F7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                            <line x1="56" y1="53" x2="78" y2="53" stroke="#4FC3F7" stroke-width="3" stroke-linecap="round"/>
+                        </svg>
+                        <span class="font-display font-bold text-lg text-slate-50">SMS Forwarder</span>
+                    </div>
+                    <p class="text-slate-400 text-sm leading-relaxed max-w-xs">Open source Android app for automatic forwarding of SMS, RCS and app notifications. Lightweight, reliable, configurable, respectful of your privacy.</p>
+                </div>
+
+                <!-- Links -->
+                <div>
+                    <h4 class="font-display font-semibold text-slate-50 mb-4">Project</h4>
+                    <ul class="space-y-2">
+                        <li><a href="https://github.com/ronylicha/SMS-Forwarder" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-slate-200 text-sm transition-colors duration-200 cursor-pointer">GitHub</a></li>
+                        <li><a href="https://github.com/ronylicha/SMS-Forwarder/wiki" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-slate-200 text-sm transition-colors duration-200 cursor-pointer">Wiki</a></li>
+                        <li><a href="https://github.com/ronylicha/SMS-Forwarder/releases" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-slate-200 text-sm transition-colors duration-200 cursor-pointer">Releases</a></li>
+                        <li><a href="https://github.com/ronylicha/SMS-Forwarder/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-slate-200 text-sm transition-colors duration-200 cursor-pointer">Changelog</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-display font-semibold text-slate-50 mb-4">Legal</h4>
+                    <ul class="space-y-2">
+                        <li><a href="https://github.com/ronylicha/SMS-Forwarder/blob/main/docs/PRIVACY.md" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-slate-200 text-sm transition-colors duration-200 cursor-pointer">Privacy</a></li>
+                        <li><a href="https://github.com/ronylicha/SMS-Forwarder/blob/main/docs/CONTRIBUTING.md" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-slate-200 text-sm transition-colors duration-200 cursor-pointer">Contributing</a></li>
+                        <li><a href="https://github.com/ronylicha/SMS-Forwarder/blob/main/LICENSE" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-slate-200 text-sm transition-colors duration-200 cursor-pointer">AGPL-3.0 License</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-display font-semibold text-slate-50 mb-4">Developed by</h4>
+                    <a href="https://qrcommunication.com" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 text-sm font-medium transition-colors duration-200 cursor-pointer">QrCommunication</a>
+                    <p class="text-slate-500 text-xs mt-1">qrcommunication.com</p>
+                </div>
+            </div>
+
+            <div class="border-t border-slate-800 mt-10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <p class="text-slate-500 text-sm">&copy; 2026 <a href="https://qrcommunication.com" target="_blank" rel="noopener noreferrer" class="hover:text-slate-400 transition-colors cursor-pointer">QrCommunication</a>. All rights reserved.</p>
+                <p class="text-slate-500 text-sm">AGPL-3.0 License</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ======================== JAVASCRIPT ======================== -->
+    <script>
+        // Initialize Lucide icons
+        document.addEventListener('DOMContentLoaded', function() {
+            lucide.createIcons();
+        });
+
+        // Navbar scroll effect
+        (function() {
+            var navbar = document.getElementById('navbar');
+            var scrollThreshold = 50;
+
+            function updateNavbar() {
+                if (window.scrollY > scrollThreshold) {
+                    navbar.classList.add('navbar-scrolled');
+                } else {
+                    navbar.classList.remove('navbar-scrolled');
+                }
+            }
+
+            window.addEventListener('scroll', updateNavbar, { passive: true });
+            updateNavbar();
+        })();
+
+        // Mobile menu toggle
+        (function() {
+            var btn = document.getElementById('mobile-menu-btn');
+            var menu = document.getElementById('mobile-menu');
+
+            btn.addEventListener('click', function() {
+                menu.classList.toggle('hidden');
+            });
+
+            // Close menu on link click
+            var links = menu.querySelectorAll('a');
+            links.forEach(function(link) {
+                link.addEventListener('click', function() {
+                    menu.classList.add('hidden');
+                });
+            });
+        })();
+
+        // FAQ accordion
+        (function() {
+            var toggles = document.querySelectorAll('.faq-toggle');
+
+            toggles.forEach(function(toggle) {
+                toggle.addEventListener('click', function() {
+                    var answer = this.nextElementSibling;
+                    var chevron = this.querySelector('.faq-chevron');
+                    var isOpen = answer.classList.contains('open');
+
+                    // Close all others
+                    document.querySelectorAll('.faq-answer.open').forEach(function(openAnswer) {
+                        openAnswer.classList.remove('open');
+                    });
+                    document.querySelectorAll('.faq-chevron.open').forEach(function(openChevron) {
+                        openChevron.classList.remove('open');
+                    });
+                    document.querySelectorAll('.faq-toggle').forEach(function(t) {
+                        t.setAttribute('aria-expanded', 'false');
+                    });
+
+                    // Toggle current
+                    if (!isOpen) {
+                        answer.classList.add('open');
+                        chevron.classList.add('open');
+                        this.setAttribute('aria-expanded', 'true');
+                    }
+                });
+            });
+        })();
+
+        // Screenshot slider
+        (function() {
+            var slider = document.getElementById('phone-slider');
+            var dots = document.querySelectorAll('.slider-dot');
+            var current = 0;
+            var total = dots.length;
+            var interval;
+
+            function goTo(index) {
+                current = index;
+                slider.style.transform = 'translateX(-' + (current * 100) + '%)';
+                dots.forEach(function(d, i) {
+                    d.classList.toggle('active', i === current);
+                });
+            }
+
+            function next() {
+                goTo((current + 1) % total);
+            }
+
+            function startAuto() {
+                interval = setInterval(next, 3500);
+            }
+
+            function stopAuto() {
+                clearInterval(interval);
+            }
+
+            dots.forEach(function(dot) {
+                dot.addEventListener('click', function() {
+                    stopAuto();
+                    goTo(parseInt(this.dataset.slide));
+                    startAuto();
+                });
+            });
+
+            // Touch/swipe support
+            var startX = 0;
+            var screen = slider.parentElement;
+            screen.addEventListener('touchstart', function(e) {
+                startX = e.touches[0].clientX;
+                stopAuto();
+            }, { passive: true });
+            screen.addEventListener('touchend', function(e) {
+                var diff = startX - e.changedTouches[0].clientX;
+                if (Math.abs(diff) > 40) {
+                    if (diff > 0 && current < total - 1) goTo(current + 1);
+                    else if (diff < 0 && current > 0) goTo(current - 1);
+                }
+                startAuto();
+            }, { passive: true });
+
+            startAuto();
+        })();
+
+        // Smooth scroll for anchor links
+        (function() {
+            document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+                anchor.addEventListener('click', function(e) {
+                    var targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    var target = document.querySelector(targetId);
+                    if (target) {
+                        e.preventDefault();
+                        var navbarHeight = document.getElementById('navbar').offsetHeight;
+                        var targetPosition = target.getBoundingClientRect().top + window.pageYOffset - navbarHeight;
+                        window.scrollTo({
+                            top: targetPosition,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
