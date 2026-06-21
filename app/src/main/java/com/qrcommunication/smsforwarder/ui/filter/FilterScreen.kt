@@ -47,10 +47,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.qrcommunication.smsforwarder.R
 import com.qrcommunication.smsforwarder.data.local.entity.FilterRule
 import com.qrcommunication.smsforwarder.data.local.entity.FilterType
 import com.qrcommunication.smsforwarder.domain.validator.FilterMode
@@ -66,7 +68,7 @@ fun FilterScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Filtres") },
+                title = { Text(stringResource(R.string.filter_title)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
@@ -124,7 +126,7 @@ fun FilterScreen(
 
                     item {
                         Text(
-                            text = "Regles actives",
+                            text = stringResource(R.string.filter_rules_active),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold
                         )
@@ -155,12 +157,12 @@ fun FilterScreen(
                                             tint = MaterialTheme.colorScheme.onSurfaceVariant
                                         )
                                         Text(
-                                            text = "Aucune regle configuree",
+                                            text = stringResource(R.string.filter_no_rules),
                                             style = MaterialTheme.typography.bodyLarge,
                                             color = MaterialTheme.colorScheme.onSurfaceVariant
                                         )
                                         Text(
-                                            text = "Ajoutez un numero ou un mot-cle ci-dessus",
+                                            text = stringResource(R.string.filter_no_rules_hint),
                                             style = MaterialTheme.typography.bodySmall,
                                             color = MaterialTheme.colorScheme.onSurfaceVariant
                                         )
@@ -209,7 +211,7 @@ private fun FilterModeSection(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
-                text = "Mode de filtrage",
+                text = stringResource(R.string.filter_mode_title_short),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
@@ -281,7 +283,7 @@ private fun AddRuleSection(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Text(
-                    text = "Ajouter une regle",
+                    text = stringResource(R.string.filter_add_rule),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -289,8 +291,8 @@ private fun AddRuleSection(
                 OutlinedTextField(
                     value = newPattern,
                     onValueChange = onPatternChange,
-                    label = { Text("Numero ou mot-cle") },
-                    placeholder = { Text("+33 6 12 34 56 78 ou mot-cle") },
+                    label = { Text(stringResource(R.string.filter_pattern_label)) },
+                    placeholder = { Text(stringResource(R.string.filter_pattern_placeholder)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -328,7 +330,7 @@ private fun AddRuleSection(
                         modifier = Modifier.size(18.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("Ajouter")
+                    Text(stringResource(R.string.filter_add_button))
                 }
             }
         }
@@ -406,7 +408,7 @@ private fun FilterRuleItem(
             IconButton(onClick = onDelete) {
                 Icon(
                     imageVector = Icons.Filled.Delete,
-                    contentDescription = "Supprimer",
+                    contentDescription = stringResource(R.string.action_delete),
                     tint = MaterialTheme.colorScheme.error
                 )
             }

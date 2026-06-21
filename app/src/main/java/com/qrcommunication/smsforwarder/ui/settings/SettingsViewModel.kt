@@ -5,9 +5,11 @@ import android.provider.Settings
 import android.telephony.SubscriptionManager
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.qrcommunication.smsforwarder.R
 import com.qrcommunication.smsforwarder.data.preferences.PreferencesManager
 import com.qrcommunication.smsforwarder.domain.model.RetryPolicy
 import com.qrcommunication.smsforwarder.service.SmsSender
+import com.qrcommunication.smsforwarder.util.LocaleManager
 import com.qrcommunication.smsforwarder.util.PhoneValidator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -33,6 +35,8 @@ data class SettingsUiState(
     val isAppWhitelistEnabled: Boolean = false,
     val appWhitelistCount: Int = 0,
     val retryPolicy: RetryPolicy = RetryPolicy(),
+    val appLanguage: String = "system",
+    val languageChanged: Boolean = false,
 )
 
 @HiltViewModel
@@ -71,6 +75,7 @@ class SettingsViewModel @Inject constructor(
                 isAppWhitelistEnabled = preferencesManager.isAppWhitelistEnabled,
                 appWhitelistCount = preferencesManager.appWhitelistPackages.size,
                 retryPolicy = preferencesManager.retryPolicy,
+                appLanguage = preferencesManager.appLanguage,
             )
         }
     }
@@ -120,6 +125,21 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
+    fun setLanguage(language: String) {
+        LocaleManager.setLanguage(application, language)
+        preferencesManager.appLanguage = language
+        _uiState.update {
+            it.copy(
+                appLanguage = language,
+                languageChanged = true,
+            )
+        }
+    }
+
+    fun clearLanguageChangedFlag() {
+        _uiState.update { it.copy(languageChanged = false) }
+    }
+
     fun sendTestSms() {
         val state = _uiState.value
         if (!state.isNumberValid) return
@@ -129,13 +149,16 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val destination = PhoneValidator.normalize(state.destinationNumber)
-                smsSender.sendSms(destination, "[SMS Forwarder] Ceci est un SMS de test.")
+                val testMsg = application.getString(R.string.settings_test_message)
+                smsSender.sendSms(destination, testMsg)
+                val successMsg = application.getString(R.string.settings_test_success)
                 _uiState.update {
-                    it.copy(isTesting = false, testResult = "SMS de test envoye avec succes")
+                    it.copy(isTesting = false, testResult = successMsg)
                 }
             } catch (e: Exception) {
+                val failMsg = application.getString(R.string.settings_test_failed, e.message ?: "")
                 _uiState.update {
-                    it.copy(isTesting = false, testResult = "Echec de l'envoi : ${e.message}")
+                    it.copy(isTesting = false, testResult = failMsg)
                 }
             }
         }

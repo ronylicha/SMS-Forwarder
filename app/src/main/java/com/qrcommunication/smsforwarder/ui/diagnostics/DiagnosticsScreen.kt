@@ -29,9 +29,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.qrcommunication.smsforwarder.R
 import com.qrcommunication.smsforwarder.ui.components.common.CheckSeverity
 import com.qrcommunication.smsforwarder.ui.components.common.SettingsCard
 import com.qrcommunication.smsforwarder.ui.components.common.StatusItem
@@ -48,7 +50,7 @@ fun DiagnosticsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Diagnostics", fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.settings_diagnostics), fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(

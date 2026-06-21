@@ -2,6 +2,8 @@ package com.qrcommunication.smsforwarder.ui.history
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import android.content.Context
+import com.qrcommunication.smsforwarder.R
 import com.qrcommunication.smsforwarder.data.local.entity.DestinationType
 import com.qrcommunication.smsforwarder.data.local.entity.SmsRecord
 import com.qrcommunication.smsforwarder.data.local.entity.SmsStatus
@@ -10,6 +12,7 @@ import com.qrcommunication.smsforwarder.domain.usecase.GetHistoryUseCase
 import com.qrcommunication.smsforwarder.domain.usecase.RetryResult
 import com.qrcommunication.smsforwarder.domain.usecase.RetrySmsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -33,6 +36,7 @@ data class HistoryUiState(
 
 @HiltViewModel
 class HistoryViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val getHistoryUseCase: GetHistoryUseCase,
     private val smsRepository: SmsRepository,
     private val retrySms: RetrySmsUseCase,
@@ -133,10 +137,10 @@ class HistoryViewModel @Inject constructor(
 
     fun retry(recordId: Long) = viewModelScope.launch {
         val message = when (val result = retrySms(recordId)) {
-            RetryResult.Success -> "Renvoye avec succes"
-            RetryResult.NotFound -> "SMS introuvable"
-            RetryResult.MaxRetriesReached -> "Nombre maximum de tentatives atteint"
-            is RetryResult.Failed -> "Echec : ${result.error}"
+            RetryResult.Success -> context.getString(R.string.retry_success)
+            RetryResult.NotFound -> context.getString(R.string.detail_not_found)
+            RetryResult.MaxRetriesReached -> context.getString(R.string.detail_retry_max_reached)
+            is RetryResult.Failed -> context.getString(R.string.retry_failed_short, result.error)
         }
         _uiState.update { it.copy(retryFeedback = message) }
     }

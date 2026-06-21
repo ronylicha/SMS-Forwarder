@@ -12,7 +12,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import com.qrcommunication.smsforwarder.R
 
 @Composable
 fun PhoneNumberField(
@@ -26,7 +28,7 @@ fun PhoneNumberField(
         value = value,
         onValueChange = onValueChange,
         label = { Text(label) },
-        placeholder = { Text("+33 6 XX XX XX XX") },
+        placeholder = { Text(stringResource(R.string.phone_hint_placeholder)) },
         leadingIcon = {
             Icon(
                 imageVector = Icons.Filled.Phone,
@@ -39,13 +41,13 @@ fun PhoneNumberField(
                 if (isValid) {
                     Icon(
                         imageVector = Icons.Filled.Check,
-                        contentDescription = "Numero valide",
+                        contentDescription = stringResource(R.string.settings_number_valid),
                         tint = Color(0xFF2E7D32)
                     )
                 } else {
                     Icon(
                         imageVector = Icons.Filled.Close,
-                        contentDescription = "Numero invalide",
+                        contentDescription = stringResource(R.string.settings_number_invalid),
                         tint = Color(0xFFD32F2F)
                     )
                 }
@@ -55,7 +57,7 @@ fun PhoneNumberField(
         supportingText = {
             if (value.isNotEmpty() && !isValid) {
                 Text(
-                    text = "Format attendu : +33 6 12 34 56 78",
+                    text = stringResource(R.string.settings_phone_format_hint),
                     color = MaterialTheme.colorScheme.error
                 )
             }

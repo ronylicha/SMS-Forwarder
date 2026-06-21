@@ -45,9 +45,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.qrcommunication.smsforwarder.R
 import com.qrcommunication.smsforwarder.data.local.entity.SmsStatus
 import com.qrcommunication.smsforwarder.ui.components.StatusBadge
 import com.qrcommunication.smsforwarder.util.DateFormatter
@@ -81,7 +83,7 @@ fun DetailScreen(
             LargeTopAppBar(
                 title = {
                     Text(
-                        text = "Detail",
+                        text = stringResource(R.string.detail_title_short),
                         fontWeight = FontWeight.Bold
                     )
                 },
@@ -121,7 +123,7 @@ fun DetailScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "SMS introuvable",
+                        text = stringResource(R.string.detail_not_found),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -215,7 +217,7 @@ fun DetailScreen(
                         )
 
                         InfoCard(
-                            label = "Transfere le",
+                            label = stringResource(R.string.detail_forwarded_at),
                             value = if (record.forwardedAt != null)
                                 DateFormatter.formatFull(record.forwardedAt)
                             else
@@ -224,7 +226,7 @@ fun DetailScreen(
                         )
 
                         InfoCard(
-                            label = "Tentatives",
+                            label = stringResource(R.string.detail_retry_count),
                             value = "${record.retryCount}",
                             modifier = Modifier.weight(1f)
                         )
@@ -245,7 +247,7 @@ fun DetailScreen(
                             verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
                             Text(
-                                text = "Contenu du message",
+                                text = stringResource(R.string.detail_content_title),
                                 style = MaterialTheme.typography.titleSmall,
                                 fontWeight = FontWeight.SemiBold,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -306,7 +308,7 @@ fun DetailScreen(
                                 )
                                 Spacer(modifier = Modifier.size(8.dp))
                                 Text(
-                                    text = "Renvoyer ce SMS",
+                                    text = stringResource(R.string.detail_retry_button),
                                     style = MaterialTheme.typography.titleSmall,
                                     fontWeight = FontWeight.SemiBold
                                 )

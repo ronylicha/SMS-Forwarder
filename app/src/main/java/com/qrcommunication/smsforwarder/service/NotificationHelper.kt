@@ -58,7 +58,7 @@ class NotificationHelper @Inject constructor(
     fun createSmsNotification(sender: String, preview: String): Notification {
         return NotificationCompat.Builder(context, SmsForwarderApp.CHANNEL_ID_STATUS)
             .setContentTitle(context.getString(R.string.notification_sms_forwarded_title))
-            .setContentText("De: $sender - $preview")
+            .setContentText(context.getString(R.string.notification_from_format, sender, preview))
             .setSmallIcon(android.R.drawable.ic_dialog_email)
             .setAutoCancel(true)
             .build()

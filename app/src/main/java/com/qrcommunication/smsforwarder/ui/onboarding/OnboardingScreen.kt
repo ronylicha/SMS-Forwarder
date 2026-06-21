@@ -36,12 +36,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.qrcommunication.smsforwarder.R
 import com.qrcommunication.smsforwarder.ui.components.PhoneNumberField
 import com.qrcommunication.smsforwarder.ui.components.common.SettingsCard
 import kotlinx.coroutines.launch
@@ -89,7 +91,7 @@ fun OnboardingScreen(
                 OutlinedButton(
                     onClick = { scope.launch { pagerState.animateScrollToPage(pagerState.currentPage - 1) } },
                     modifier = Modifier.weight(1f),
-                ) { Text("Precedent") }
+                ) { Text(stringResource(R.string.onboarding_previous)) }
             }
             Button(
                 onClick = {
@@ -139,8 +141,8 @@ private fun PageIndicator(current: Int, total: Int, modifier: Modifier = Modifie
 private fun WelcomePage() {
     OnboardingPageScaffold(
         icon = Icons.AutoMirrored.Filled.PhoneForwarded,
-        title = "Bienvenue sur\nSMS Forwarder",
-        subtitle = "Transferez automatiquement vos SMS et notifications vers le numero, l'URL ou l'email de votre choix.",
+        title = stringResource(R.string.onboarding_title_v2),
+        subtitle = stringResource(R.string.onboarding_subtitle_v2),
     ) {
         FeatureBullet("Transfert automatique des SMS et RCS")
         FeatureBullet("Regles de routage par expediteur ou mot-cle")
@@ -153,8 +155,8 @@ private fun WelcomePage() {
 private fun PermissionsPage() {
     OnboardingPageScaffold(
         icon = Icons.Filled.Lock,
-        title = "Permissions necessaires",
-        subtitle = "Voici pourquoi chaque permission est demandee. Toutes restent locales sur votre appareil.",
+        title = stringResource(R.string.onboarding_permissions_title),
+        subtitle = stringResource(R.string.onboarding_permissions_desc),
     ) {
         PermissionRow("Reception SMS", "Pour detecter les SMS entrants en temps reel.")
         PermissionRow("Envoi SMS", "Pour transferer vers le numero de destination.")
@@ -173,8 +175,8 @@ private fun PermissionsPage() {
 private fun DestinationPage(state: OnboardingUiState, onChange: (String) -> Unit) {
     OnboardingPageScaffold(
         icon = Icons.AutoMirrored.Filled.PhoneForwarded,
-        title = "Numero de destination",
-        subtitle = "Vous pourrez ajouter des regles avec d'autres destinations (webhook, email) plus tard.",
+        title = stringResource(R.string.onboarding_destination_title),
+        subtitle = stringResource(R.string.onboarding_destination_hint),
     ) {
         PhoneNumberField(
             value = state.destinationNumber,
@@ -190,7 +192,7 @@ private fun TestPage(state: OnboardingUiState, onSendTest: () -> Unit) {
     OnboardingPageScaffold(
         icon = Icons.AutoMirrored.Filled.Send,
         title = "Tester le pipeline",
-        subtitle = "Envoyez un SMS de test au numero configure pour valider l'envoi. " +
+        subtitle = stringResource(R.string.onboarding_test_desc) +
             "Pour tester la reception, envoyez vous un SMS depuis un autre telephone.",
     ) {
         Button(
@@ -205,7 +207,7 @@ private fun TestPage(state: OnboardingUiState, onSendTest: () -> Unit) {
                     color = MaterialTheme.colorScheme.onPrimary,
                 )
             } else {
-                Text("Envoyer un SMS de test")
+                Text(stringResource(R.string.onboarding_send_test))
             }
         }
         when (state.testStatus) {

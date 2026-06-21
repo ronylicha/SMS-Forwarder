@@ -84,3 +84,4 @@ firebase-debug.log
 
 # Claude
 .claude/
+preview.keystore

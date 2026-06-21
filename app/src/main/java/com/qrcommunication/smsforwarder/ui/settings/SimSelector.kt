@@ -23,10 +23,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import com.qrcommunication.smsforwarder.R
 
 data class SimInfo(
     val slot: Int,
@@ -78,7 +80,7 @@ fun SimSelector(
                     tint = MaterialTheme.colorScheme.primary
                 )
                 Text(
-                    text = "Selection de la SIM",
+                    text = stringResource(R.string.sim_selector_title),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -95,14 +97,14 @@ fun SimSelector(
                         tint = MaterialTheme.colorScheme.error
                     )
                     Text(
-                        text = "La permission READ_PHONE_STATE est requise pour detecter les cartes SIM. Accordez cette permission dans les parametres de l'application.",
+                        text = stringResource(R.string.sim_permission_required),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.error
                     )
                 }
             } else if (simInfos.isEmpty()) {
                 Text(
-                    text = "Aucune carte SIM detectee.",
+                    text = stringResource(R.string.sim_none_detected),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -110,7 +112,7 @@ fun SimSelector(
                 // Automatic option
                 SimOption(
                     label = "Automatique (par defaut)",
-                    subtitle = "Utiliser la SIM par defaut du systeme",
+                    subtitle = stringResource(R.string.sim_use_default),
                     selected = selectedSlot == -1,
                     onClick = { onSlotSelected(-1) }
                 )

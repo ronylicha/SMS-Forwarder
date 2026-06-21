@@ -17,6 +17,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Cached
 import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.SimCard
 import androidx.compose.material.icons.filled.Tune
@@ -26,6 +27,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -33,6 +35,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -46,15 +49,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.qrcommunication.smsforwarder.R
 import com.qrcommunication.smsforwarder.ui.components.PhoneNumberField
+import com.qrcommunication.smsforwarder.ui.components.common.SettingsCard
+import kotlin.math.abs
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -82,13 +87,16 @@ fun SettingsScreen(
         lifecycleOwner.lifecycle.addObserver(observer)
     }
 
+    // Toast confirmation: destination saved
+    val destSavedMsg = stringResource(R.string.settings_destination_saved)
     LaunchedEffect(uiState.isSaved) {
         if (uiState.isSaved) {
-            snackbarHostState.showSnackbar("Numero enregistre")
+            snackbarHostState.showSnackbar(destSavedMsg)
             viewModel.clearSavedFlag()
         }
     }
 
+    // Toast confirmation: test result
     LaunchedEffect(uiState.testResult) {
         uiState.testResult?.let { result ->
             snackbarHostState.showSnackbar(result)
@@ -96,15 +104,26 @@ fun SettingsScreen(
         }
     }
 
+    // Language change: show toast then recreate activity
+    val langChangedMsg = stringResource(R.string.settings_language_changed)
+    LaunchedEffect(uiState.languageChanged) {
+        if (uiState.languageChanged) {
+            snackbarHostState.showSnackbar(langChangedMsg)
+            viewModel.clearLanguageChangedFlag()
+            // Recreate activity to apply new locale
+            (context as? android.app.Activity)?.recreate()
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Parametres") },
+                title = { Text(stringResource(R.string.settings_title)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Retour"
+                            contentDescription = stringResource(R.string.nav_back)
                         )
                     }
                 },
@@ -125,7 +144,7 @@ fun SettingsScreen(
         ) {
             Spacer(modifier = Modifier.height(4.dp))
 
-            // Destination number section
+            // ── Destination number ──
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(
@@ -139,7 +158,7 @@ fun SettingsScreen(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Text(
-                        text = "Numero de destination",
+                        text = stringResource(R.string.settings_destination_title),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
@@ -160,7 +179,7 @@ fun SettingsScreen(
                             enabled = uiState.isNumberValid,
                             modifier = Modifier.weight(1f)
                         ) {
-                            Text("Enregistrer")
+                            Text(stringResource(R.string.settings_save))
                         }
 
                         OutlinedButton(
@@ -174,14 +193,67 @@ fun SettingsScreen(
                                     strokeWidth = 2.dp
                                 )
                             } else {
-                                Text("Envoyer un test")
+                                Text(stringResource(R.string.settings_send_test))
                             }
                         }
                     }
                 }
             }
 
-            // Filter section
+            // ── Language selector ──
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                )
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Language,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                        Text(
+                            text = stringResource(R.string.settings_language_title),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+
+                    Text(
+                        text = stringResource(R.string.settings_language_description),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+
+                    LanguageOption(
+                        label = stringResource(R.string.settings_language_system),
+                        selected = uiState.appLanguage == "system",
+                        onClick = { viewModel.setLanguage("system") }
+                    )
+                    LanguageOption(
+                        label = stringResource(R.string.settings_language_french),
+                        selected = uiState.appLanguage == "fr",
+                        onClick = { viewModel.setLanguage("fr") }
+                    )
+                    LanguageOption(
+                        label = stringResource(R.string.settings_language_english),
+                        selected = uiState.appLanguage == "en",
+                        onClick = { viewModel.setLanguage("en") }
+                    )
+                }
+            }
+
+            // ── Filtering ──
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(
@@ -204,24 +276,24 @@ fun SettingsScreen(
                             tint = MaterialTheme.colorScheme.primary
                         )
                         Text(
-                            text = "Filtrage",
+                            text = stringResource(R.string.settings_filter_title),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold
                         )
                     }
 
                     FilterModeOption(
-                        label = "Aucun filtre (tout transferer)",
+                        label = stringResource(R.string.settings_filter_none),
                         selected = uiState.filterMode == "NONE",
                         onClick = { viewModel.setFilterMode("NONE") }
                     )
                     FilterModeOption(
-                        label = "Liste blanche (transferer seulement les filtres)",
+                        label = stringResource(R.string.settings_filter_whitelist),
                         selected = uiState.filterMode == "WHITELIST",
                         onClick = { viewModel.setFilterMode("WHITELIST") }
                     )
                     FilterModeOption(
-                        label = "Liste noire (bloquer les filtres)",
+                        label = stringResource(R.string.settings_filter_blacklist),
                         selected = uiState.filterMode == "BLACKLIST",
                         onClick = { viewModel.setFilterMode("BLACKLIST") }
                     )
@@ -232,14 +304,13 @@ fun SettingsScreen(
                         onClick = onNavigateToFilters,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("Gerer les regles de filtrage")
+                        Text(stringResource(R.string.settings_manage_rules))
                     }
                 }
             }
 
-            // Dual SIM section
+            // ── Dual SIM ──
             if (uiState.isDualSim) {
-                // SIM de reception (filtre)
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(
@@ -262,37 +333,36 @@ fun SettingsScreen(
                                 tint = MaterialTheme.colorScheme.primary
                             )
                             Text(
-                                text = "SIM de reception",
+                                text = stringResource(R.string.settings_receiving_sim_title),
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold
                             )
                         }
 
                         Text(
-                            text = "Choisissez de quelles cartes SIM les SMS recus seront transferes.",
+                            text = stringResource(R.string.settings_receiving_sim_description),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
 
                         FilterModeOption(
-                            label = "Toutes les SIM",
+                            label = stringResource(R.string.settings_receiving_sim_all),
                             selected = uiState.receivingSimSlot == -1,
                             onClick = { viewModel.setReceivingSimSlot(-1) }
                         )
                         FilterModeOption(
-                            label = "SIM 1 uniquement",
+                            label = stringResource(R.string.settings_receiving_sim_1_only),
                             selected = uiState.receivingSimSlot == 0,
                             onClick = { viewModel.setReceivingSimSlot(0) }
                         )
                         FilterModeOption(
-                            label = "SIM 2 uniquement",
+                            label = stringResource(R.string.settings_receiving_sim_2_only),
                             selected = uiState.receivingSimSlot == 1,
                             onClick = { viewModel.setReceivingSimSlot(1) }
                         )
                     }
                 }
 
-                // SIM d'envoi
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(
@@ -315,30 +385,30 @@ fun SettingsScreen(
                                 tint = MaterialTheme.colorScheme.primary
                             )
                             Text(
-                                text = "SIM d'envoi",
+                                text = stringResource(R.string.settings_sending_sim_title),
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold
                             )
                         }
 
                         Text(
-                            text = "Choisissez quelle carte SIM utiliser pour envoyer les SMS transferes.",
+                            text = stringResource(R.string.settings_sending_sim_description),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
 
                         FilterModeOption(
-                            label = "SIM par defaut",
+                            label = stringResource(R.string.settings_sim_default),
                             selected = uiState.selectedSimSlot == -1,
                             onClick = { viewModel.setSimSlot(-1) }
                         )
                         FilterModeOption(
-                            label = "SIM 1",
+                            label = stringResource(R.string.settings_sim_1),
                             selected = uiState.selectedSimSlot == 0,
                             onClick = { viewModel.setSimSlot(0) }
                         )
                         FilterModeOption(
-                            label = "SIM 2",
+                            label = stringResource(R.string.settings_sim_2),
                             selected = uiState.selectedSimSlot == 1,
                             onClick = { viewModel.setSimSlot(1) }
                         )
@@ -346,7 +416,7 @@ fun SettingsScreen(
                 }
             }
 
-            // Notification access section (RCS support)
+            // ── Notification access ──
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(
@@ -428,7 +498,7 @@ fun SettingsScreen(
                 }
             }
 
-            // Third-party apps section
+            // ── Third-party apps ──
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(
@@ -507,7 +577,7 @@ fun SettingsScreen(
                 }
             }
 
-            // Retry policy section
+            // ── Retry policy ──
             RetryPolicyCard(
                 policy = uiState.retryPolicy,
                 onMaxAttemptsChange = viewModel::updateRetryMaxAttempts,
@@ -515,14 +585,14 @@ fun SettingsScreen(
                 onBackoffChange = viewModel::updateRetryBackoff,
             )
 
-            // Advanced navigation section
+            // ── Advanced ──
             AdvancedNavigationCard(
                 onNavigateToRules = onNavigateToRules,
                 onNavigateToDiagnostics = onNavigateToDiagnostics,
                 onNavigateToNotifications = onNavigateToNotifications,
             )
 
-            // About section
+            // ── About ──
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(
@@ -545,7 +615,7 @@ fun SettingsScreen(
                             tint = MaterialTheme.colorScheme.primary
                         )
                         Text(
-                            text = "A propos",
+                            text = stringResource(R.string.settings_about_title),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold
                         )
@@ -556,7 +626,7 @@ fun SettingsScreen(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = "Version",
+                            text = stringResource(R.string.settings_version),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -571,12 +641,12 @@ fun SettingsScreen(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = "Application",
+                            text = stringResource(R.string.settings_application),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Text(
-                            text = "SMS Forwarder",
+                            text = stringResource(R.string.settings_app_name),
                             style = MaterialTheme.typography.bodyMedium
                         )
                     }
@@ -611,34 +681,59 @@ private fun FilterModeOption(
 }
 
 @Composable
+private fun LanguageOption(
+    label: String,
+    selected: Boolean,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        RadioButton(
+            selected = selected,
+            onClick = onClick
+        )
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.padding(start = 4.dp)
+        )
+    }
+}
+
+@Composable
 private fun RetryPolicyCard(
     policy: com.qrcommunication.smsforwarder.domain.model.RetryPolicy,
     onMaxAttemptsChange: (Int) -> Unit,
     onInitialDelayChange: (Long) -> Unit,
     onBackoffChange: (Double) -> Unit,
 ) {
-    com.qrcommunication.smsforwarder.ui.components.common.SettingsCard(
-        title = "Politique de retry",
+    SettingsCard(
+        title = stringResource(R.string.settings_retry_title),
         icon = Icons.Filled.Cached,
     ) {
         Text(
-            text = "Comportement automatique en cas d'echec du transfert.",
+            text = stringResource(R.string.settings_retry_description),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
 
         Text(
-            text = "Tentatives max : ${policy.maxAttempts}",
+            text = stringResource(R.string.settings_retry_max_attempts, policy.maxAttempts),
             style = MaterialTheme.typography.bodyMedium,
         )
-        androidx.compose.material3.Slider(
+        Slider(
             value = policy.maxAttempts.toFloat(),
             onValueChange = { onMaxAttemptsChange(it.toInt()) },
             valueRange = 1f..10f,
             steps = 8,
         )
 
-        Text("Delai initial", style = MaterialTheme.typography.bodyMedium)
+        Text(
+            text = stringResource(R.string.settings_retry_initial_delay),
+            style = MaterialTheme.typography.bodyMedium
+        )
         DelayChips(
             current = policy.initialDelayMs,
             options = listOf(
@@ -650,7 +745,10 @@ private fun RetryPolicyCard(
             onSelect = onInitialDelayChange,
         )
 
-        Text("Multiplicateur backoff", style = MaterialTheme.typography.bodyMedium)
+        Text(
+            text = stringResource(R.string.settings_retry_backoff),
+            style = MaterialTheme.typography.bodyMedium
+        )
         BackoffChips(
             current = policy.backoffMultiplier,
             options = listOf(1.5, 2.0, 3.0),
@@ -667,7 +765,7 @@ private fun DelayChips(
 ) {
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         options.forEach { (value, label) ->
-            androidx.compose.material3.FilterChip(
+            FilterChip(
                 selected = current == value,
                 onClick = { onSelect(value) },
                 label = { Text(label) },
@@ -684,8 +782,8 @@ private fun BackoffChips(
 ) {
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         options.forEach { value ->
-            androidx.compose.material3.FilterChip(
-                selected = kotlin.math.abs(current - value) < 0.01,
+            FilterChip(
+                selected = abs(current - value) < 0.01,
                 onClick = { onSelect(value) },
                 label = { Text("x$value") },
             )
@@ -699,18 +797,18 @@ private fun AdvancedNavigationCard(
     onNavigateToDiagnostics: () -> Unit,
     onNavigateToNotifications: () -> Unit,
 ) {
-    com.qrcommunication.smsforwarder.ui.components.common.SettingsCard(
-        title = "Avance",
+    SettingsCard(
+        title = stringResource(R.string.settings_advanced_title),
         icon = Icons.Filled.Tune,
     ) {
         FilledTonalButton(onClick = onNavigateToRules, modifier = Modifier.fillMaxWidth()) {
-            Text("Regles de transfert")
+            Text(stringResource(R.string.settings_rules_transfer))
         }
         FilledTonalButton(onClick = onNavigateToDiagnostics, modifier = Modifier.fillMaxWidth()) {
-            Text("Diagnostics")
+            Text(stringResource(R.string.settings_diagnostics))
         }
         FilledTonalButton(onClick = onNavigateToNotifications, modifier = Modifier.fillMaxWidth()) {
-            Text("Centre de notifications")
+            Text(stringResource(R.string.settings_notification_center))
         }
     }
 }

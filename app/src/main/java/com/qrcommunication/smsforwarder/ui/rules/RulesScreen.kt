@@ -35,10 +35,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.qrcommunication.smsforwarder.R
 import com.qrcommunication.smsforwarder.data.local.entity.DestinationType
 import com.qrcommunication.smsforwarder.data.local.entity.ForwardingRule
 import com.qrcommunication.smsforwarder.ui.components.common.EmptyState
@@ -55,7 +57,7 @@ fun RulesScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Regles de transfert", fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.settings_rules_transfer), fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Retour")
@@ -68,7 +70,7 @@ fun RulesScreen(
         },
         floatingActionButton = {
             FloatingActionButton(onClick = { onNavigateToEdit(0L) }) {
-                Icon(Icons.Filled.Add, contentDescription = "Nouvelle regle")
+                Icon(Icons.Filled.Add, contentDescription = stringResource(R.string.rules_new))
             }
         },
     ) { paddingValues ->
@@ -78,7 +80,7 @@ fun RulesScreen(
                 .padding(paddingValues)) {
                 EmptyState(
                     icon = Icons.AutoMirrored.Filled.Rule,
-                    title = "Aucune regle de transfert",
+                    title = stringResource(R.string.rules_empty),
                     description = "Creez une regle pour router les SMS selon l'expediteur, " +
                         "des mots-cles, vers SMS / webhook / email.",
                     actionLabel = "Creer une regle",
@@ -152,7 +154,7 @@ private fun RuleItem(
                     fontWeight = FontWeight.SemiBold,
                 )
                 Text(
-                    text = "${type.name} -> ${rule.destination}",
+                    text = stringResource(R.string.rules_dest_format, type.name, rule.destination),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -168,7 +170,7 @@ private fun RuleItem(
                 }
                 if (rule.successCount > 0 || rule.failureCount > 0) {
                     Text(
-                        text = "${rule.successCount} succes / ${rule.failureCount} echecs",
+                        text = stringResource(R.string.rules_stats_format, rule.successCount, rule.failureCount),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -178,7 +180,7 @@ private fun RuleItem(
             IconButton(onClick = onDelete) {
                 Icon(
                     Icons.Filled.Delete,
-                    contentDescription = "Supprimer",
+                    contentDescription = stringResource(R.string.action_delete),
                     tint = MaterialTheme.colorScheme.error,
                 )
             }

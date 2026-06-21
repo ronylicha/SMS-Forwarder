@@ -52,11 +52,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.qrcommunication.smsforwarder.R
 import com.qrcommunication.smsforwarder.data.local.entity.DestinationType
 import com.qrcommunication.smsforwarder.data.local.entity.SmsRecord
 import com.qrcommunication.smsforwarder.data.local.entity.SmsStatus
@@ -87,7 +89,7 @@ fun HistoryScreen(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             LargeTopAppBar(
-                title = { Text("Historique", fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.history_title), fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Retour")
@@ -97,7 +99,7 @@ fun HistoryScreen(
                     IconButton(onClick = { showDatePicker = true }) {
                         Icon(
                             Icons.Filled.CalendarMonth,
-                            contentDescription = "Filtrer par date",
+                            contentDescription = stringResource(R.string.action_filter_by_date),
                             tint = if (uiState.dateRangeStart != null) MaterialTheme.colorScheme.primary
                             else MaterialTheme.colorScheme.onSurface,
                         )
@@ -191,7 +193,7 @@ private fun DateRangeBadge(startMs: Long?, endMs: Long?, onClear: () -> Unit) {
             append(endMs?.let { DateFormatter.formatDateOnly(it) } ?: "...")
         }
         Text(text, style = MaterialTheme.typography.labelMedium)
-        TextButton(onClick = onClear) { Text("Effacer") }
+        TextButton(onClick = onClear) { Text(stringResource(R.string.history_clear)) }
     }
 }
 
@@ -212,10 +214,10 @@ private fun DateRangeDialog(
         confirmButton = {
             TextButton(
                 onClick = { onConfirm(state.selectedStartDateMillis, state.selectedEndDateMillis) },
-            ) { Text("Appliquer") }
+            ) { Text(stringResource(R.string.history_apply)) }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Annuler") }
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) }
         },
     ) {
         DateRangePicker(state = state, modifier = Modifier.padding(8.dp))
@@ -231,12 +233,12 @@ private fun SearchField(query: String, onQueryChange: (String) -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 24.dp, vertical = 8.dp),
-        placeholder = { Text("Rechercher par expediteur, contenu, destination...") },
+        placeholder = { Text(stringResource(R.string.history_search_placeholder_v2)) },
         leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
         trailingIcon = {
             AnimatedVisibility(visible = query.isNotEmpty(), enter = fadeIn(), exit = fadeOut()) {
                 IconButton(onClick = { onQueryChange("") }) {
-                    Icon(Icons.Filled.Close, contentDescription = "Effacer")
+                    Icon(Icons.Filled.Close, contentDescription = stringResource(R.string.history_clear))
                 }
             }
         },

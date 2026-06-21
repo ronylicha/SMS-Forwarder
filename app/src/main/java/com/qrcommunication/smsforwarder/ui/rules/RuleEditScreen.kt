@@ -33,9 +33,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.qrcommunication.smsforwarder.R
 import com.qrcommunication.smsforwarder.data.local.entity.DestinationType
 import com.qrcommunication.smsforwarder.ui.components.common.ConfigOption
 import com.qrcommunication.smsforwarder.ui.components.common.SettingsCard
@@ -48,10 +50,11 @@ fun RuleEditScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+    val savedMsg = stringResource(R.string.rule_edit_saved)
 
     LaunchedEffect(uiState.isSaved) {
         if (uiState.isSaved) {
-            snackbarHostState.showSnackbar("Regle enregistree")
+            snackbarHostState.showSnackbar(savedMsg)
             onNavigateBack()
         }
     }
@@ -95,13 +98,13 @@ fun RuleEditScreen(
                 OutlinedTextField(
                     value = uiState.name,
                     onValueChange = viewModel::updateName,
-                    label = { Text("Nom de la regle") },
+                    label = { Text(stringResource(R.string.rule_edit_name)) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                 )
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Checkbox(checked = uiState.isEnabled, onCheckedChange = viewModel::updateEnabled)
-                    Text("Active", modifier = Modifier.padding(start = 4.dp))
+                    Text(stringResource(R.string.rule_edit_active), modifier = Modifier.padding(start = 4.dp))
                 }
             }
 
@@ -109,7 +112,7 @@ fun RuleEditScreen(
                 OutlinedTextField(
                     value = uiState.senderPattern,
                     onValueChange = viewModel::updateSenderPattern,
-                    label = { Text("Pattern expediteur (regex, optionnel)") },
+                    label = { Text(stringResource(R.string.rule_edit_sender_pattern)) },
                     placeholder = { Text("ex: ^(\\+33|0)6") },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
@@ -117,13 +120,13 @@ fun RuleEditScreen(
                 OutlinedTextField(
                     value = uiState.keywordPattern,
                     onValueChange = viewModel::updateKeywordPattern,
-                    label = { Text("Mot-cle / regex contenu (optionnel)") },
+                    label = { Text(stringResource(R.string.rule_edit_keyword_pattern)) },
                     placeholder = { Text("ex: code|otp|verification") },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                 )
                 Text(
-                    "Une regle sans aucun pattern correspond a TOUS les SMS.",
+                    stringResource(R.string.rule_edit_no_pattern_hint),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -152,18 +155,18 @@ fun RuleEditScreen(
                 OutlinedTextField(
                     value = uiState.testSampleSender,
                     onValueChange = viewModel::updateTestSender,
-                    label = { Text("Expediteur de test") },
+                    label = { Text(stringResource(R.string.rule_edit_test_sender)) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                 )
                 OutlinedTextField(
                     value = uiState.testSampleContent,
                     onValueChange = viewModel::updateTestContent,
-                    label = { Text("Contenu de test") },
+                    label = { Text(stringResource(R.string.rule_edit_test_content)) },
                     modifier = Modifier.fillMaxWidth(),
                 )
                 OutlinedButton(onClick = viewModel::testRule, modifier = Modifier.fillMaxWidth()) {
-                    Text("Tester")
+                    Text(stringResource(R.string.rule_edit_test_button))
                 }
             }
 

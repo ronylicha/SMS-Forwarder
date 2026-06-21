@@ -18,6 +18,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.qrcommunication.smsforwarder.data.local.entity.SmsStatus
+import androidx.compose.ui.res.stringResource
+import com.qrcommunication.smsforwarder.R
 
 @Composable
 fun StatusBadge(
@@ -35,7 +37,7 @@ fun StatusBadge(
             containerColor = MaterialTheme.colorScheme.errorContainer,
             contentColor = MaterialTheme.colorScheme.onErrorContainer,
             icon = Icons.Filled.Error,
-            label = "Echoue"
+            label = stringResource(R.string.status_failed)
         )
         SmsStatus.PENDING.value -> StatusInfo(
             containerColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -47,7 +49,7 @@ fun StatusBadge(
             containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
             contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
             icon = Icons.Filled.FilterList,
-            label = "Filtre"
+            label = stringResource(R.string.status_filtered)
         )
         else -> StatusInfo(
             containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,

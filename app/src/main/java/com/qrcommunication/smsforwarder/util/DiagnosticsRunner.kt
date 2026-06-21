@@ -14,6 +14,7 @@ import com.qrcommunication.smsforwarder.ui.components.common.CheckSeverity
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
+import com.qrcommunication.smsforwarder.R
 
 data class DiagnosticCheck(
     val id: String,
@@ -72,7 +73,7 @@ class DiagnosticsRunner @Inject constructor(
         ) == PackageManager.PERMISSION_GRANTED
         return DiagnosticCheck(
             id = "post_notifications",
-            title = "Affichage des notifications",
+            title = context.getString(R.string.diagnostics_notification_display),
             description = if (granted) "Autorise" else "Refuse - le service foreground ne peut pas afficher de status",
             severity = if (granted) CheckSeverity.OK else CheckSeverity.WARNING,
             fixIntent = if (granted) null else appSettingsIntent(),
@@ -84,7 +85,7 @@ class DiagnosticsRunner @Inject constructor(
         val enabled = isNotificationListenerEnabled()
         return DiagnosticCheck(
             id = "notification_listener",
-            title = "Acces aux notifications (RCS)",
+            title = context.getString(R.string.diagnostics_notification_access_rcs),
             description = if (enabled) {
                 "Active - les RCS et apps tierces peuvent etre interceptes"
             } else {

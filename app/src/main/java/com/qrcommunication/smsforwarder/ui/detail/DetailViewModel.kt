@@ -2,12 +2,15 @@ package com.qrcommunication.smsforwarder.ui.detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import android.content.Context
+import com.qrcommunication.smsforwarder.R
 import com.qrcommunication.smsforwarder.data.local.entity.SmsRecord
 import com.qrcommunication.smsforwarder.data.local.entity.SmsStatus
 import com.qrcommunication.smsforwarder.domain.usecase.GetHistoryUseCase
 import com.qrcommunication.smsforwarder.domain.usecase.RetryResult
 import com.qrcommunication.smsforwarder.domain.usecase.RetrySmsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,6 +27,7 @@ data class DetailUiState(
 
 @HiltViewModel
 class DetailViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val getHistoryUseCase: GetHistoryUseCase,
     private val retrySmsUseCase: RetrySmsUseCase
 ) : ViewModel() {
@@ -53,10 +57,10 @@ class DetailViewModel @Inject constructor(
         viewModelScope.launch {
             val result = retrySmsUseCase(record.id)
             val message = when (result) {
-                is RetryResult.Success -> "SMS renvoye avec succes"
-                is RetryResult.Failed -> "Echec du renvoi : ${result.error}"
-                is RetryResult.NotFound -> "SMS introuvable"
-                is RetryResult.MaxRetriesReached -> "Nombre maximum de tentatives atteint"
+                is RetryResult.Success -> context.getString(R.string.retry_success)
+                is RetryResult.Failed -> context.getString(R.string.retry_failed_short, result.error)
+                is RetryResult.NotFound -> context.getString(R.string.detail_not_found)
+                is RetryResult.MaxRetriesReached -> context.getString(R.string.detail_retry_max_reached)
             }
 
             _uiState.update { it.copy(isRetrying = false, retryResult = message) }

@@ -28,8 +28,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import com.qrcommunication.smsforwarder.R
 
 @Composable
 fun PermissionHandler(
@@ -142,7 +144,7 @@ private fun NotificationAccessDialog(
         onDismissRequest = onSkip,
         title = {
             Text(
-                text = "Acces aux notifications",
+                text = stringResource(R.string.permission_notification_access_card_title),
                 style = MaterialTheme.typography.headlineSmall
             )
         },
@@ -154,12 +156,12 @@ private fun NotificationAccessDialog(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
-                    text = "Pour capturer les messages RCS (Google Messages, Samsung Messages), SMS Forwarder a besoin d'acceder aux notifications.",
+                    text = stringResource(R.string.permission_notification_access_card_desc),
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "Sans cet acces, seuls les SMS classiques seront transferes. Les messages RCS ne seront pas detectes.",
+                    text = stringResource(R.string.permission_notification_access_warning),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -167,12 +169,12 @@ private fun NotificationAccessDialog(
         },
         confirmButton = {
             FilledTonalButton(onClick = onOpenSettings) {
-                Text("Activer l'acces")
+                Text(stringResource(R.string.permission_enable))
             }
         },
         dismissButton = {
             TextButton(onClick = onSkip) {
-                Text("Plus tard")
+                Text(stringResource(R.string.permission_later))
             }
         }
     )
@@ -187,7 +189,7 @@ private fun PermissionRationaleDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
-                text = "Permissions requises",
+                text = stringResource(R.string.permission_required_title),
                 style = MaterialTheme.typography.headlineSmall
             )
         },
@@ -199,28 +201,28 @@ private fun PermissionRationaleDialog(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
-                    text = "SMS Forwarder a besoin des permissions suivantes pour fonctionner :",
+                    text = stringResource(R.string.permission_required_description),
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "- Reception SMS : pour detecter les SMS entrants",
+                    text = stringResource(R.string.permission_receive_sms_bullet),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
-                    text = "- Envoi SMS : pour transferer les SMS vers le numero configure",
+                    text = stringResource(R.string.permission_send_sms_bullet),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
-                    text = "- Notifications : pour afficher le service en arriere-plan",
+                    text = stringResource(R.string.permission_notification_bullet),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "Veuillez activer ces permissions dans les parametres de l'application.",
+                    text = stringResource(R.string.permission_enable_in_settings_msg),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.error
                 )
@@ -228,12 +230,12 @@ private fun PermissionRationaleDialog(
         },
         confirmButton = {
             FilledTonalButton(onClick = onOpenSettings) {
-                Text("Ouvrir les parametres")
+                Text(stringResource(R.string.permission_settings))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Plus tard")
+                Text(stringResource(R.string.permission_later))
             }
         }
     )

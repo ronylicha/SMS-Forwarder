@@ -48,11 +48,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.qrcommunication.smsforwarder.R
 import com.qrcommunication.smsforwarder.ui.components.common.StatTile
 import com.qrcommunication.smsforwarder.util.PhoneValidator
 
@@ -119,13 +121,13 @@ fun MainScreen(
             ) {
                 StatTile(
                     value = "${uiState.sentLast24h}",
-                    label = "Envoyes 24h",
+                    label = stringResource(R.string.main_sent_24h),
                     valueColor = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.weight(1f),
                 )
                 StatTile(
                     value = "${uiState.failedLast24h}",
-                    label = "Echoues 24h",
+                    label = stringResource(R.string.main_failed_24h),
                     valueColor = MaterialTheme.colorScheme.error,
                     modifier = Modifier.weight(1f),
                 )
@@ -138,7 +140,7 @@ fun MainScreen(
             ) {
                 StatTile(
                     value = "${uiState.totalForwarded}",
-                    label = "Total transferes",
+                    label = stringResource(R.string.main_total_forwarded),
                     modifier = Modifier.weight(1f),
                 )
                 val total = uiState.totalForwarded + uiState.totalFailed
@@ -157,7 +159,7 @@ fun MainScreen(
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 NavigationCard(
                     icon = Icons.Filled.Notifications,
-                    title = "Notifications",
+                    title = stringResource(R.string.main_notifications),
                     subtitle = if (uiState.unreadNotifications > 0) {
                         "${uiState.unreadNotifications} non lues"
                     } else {
@@ -168,32 +170,32 @@ fun MainScreen(
                 )
                 NavigationCard(
                     icon = Icons.AutoMirrored.Filled.Rule,
-                    title = "Regles de transfert",
-                    subtitle = "${uiState.activeRulesCount} active(s)",
+                    title = stringResource(R.string.main_rules_transfer),
+                    subtitle = stringResource(R.string.main_active_rules_count, uiState.activeRulesCount),
                     onClick = onNavigateToRules,
                 )
                 NavigationCard(
                     icon = Icons.Filled.History,
-                    title = "Historique",
-                    subtitle = "Voir tous les transferts",
+                    title = stringResource(R.string.history_title),
+                    subtitle = stringResource(R.string.main_view_all_transfers),
                     onClick = onNavigateToHistory,
                 )
                 NavigationCard(
                     icon = Icons.Filled.HealthAndSafety,
-                    title = "Diagnostics",
-                    subtitle = "Audit permissions et systeme",
+                    title = stringResource(R.string.main_diagnostics),
+                    subtitle = stringResource(R.string.main_audit_permissions),
                     onClick = onNavigateToDiagnostics,
                 )
                 NavigationCard(
                     icon = Icons.Filled.BarChart,
-                    title = "Statistiques",
+                    title = stringResource(R.string.main_statistics),
                     subtitle = "Voir les tendances",
                     onClick = onNavigateToStats,
                 )
                 NavigationCard(
                     icon = Icons.Filled.Settings,
                     title = "Reglages",
-                    subtitle = "Configurer le transfert",
+                    subtitle = stringResource(R.string.main_configure_forwarding),
                     onClick = onNavigateToSettings,
                 )
             }
@@ -213,7 +215,7 @@ private fun MissingDestinationBanner() {
         ),
     ) {
         Text(
-            text = "Configurez un numero de destination ou creez une regle pour activer le transfert",
+            text = stringResource(R.string.main_no_destination_warning),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onErrorContainer,
             modifier = Modifier.padding(16.dp),

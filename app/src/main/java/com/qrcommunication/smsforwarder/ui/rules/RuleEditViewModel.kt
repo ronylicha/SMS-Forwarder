@@ -3,11 +3,14 @@ package com.qrcommunication.smsforwarder.ui.rules
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import android.content.Context
+import com.qrcommunication.smsforwarder.R
 import com.qrcommunication.smsforwarder.data.local.entity.DestinationType
 import com.qrcommunication.smsforwarder.data.local.entity.ForwardingRule
 import com.qrcommunication.smsforwarder.data.repository.ForwardingRuleRepository
 import com.qrcommunication.smsforwarder.domain.usecase.MatchForwardingRuleUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -35,6 +38,7 @@ data class RuleEditUiState(
 @HiltViewModel
 class RuleEditViewModel @Inject constructor(
     savedState: SavedStateHandle,
+    @ApplicationContext private val context: Context,
     private val repository: ForwardingRuleRepository,
     private val matchRule: MatchForwardingRuleUseCase,
 ) : ViewModel() {
@@ -88,9 +92,9 @@ class RuleEditViewModel @Inject constructor(
         val state = _uiState.value
         val match = matchRule(state.testSampleSender, state.testSampleContent)
         val result = when {
-            match == null -> "Aucune regle ne match cet exemple"
-            match.id == state.id -> "Cette regle match"
-            else -> "Une autre regle (priorite plus haute) match : '${match.name}'"
+            match == null -> context.getString(R.string.rule_test_no_match)
+            match.id == state.id -> context.getString(R.string.rule_test_match)
+            else -> context.getString(R.string.rule_test_other_match, match.name)
         }
         _uiState.update { it.copy(testResult = result) }
     }
@@ -100,7 +104,7 @@ class RuleEditViewModel @Inject constructor(
     fun save() = viewModelScope.launch {
         val state = _uiState.value
         if (state.destination.isBlank() || state.name.isBlank()) {
-            _uiState.update { it.copy(testResult = "Nom et destination obligatoires") }
+            _uiState.update { it.copy(testResult = context.getString(R.string.rule_test_missing_fields)) }
             return@launch
         }
         _uiState.update { it.copy(isSaving = true) }

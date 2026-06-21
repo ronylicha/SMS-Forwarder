@@ -36,9 +36,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.qrcommunication.smsforwarder.R
 import com.qrcommunication.smsforwarder.data.local.entity.AppNotification
 import com.qrcommunication.smsforwarder.data.local.entity.NotificationSeverity
 import com.qrcommunication.smsforwarder.ui.components.common.CheckSeverity
@@ -66,7 +68,7 @@ fun NotificationCenterScreen(
             TopAppBar(
                 title = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text("Notifications", fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.settings_notification_center), fontWeight = FontWeight.Bold)
                         if (uiState.unreadCount > 0) {
                             Badge(
                                 modifier = Modifier.padding(start = 8.dp),
@@ -91,7 +93,7 @@ fun NotificationCenterScreen(
                     }
                     AnimatedVisibility(visible = uiState.notifications.isNotEmpty()) {
                         IconButton(onClick = viewModel::deleteAll) {
-                            Icon(Icons.Filled.Delete, contentDescription = "Tout supprimer")
+                            Icon(Icons.Filled.Delete, contentDescription = stringResource(R.string.notifications_delete_all))
                         }
                     }
                 },
@@ -107,7 +109,7 @@ fun NotificationCenterScreen(
                 .padding(paddingValues)) {
                 EmptyState(
                     icon = Icons.Filled.NotificationsNone,
-                    title = "Aucune notification",
+                    title = stringResource(R.string.notifications_empty),
                     description = "Les erreurs de regles, problemes de destinations et alertes apparaitront ici.",
                 )
             }
@@ -208,7 +210,7 @@ private fun NotificationItem(
             IconButton(onClick = onDelete) {
                 Icon(
                     Icons.Filled.Delete,
-                    contentDescription = "Supprimer",
+                    contentDescription = stringResource(R.string.action_delete),
                     tint = MaterialTheme.colorScheme.error,
                 )
             }

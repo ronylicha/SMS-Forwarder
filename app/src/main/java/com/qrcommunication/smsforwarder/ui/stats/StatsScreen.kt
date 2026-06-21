@@ -44,6 +44,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -52,6 +53,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.qrcommunication.smsforwarder.R
 import com.qrcommunication.smsforwarder.domain.usecase.DailyStats
 import com.qrcommunication.smsforwarder.domain.usecase.SmsStats
 
@@ -66,7 +68,7 @@ fun StatsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Statistiques") },
+                title = { Text(stringResource(R.string.stats_title)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
@@ -108,12 +110,12 @@ fun StatsScreen(
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
-                        text = "Pas encore de statistiques",
+                        text = stringResource(R.string.stats_no_data),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
-                        text = "Les statistiques apparaitront apres le premier transfert",
+                        text = stringResource(R.string.stats_no_data_hint),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -163,7 +165,7 @@ private fun OverallStatsCard(stats: SmsStats) {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text(
-                text = "Resume",
+                text = stringResource(R.string.stats_summary),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
@@ -182,7 +184,7 @@ private fun OverallStatsCard(stats: SmsStats) {
                 )
                 StatItem(
                     icon = Icons.Filled.CheckCircle,
-                    label = "Envoyes",
+                    label = stringResource(R.string.stats_sent),
                     value = stats.sentCount.toString(),
                     color = Color(0xFF4CAF50),
                     modifier = Modifier.weight(1f)
@@ -195,14 +197,14 @@ private fun OverallStatsCard(stats: SmsStats) {
             ) {
                 StatItem(
                     icon = Icons.Filled.Error,
-                    label = "Echoues",
+                    label = stringResource(R.string.stats_failed_label),
                     value = stats.failedCount.toString(),
                     color = MaterialTheme.colorScheme.error,
                     modifier = Modifier.weight(1f)
                 )
                 StatItem(
                     icon = Icons.Filled.FilterAlt,
-                    label = "Filtres",
+                    label = stringResource(R.string.stats_filtered_label),
                     value = stats.filteredCount.toString(),
                     color = Color(0xFFFF9800),
                     modifier = Modifier.weight(1f)
@@ -233,7 +235,7 @@ private fun OverallStatsCard(stats: SmsStats) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Taux de succes",
+                        text = stringResource(R.string.stats_success_rate),
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Medium
                     )
@@ -330,7 +332,7 @@ private fun DailyStatsSection(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
-                text = "Historique par jour",
+                text = stringResource(R.string.stats_daily_title),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
@@ -357,7 +359,7 @@ private fun DailyStatsSection(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "Aucune donnee pour cette periode",
+                        text = stringResource(R.string.stats_no_data_period_short),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -388,11 +390,11 @@ private fun DailyStatsSection(
                 ) {
                     LegendItem(
                         color = Color(0xFF4CAF50),
-                        label = "Envoyes"
+                        label = stringResource(R.string.stats_sent)
                     )
                     LegendItem(
                         color = MaterialTheme.colorScheme.error,
-                        label = "Echoues"
+                        label = stringResource(R.string.stats_failed_label)
                     )
                 }
             }

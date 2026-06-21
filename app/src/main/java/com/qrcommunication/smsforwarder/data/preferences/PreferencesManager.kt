@@ -66,6 +66,10 @@ class PreferencesManager @Inject constructor(
             .putLong(KEY_RETRY_MAX_DELAY, value.maxDelayMs)
             .apply()
 
+    var appLanguage: String
+        get() = prefs.getString(KEY_APP_LANGUAGE, "system") ?: "system"
+        set(value) = prefs.edit().putString(KEY_APP_LANGUAGE, value).apply()
+
     fun addAppToWhitelist(packageName: String) {
         appWhitelistPackages = appWhitelistPackages + packageName
     }
@@ -96,5 +100,6 @@ class PreferencesManager @Inject constructor(
         private const val KEY_RETRY_INITIAL_DELAY = "retry_initial_delay_ms"
         private const val KEY_RETRY_BACKOFF = "retry_backoff"
         private const val KEY_RETRY_MAX_DELAY = "retry_max_delay_ms"
+        private const val KEY_APP_LANGUAGE = "app_language"
     }
 }
