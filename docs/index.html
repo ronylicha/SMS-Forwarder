@@ -1113,20 +1113,26 @@
             });
         })();
     </script>
-    <style>
-        /* Critical slider fix — must come after Tailwind CDN injects its styles */
-        .phone-slider {
-            display: flex !important;
-            flex-direction: row !important;
-            flex-wrap: nowrap !important;
-        }
-        .phone-slider img {
-            flex: 0 0 100% !important;
-            width: 100% !important;
-            height: 100% !important;
-            max-width: none !important;
-            max-height: none !important;
-        }
-    </style>
+    <script>
+        // Force slider layout after Tailwind CDN finishes injecting styles
+        (function() {
+            function fixSlider() {
+                var slider = document.getElementById('phone-slider');
+                if (!slider) return;
+                slider.style.cssText += ';display:flex !important;flex-direction:row !important;flex-wrap:nowrap !important;';
+                slider.querySelectorAll('img').forEach(function(img) {
+                    img.style.cssText += ';flex:0 0 100% !important;width:100% !important;height:100% !important;max-width:none !important;max-height:none !important;object-fit:cover !important;display:block !important;';
+                });
+            }
+            // Run on DOMContentLoaded and after a delay to catch Tailwind's async injection
+            if (document.readyState !== 'loading') {
+                fixSlider();
+            } else {
+                document.addEventListener('DOMContentLoaded', fixSlider);
+            }
+            setTimeout(fixSlider, 100);
+            setTimeout(fixSlider, 500);
+        })();
+    </script>
 </body>
 </html>
