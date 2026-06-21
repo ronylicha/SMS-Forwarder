@@ -1114,12 +1114,11 @@
         })();
     </script>
     <script>
-        // Force slider layout after Tailwind CDN finishes injecting styles
+        // Force slider layout after Tailwind CDN finishes loading
         (function() {
             function fixSlider() {
                 var slider = document.getElementById('phone-slider');
                 if (!slider) return;
-                // Ensure slider fills phone-screen and is flex row
                 slider.style.position = 'absolute';
                 slider.style.top = '0';
                 slider.style.left = '0';
@@ -1129,27 +1128,28 @@
                 slider.style.flexDirection = 'row';
                 slider.style.flexWrap = 'nowrap';
                 slider.style.overflow = 'hidden';
-                // Force each image to exact slider dimensions
-                var imgs = slider.querySelectorAll('img');
+                // Phone-screen height = 560px (mockup) - 24px (12px padding) = 536px
+                var h = 536;
                 var parent = slider.parentElement;
-                var parentH = parent ? parent.clientHeight : 536;
-                imgs.forEach(function(img) {
+                if (parent && parent.clientHeight > 0) h = parent.clientHeight;
+                slider.querySelectorAll('img').forEach(function(img) {
                     img.style.flex = '0 0 100%';
-                    img.style.width = '100%';
-                    img.style.height = parentH + 'px';
+                    img.style.width = '256px';
+                    img.style.height = h + 'px';
                     img.style.maxWidth = 'none';
                     img.style.maxHeight = 'none';
                     img.style.objectFit = 'cover';
                     img.style.display = 'block';
                 });
             }
-            if (document.readyState !== 'loading') {
+            // Wait for window load (after Tailwind CDN processes)
+            if (document.readyState === 'complete') {
                 fixSlider();
             } else {
-                document.addEventListener('DOMContentLoaded', fixSlider);
+                window.addEventListener('load', fixSlider);
             }
-            setTimeout(fixSlider, 100);
-            setTimeout(fixSlider, 500);
+            setTimeout(fixSlider, 1000);
+            setTimeout(fixSlider, 2000);
         })();
     </script>
 </body>
