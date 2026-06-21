@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SMS Forwarder — Transfert automatique SMS et RCS</title>
-    <meta name="description" content="Application Android gratuite de transfert automatique de SMS et RCS. Legere, fiable, 100% locale.">
-    <meta property="og:title" content="SMS Forwarder">
-    <meta property="og:description" content="Transferez vos SMS et RCS automatiquement vers un autre numero.">
+    <title>SMS Forwarder — Transfert automatique SMS, RCS et notifications</title>
+    <meta name="description" content="Application Android gratuite de transfert automatique de SMS, RCS et notifications d'apps. Règles configurables, webhook, dashboard temps réel. 100% locale.">
+    <meta property="og:title" content="SMS Forwarder v1.3.1">
+    <meta property="og:description" content="Transférez vos SMS, RCS et notifications d'apps automatiquement. Règles, webhook, dashboard temps réel.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://ronylicha.github.io/SMS-Forwarder/">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -34,7 +34,7 @@
     <style>
         *, *::before, *::after { box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; }
-        h1, h2, h3, h4, h5, h6 { font-family: 'Space Grotesk', sans-serif; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Space Grotesk', sans-serif'; }
 
         .glass {
             background: rgba(255,255,255,0.05);
@@ -137,7 +137,7 @@
             transition: max-height 300ms ease, padding 300ms ease;
         }
         .faq-answer.open {
-            max-height: 200px;
+            max-height: 300px;
             padding-bottom: 1.25rem;
         }
         .faq-chevron {
@@ -220,6 +220,21 @@
             border-color: rgba(255,255,255,0.4);
             opacity: 0.9;
         }
+
+        /* Badge "New" */
+        .badge-new {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(16,185,129,0.15);
+            color: #34D399;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
     </style>
 </head>
 <body class="bg-slate-900 text-slate-50 font-body antialiased">
@@ -244,13 +259,14 @@
                 <!-- Desktop nav links -->
                 <div class="hidden md:flex items-center gap-8">
                     <a href="#features" class="text-slate-400 hover:text-slate-50 transition-colors duration-200 text-sm font-medium cursor-pointer">Fonctionnalites</a>
+                    <a href="#rules" class="text-slate-400 hover:text-slate-50 transition-colors duration-200 text-sm font-medium cursor-pointer">Regles &amp; Webhook</a>
                     <a href="#how-it-works" class="text-slate-400 hover:text-slate-50 transition-colors duration-200 text-sm font-medium cursor-pointer">Comment ca marche</a>
                     <a href="#download" class="text-slate-400 hover:text-slate-50 transition-colors duration-200 text-sm font-medium cursor-pointer">Telechargement</a>
                     <a href="#faq" class="text-slate-400 hover:text-slate-50 transition-colors duration-200 text-sm font-medium cursor-pointer">FAQ</a>
                 </div>
 
                 <!-- CTA Button -->
-                <a href="https://github.com/ronylicha/SMS-Forwarder/releases/download/v1.1.1/SMS-Forwarder-v1.1.1.apk"
+                <a href="https://github.com/ronylicha/SMS-Forwarder/releases/download/v1.3.1/SmsForwarder-v1.3.1-release.apk"
                    class="hidden sm:inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-white font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors duration-200 cursor-pointer">
                     <i data-lucide="download" class="w-4 h-4"></i>
                     Telecharger
@@ -266,10 +282,11 @@
             <div id="mobile-menu" class="hidden md:hidden pb-4">
                 <div class="flex flex-col gap-3 glass-static p-4 mt-2">
                     <a href="#features" class="text-slate-400 hover:text-slate-50 transition-colors duration-200 text-sm font-medium cursor-pointer py-1">Fonctionnalites</a>
+                    <a href="#rules" class="text-slate-400 hover:text-slate-50 transition-colors duration-200 text-sm font-medium cursor-pointer py-1">Regles &amp; Webhook</a>
                     <a href="#how-it-works" class="text-slate-400 hover:text-slate-50 transition-colors duration-200 text-sm font-medium cursor-pointer py-1">Comment ca marche</a>
                     <a href="#download" class="text-slate-400 hover:text-slate-50 transition-colors duration-200 text-sm font-medium cursor-pointer py-1">Telechargement</a>
                     <a href="#faq" class="text-slate-400 hover:text-slate-50 transition-colors duration-200 text-sm font-medium cursor-pointer py-1">FAQ</a>
-                    <a href="https://github.com/ronylicha/SMS-Forwarder/releases/download/v1.1.1/SMS-Forwarder-v1.1.1.apk"
+                    <a href="https://github.com/ronylicha/SMS-Forwarder/releases/download/v1.3.1/SmsForwarder-v1.3.1-release.apk"
                        class="inline-flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-white font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors duration-200 cursor-pointer mt-2">
                         <i data-lucide="download" class="w-4 h-4"></i>
                         Telecharger
@@ -290,13 +307,19 @@
             <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
                 <!-- Left content -->
                 <div class="flex-1 text-center lg:text-left">
+                    <!-- Version badge -->
+                    <div class="inline-flex items-center gap-2 glass-static px-4 py-2 mb-6">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <span class="text-slate-300 text-sm font-medium">v1.3.1 — Dashboard, regles &amp; webhook</span>
+                    </div>
+
                     <h1 class="font-display font-bold text-4xl sm:text-5xl lg:text-6xl leading-tight mb-6">
-                        <span class="gradient-text">Transferez vos SMS et RCS</span>
+                        <span class="gradient-text">Transferez vos SMS, RCS</span>
                         <br>
-                        <span class="text-slate-50">automatiquement</span>
+                        <span class="text-slate-50">et notifications d'apps</span>
                     </h1>
                     <p class="text-slate-400 text-lg sm:text-xl max-w-xl mx-auto lg:mx-0 mb-8 leading-relaxed">
-                        Application Android legere qui intercepte chaque message et le renvoie vers le numero de votre choix. 100% local, aucun serveur.
+                        Application Android qui intercepte chaque message et le renvoie vers le numero ou le webhook de votre choix. Regles configurables, dashboard temps reel, 100% local.
                     </p>
                     <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                         <!-- Play Store -->
@@ -306,7 +329,7 @@
                             Google Play
                         </a>
                         <!-- APK -->
-                        <a href="https://github.com/ronylicha/SMS-Forwarder/releases/download/v1.1.1/SMS-Forwarder-v1.1.1.apk"
+                        <a href="https://github.com/ronylicha/SMS-Forwarder/releases/download/v1.3.1/SmsForwarder-v1.3.1-release.apk"
                            class="inline-flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-white font-semibold text-lg px-8 py-4 rounded-2xl transition-all duration-200 glow-emerald cursor-pointer">
                             <i data-lucide="download" class="w-5 h-5"></i>
                             Telecharger l'APK
@@ -325,7 +348,7 @@
                     <!-- Stats -->
                     <div class="flex flex-wrap justify-center lg:justify-start gap-6 sm:gap-8 mt-10 pt-10 border-t border-slate-800">
                         <div class="text-center">
-                            <div class="font-display font-bold text-2xl text-slate-50">6.7 MB</div>
+                            <div class="font-display font-bold text-2xl text-slate-50">6.8 MB</div>
                             <div class="text-slate-500 text-sm mt-1">Taille APK</div>
                         </div>
                         <div class="text-center">
@@ -333,7 +356,7 @@
                             <div class="text-slate-500 text-sm mt-1">Compatibilite</div>
                         </div>
                         <div class="text-center">
-                            <div class="font-display font-bold text-2xl text-slate-50">107 Tests</div>
+                            <div class="font-display font-bold text-2xl text-slate-50">185 Tests</div>
                             <div class="text-slate-500 text-sm mt-1">Couverture</div>
                         </div>
                         <div class="text-center">
@@ -354,6 +377,7 @@
                                 <img src="assets/screenshots/3-settings.jpg" alt="Parametres et filtrage" width="256" height="512" loading="lazy">
                                 <img src="assets/screenshots/4-filters.jpg" alt="Gestion des filtres" width="256" height="512" loading="lazy">
                                 <img src="assets/screenshots/5-stats.jpg" alt="Statistiques de transfert" width="256" height="512" loading="lazy">
+                                <img src="assets/screenshots/6-widget.jpg" alt="Widget de raccourci" width="256" height="512" loading="lazy">
                             </div>
                         </div>
                     </div>
@@ -364,6 +388,7 @@
                         <button class="slider-dot" data-slide="2" aria-label="Screenshot 3"></button>
                         <button class="slider-dot" data-slide="3" aria-label="Screenshot 4"></button>
                         <button class="slider-dot" data-slide="4" aria-label="Screenshot 5"></button>
+                        <button class="slider-dot" data-slide="5" aria-label="Screenshot 6"></button>
                     </div>
                 </div>
             </div>
@@ -375,62 +400,204 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-14">
                 <h2 class="font-display font-bold text-3xl sm:text-4xl text-slate-50 mb-4">Tout ce dont vous avez besoin</h2>
-                <p class="text-slate-400 text-lg max-w-2xl mx-auto">Une application complete de transfert de messages, concue pour etre fiable et respectueuse de votre vie privee.</p>
+                <p class="text-slate-400 text-lg max-w-2xl mx-auto">Une application complete de transfert de messages, concue pour etre fiable, configurable et respectueuse de votre vie privee.</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Feature 1 -->
                 <div class="glass glow-card p-6 sm:p-8">
-                    <div class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center mb-5">
-                        <i data-lucide="message-square" class="w-6 h-6 text-blue-500"></i>
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center">
+                            <i data-lucide="layout-dashboard" class="w-6 h-6 text-blue-500"></i>
+                        </div>
+                        <span class="badge-new">Nouveau</span>
                     </div>
-                    <h3 class="font-display font-semibold text-xl text-slate-50 mb-2">Transfert SMS + RCS</h3>
-                    <p class="text-slate-400 leading-relaxed">Triple capture via BroadcastReceiver, ContentObserver et NotificationListener pour ne rater aucun message.</p>
+                    <h3 class="font-display font-semibold text-xl text-slate-50 mb-2">Dashboard temps reel</h3>
+                    <p class="text-slate-400 leading-relaxed">Stats 24h (envoyes / echoues), taux de succes global, regles actives et badge de notifications non lues. Tout s'actualise en direct via Flow.</p>
                 </div>
 
                 <!-- Feature 2 -->
                 <div class="glass glow-card p-6 sm:p-8">
-                    <div class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center mb-5">
-                        <i data-lucide="refresh-cw" class="w-6 h-6 text-blue-500"></i>
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-12 h-12 rounded-xl bg-violet-500/10 flex items-center justify-center">
+                            <i data-lucide="git-branch" class="w-6 h-6 text-violet-500"></i>
+                        </div>
+                        <span class="badge-new">Nouveau</span>
                     </div>
-                    <h3 class="font-display font-semibold text-xl text-slate-50 mb-2">Retry automatique</h3>
-                    <p class="text-slate-400 leading-relaxed">3 tentatives avec backoff exponentiel en cas d'echec d'envoi. Chaque message finit par arriver.</p>
+                    <h3 class="font-display font-semibold text-xl text-slate-50 mb-2">Regles de transfert</h3>
+                    <p class="text-slate-400 leading-relaxed">Creez des regles avec critere d'expediteur (regex) + mot-cle, destination par regle (SMS ou webhook), priorite et activation. Test interactif avec un SMS d'exemple.</p>
                 </div>
 
                 <!-- Feature 3 -->
                 <div class="glass glow-card p-6 sm:p-8">
-                    <div class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center mb-5">
-                        <i data-lucide="list" class="w-6 h-6 text-blue-500"></i>
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center">
+                            <i data-lucide="webhook" class="w-6 h-6 text-emerald-500"></i>
+                        </div>
+                        <span class="badge-new">Nouveau</span>
                     </div>
-                    <h3 class="font-display font-semibold text-xl text-slate-50 mb-2">Historique complet</h3>
-                    <p class="text-slate-400 leading-relaxed">Recherche, filtres par statut, detail de chaque message. Retrouvez n'importe quel transfert en quelques secondes.</p>
+                    <h3 class="font-display font-semibold text-xl text-slate-50 mb-2">Webhook HTTP POST</h3>
+                    <p class="text-slate-400 leading-relaxed">Envoyez chaque message en JSON vers n'importe quel endpoint <code class="text-emerald-400 text-sm bg-emerald-500/10 px-1.5 py-0.5 rounded">{ sender, content, receivedAt }</code>. Zero dependance externe.</p>
                 </div>
 
                 <!-- Feature 4 -->
                 <div class="glass glow-card p-6 sm:p-8">
-                    <div class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center mb-5">
-                        <i data-lucide="filter" class="w-6 h-6 text-blue-500"></i>
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-12 h-12 rounded-xl bg-orange-500/10 flex items-center justify-center">
+                            <i data-lucide="smartphone" class="w-6 h-6 text-orange-500"></i>
+                        </div>
+                        <span class="badge-new">Nouveau</span>
                     </div>
-                    <h3 class="font-display font-semibold text-xl text-slate-50 mb-2">Filtrage intelligent</h3>
-                    <p class="text-slate-400 leading-relaxed">Liste blanche et noire par numero ou mot-cle. Transferez uniquement les messages qui comptent.</p>
+                    <h3 class="font-display font-semibold text-xl text-slate-50 mb-2">Surveillance d'apps tierces</h3>
+                    <p class="text-slate-400 leading-relaxed">Transferez les notifications de WhatsApp, Telegram, Allo, Ringover, Onoff... comme des SMS vers votre numero ou webhook.</p>
                 </div>
 
                 <!-- Feature 5 -->
                 <div class="glass glow-card p-6 sm:p-8">
-                    <div class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center mb-5">
-                        <i data-lucide="shield-check" class="w-6 h-6 text-blue-500"></i>
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center">
+                            <i data-lucide="message-square" class="w-6 h-6 text-blue-500"></i>
+                        </div>
                     </div>
-                    <h3 class="font-display font-semibold text-xl text-slate-50 mb-2">100% local</h3>
-                    <p class="text-slate-400 leading-relaxed">Aucune donnee envoyee a un serveur, zero analytics, zero tracking. Vos messages restent les votres.</p>
+                    <h3 class="font-display font-semibold text-xl text-slate-50 mb-2">Transfert SMS + RCS</h3>
+                    <p class="text-slate-400 leading-relaxed">Triple capture via BroadcastReceiver, ContentObserver et NotificationListener pour ne rater aucun message, y compris en RCS.</p>
                 </div>
 
                 <!-- Feature 6 -->
                 <div class="glass glow-card p-6 sm:p-8">
-                    <div class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center mb-5">
-                        <i data-lucide="palette" class="w-6 h-6 text-blue-500"></i>
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-12 h-12 rounded-xl bg-violet-500/10 flex items-center justify-center">
+                            <i data-lucide="refresh-cw" class="w-6 h-6 text-violet-500"></i>
+                        </div>
+                        <span class="badge-new">Nouveau</span>
                     </div>
-                    <h3 class="font-display font-semibold text-xl text-slate-50 mb-2">Material You</h3>
-                    <p class="text-slate-400 leading-relaxed">Design moderne avec couleurs dynamiques adaptees a votre fond d'ecran et support du mode sombre.</p>
+                    <h3 class="font-display font-semibold text-xl text-slate-50 mb-2">Retry configurable</h3>
+                    <p class="text-slate-400 leading-relaxed">Tentatives max (1-10), delai initial (30s / 1min / 5min / 15min), multiplicateur de backoff (x1.5 / x2 / x3). Chaque message finit par arriver.</p>
+                </div>
+
+                <!-- Feature 7 -->
+                <div class="glass glow-card p-6 sm:p-8">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center">
+                            <i data-lucide="bell-ring" class="w-6 h-6 text-blue-500"></i>
+                        </div>
+                        <span class="badge-new">Nouveau</span>
+                    </div>
+                    <h3 class="font-display font-semibold text-xl text-slate-50 mb-2">Centre de notifications</h3>
+                    <p class="text-slate-400 leading-relaxed">Alertes persistees en base : erreurs de regles, destination injoignable, alertes batterie. Marquer comme lu individuellement ou globalement.</p>
+                </div>
+
+                <!-- Feature 8 -->
+                <div class="glass glow-card p-6 sm:p-8">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center">
+                            <i data-lucide="activity" class="w-6 h-6 text-blue-500"></i>
+                        </div>
+                        <span class="badge-new">Nouveau</span>
+                    </div>
+                    <h3 class="font-display font-semibold text-xl text-slate-50 mb-2">Ecran Diagnostics</h3>
+                    <p class="text-slate-400 leading-relaxed">Audit des permissions, optimisation batterie, acces notifications, connectivite reseau. Chaque check propose un deep-link vers les parametres systeme.</p>
+                </div>
+
+                <!-- Feature 9 -->
+                <div class="glass glow-card p-6 sm:p-8">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center">
+                            <i data-lucide="shield-check" class="w-6 h-6 text-blue-500"></i>
+                        </div>
+                    </div>
+                    <h3 class="font-display font-semibold text-xl text-slate-50 mb-2">100% local &amp; ouvert</h3>
+                    <p class="text-slate-400 leading-relaxed">Aucune donnee envoyee a un serveur, zero analytics, zero tracking. Code source ouvert sous AGPL-3.0, verifiable sur GitHub.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================== RULES & WEBHOOK SHOWCASE ======================== -->
+    <section id="rules" class="relative py-20 sm:py-28">
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-slate-800/30 to-transparent"></div>
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-14">
+                <h2 class="font-display font-bold text-3xl sm:text-4xl text-slate-50 mb-4">Regles de transfert &amp; Webhook</h2>
+                <p class="text-slate-400 text-lg max-w-2xl mx-auto">Un systeme de routage puissant : chaque message est analyse, matche contre vos regles, puis envoye vers la bonne destination.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Rules -->
+                <div class="glass-static p-8">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 rounded-lg bg-violet-500/10 flex items-center justify-center">
+                            <i data-lucide="git-branch" class="w-5 h-5 text-violet-500"></i>
+                        </div>
+                        <h3 class="font-display font-semibold text-xl text-slate-50">Regles configurables (CRUD)</h3>
+                    </div>
+                    <ul class="space-y-3">
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5"></i>
+                            <span class="text-slate-400"><strong class="text-slate-200">Expediteur en regex</strong> — filtrez par numero, motif ou prfixe</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5"></i>
+                            <span class="text-slate-400"><strong class="text-slate-200">Mot-cle</strong> — condition supplementaire sur le contenu</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5"></i>
+                            <span class="text-slate-400"><strong class="text-slate-200">Destination par regle</strong> — SMS ou webhook, independant de la destination globale</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5"></i>
+                            <span class="text-slate-400"><strong class="text-slate-200">Priorite &amp; activation</strong> — ordonnez vos regles, activez / desactivez sans supprimer</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5"></i>
+                            <span class="text-slate-400"><strong class="text-slate-200">Test interactif</strong> — validez une regle avec un SMS d'exemple avant de l'activer</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Webhook -->
+                <div class="glass-static p-8">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+                            <i data-lucide="webhook" class="w-5 h-5 text-emerald-500"></i>
+                        </div>
+                        <h3 class="font-display font-semibold text-xl text-slate-50">Webhook HTTP POST JSON</h3>
+                    </div>
+                    <p class="text-slate-400 leading-relaxed mb-4">
+                        Branchez SMS Forwarder sur votre API, votre bot Slack, un n8n, ou n'importe quel service HTTP. Le payload est envoye en <code class="text-emerald-400 text-sm bg-emerald-500/10 px-1.5 py-0.5 rounded">POST application/json</code> sans aucune dependance externe (HttpURLConnection natif).
+                    </p>
+                    <div class="bg-slate-950/80 rounded-xl border border-slate-800 p-4 font-mono text-xs leading-relaxed overflow-x-auto">
+                        <span class="text-slate-500">// POST https://votre-endpoint.com/sms</span><br>
+                        <span class="text-emerald-400">{</span><br>
+                        &nbsp;&nbsp;<span class="text-blue-400">"sender"</span><span class="text-slate-500">:</span> <span class="text-amber-300">"+33612345678"</span><span class="text-slate-500">,</span><br>
+                        &nbsp;&nbsp;<span class="text-blue-400">"content"</span><span class="text-slate-500">:</span> <span class="text-amber-300">"Votre code: 8472"</span><span class="text-slate-500">,</span><br>
+                        &nbsp;&nbsp;<span class="text-blue-400">"receivedAt"</span><span class="text-slate-500">:</span> <span class="text-amber-300">"2026-05-01T19:08:32Z"</span><span class="text-slate-500">,</span><br>
+                        &nbsp;&nbsp;<span class="text-blue-400">"sourceLabel"</span><span class="text-slate-500">:</span> <span class="text-amber-300">"WhatsApp"</span><span class="text-slate-500">,</span><br>
+                        &nbsp;&nbsp;<span class="text-blue-400">"originalDestination"</span><span class="text-slate-500">:</span> <span class="text-amber-300">"+33600000000"</span><br>
+                        <span class="text-emerald-400">}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- App monitoring row -->
+            <div class="mt-8 glass-static p-8">
+                <div class="flex flex-col lg:flex-row items-start gap-6">
+                    <div class="flex items-center gap-3 flex-shrink-0">
+                        <div class="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center">
+                            <i data-lucide="smartphone" class="w-5 h-5 text-orange-500"></i>
+                        </div>
+                        <h3 class="font-display font-semibold text-xl text-slate-50">Surveillance d'apps tierces</h3>
+                    </div>
+                    <p class="text-slate-400 leading-relaxed flex-1">
+                        Ajoutez une whitelist d'applications dont les notifications seront interceptees et transferees comme des SMS. Le <code class="text-orange-400 text-sm bg-orange-500/10 px-1.5 py-0.5 rounded">sourceLabel</code> indique l'app d'origine dans le payload webhook.
+                    </p>
+                    <div class="flex flex-wrap gap-2 flex-shrink-0">
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 text-sm font-medium">WhatsApp</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 text-sm font-medium">Telegram</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 text-sm font-medium">Allo</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 text-sm font-medium">Ringover</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 text-sm font-medium">Onoff</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -438,7 +605,6 @@
 
     <!-- ======================== HOW IT WORKS ======================== -->
     <section id="how-it-works" class="relative py-20 sm:py-28">
-        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-slate-800/30 to-transparent"></div>
         <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-14">
                 <h2 class="font-display font-bold text-3xl sm:text-4xl text-slate-50 mb-4">Comment ca marche</h2>
@@ -453,7 +619,7 @@
                             <span class="font-display font-bold text-xl text-white">1</span>
                         </div>
                         <h3 class="font-display font-semibold text-xl text-slate-50 mb-3">Configurez</h3>
-                        <p class="text-slate-400 leading-relaxed">Saisissez le numero de destination et activez le transfert. Une seule fois suffit.</p>
+                        <p class="text-slate-400 leading-relaxed">Onboarding en 4 etapes : accueil, permissions, numero de destination et SMS de test. Chaque permission est expliquee individuellement.</p>
                     </div>
                 </div>
 
@@ -464,7 +630,7 @@
                             <span class="font-display font-bold text-xl text-white">2</span>
                         </div>
                         <h3 class="font-display font-semibold text-xl text-slate-50 mb-3">Recevez</h3>
-                        <p class="text-slate-400 leading-relaxed">L'app intercepte automatiquement chaque SMS et RCS entrant en temps reel.</p>
+                        <p class="text-slate-400 leading-relaxed">L'app intercepte automatiquement chaque SMS, RCS et notification d'app via triple capture. Les regles analysent chaque message en temps reel.</p>
                     </div>
                 </div>
 
@@ -475,7 +641,7 @@
                             <span class="font-display font-bold text-xl text-white">3</span>
                         </div>
                         <h3 class="font-display font-semibold text-xl text-slate-50 mb-3">Transferez</h3>
-                        <p class="text-slate-400 leading-relaxed">Le message est renvoye en moins de 3 secondes, avec un historique complet consultable.</p>
+                        <p class="text-slate-400 leading-relaxed">Le message est route vers le bon destinataire (SMS ou webhook) selon vos regles. Suivi complet dans l'historique avec filtres et renvoi.</p>
                     </div>
                 </div>
             </div>
@@ -520,7 +686,7 @@
                     </div>
                     <div>
                         <div class="text-slate-500 text-sm">Architecture</div>
-                        <div class="font-display font-semibold text-slate-50">MVVM + Hilt</div>
+                        <div class="font-display font-semibold text-slate-50">MVVM + Hilt + Ports/Adapters</div>
                     </div>
                 </div>
 
@@ -531,7 +697,7 @@
                     </div>
                     <div>
                         <div class="text-slate-500 text-sm">Base de donnees</div>
-                        <div class="font-display font-semibold text-slate-50">Room (SQLite)</div>
+                        <div class="font-display font-semibold text-slate-50">Room v2 (SQLite)</div>
                     </div>
                 </div>
 
@@ -542,7 +708,7 @@
                     </div>
                     <div>
                         <div class="text-slate-500 text-sm">Taille APK</div>
-                        <div class="font-display font-semibold text-slate-50">6.7 MB</div>
+                        <div class="font-display font-semibold text-slate-50">6.8 MB</div>
                     </div>
                 </div>
 
@@ -553,7 +719,7 @@
                     </div>
                     <div>
                         <div class="text-slate-500 text-sm">Tests</div>
-                        <div class="font-display font-semibold text-slate-50">107 (unit + integration)</div>
+                        <div class="font-display font-semibold text-slate-50">185 (unit + integration)</div>
                     </div>
                 </div>
             </div>
@@ -569,7 +735,7 @@
                 Pret a transferer vos messages ?
             </h2>
             <p class="text-slate-400 text-lg sm:text-xl mb-10 max-w-xl mx-auto">
-                Telechargez gratuitement depuis GitHub Releases. Open source, transparent, sans compte requis.
+                Telechargez gratuitement depuis GitHub Releases ou Google Play. Open source, transparent, sans compte requis.
             </p>
 
             <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
@@ -580,10 +746,10 @@
                     Disponible sur Google Play
                 </a>
                 <!-- APK -->
-                <a href="https://github.com/ronylicha/SMS-Forwarder/releases/download/v1.1.1/SMS-Forwarder-v1.1.1.apk"
+                <a href="https://github.com/ronylicha/SMS-Forwarder/releases/download/v1.3.1/SmsForwarder-v1.3.1-release.apk"
                    class="inline-flex items-center justify-center gap-3 bg-emerald-500 hover:bg-emerald-400 text-white font-semibold text-lg px-10 py-5 rounded-2xl transition-all duration-200 glow-emerald cursor-pointer w-full sm:w-auto">
                     <i data-lucide="download" class="w-6 h-6"></i>
-                    Telecharger l'APK v1.1.1
+                    Telecharger l'APK v1.3.1
                 </a>
             </div>
 
@@ -594,6 +760,14 @@
                    class="inline-flex items-center gap-2 text-slate-400 hover:text-slate-200 transition-colors duration-200 cursor-pointer">
                     <i data-lucide="github" class="w-5 h-5"></i>
                     Code source sur GitHub
+                </a>
+                <span class="hidden sm:inline text-slate-700">|</span>
+                <a href="https://github.com/ronylicha/SMS-Forwarder/releases"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="inline-flex items-center gap-2 text-slate-400 hover:text-slate-200 transition-colors duration-200 cursor-pointer">
+                    <i data-lucide="tag" class="w-5 h-5"></i>
+                    Toutes les releases
                 </a>
                 <span class="hidden sm:inline text-slate-700">|</span>
                 <div class="inline-flex items-center gap-2 glass-static px-4 py-2">
@@ -620,7 +794,7 @@
                         <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 faq-chevron flex-shrink-0"></i>
                     </button>
                     <div class="faq-answer px-5 sm:px-6">
-                        <p class="text-slate-400 leading-relaxed">Non. L'app utilise des BroadcastReceivers et un service foreground optimise. Elle ne consomme de la batterie qu'au moment ou un SMS est recu et transfere. En veille, l'impact est negligeable, comparable a une application de messagerie classique.</p>
+                        <p class="text-slate-400 leading-relaxed">Non. L'app utilise des BroadcastReceivers et un service foreground optimise. Elle ne consomme de la batterie qu'au moment ou un message est recu et transfere. En veille, l'impact est negligeable. L'ecran Diagnostics vous permet de verifier l'optimisation batterie d'un seul coup d'oeil.</p>
                     </div>
                 </div>
 
@@ -631,7 +805,7 @@
                         <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 faq-chevron flex-shrink-0"></i>
                     </button>
                     <div class="faq-answer px-5 sm:px-6">
-                        <p class="text-slate-400 leading-relaxed">Oui, chaque SMS transfere est envoye comme un SMS standard depuis votre telephone. Il est decompte de votre forfait SMS. Si vous avez un forfait avec SMS illimites en France metropolitaine, le transfert vers un numero francais sera inclus sans cout supplementaire.</p>
+                        <p class="text-slate-400 leading-relaxed">Chaque SMS transfere est envoye comme un SMS standard depuis votre telephone et est decompte de votre forfait. Le transfert vers un webhook HTTP est en revanche gratuit (utilise votre connexion data). Si vous avez un forfait SMS illimite, le transfert vers un numero francais sera sans cout supplementaire.</p>
                     </div>
                 </div>
 
@@ -642,33 +816,44 @@
                         <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 faq-chevron flex-shrink-0"></i>
                     </button>
                     <div class="faq-answer px-5 sm:px-6">
-                        <p class="text-slate-400 leading-relaxed">Absolument pas. L'application fonctionne a 100% en local sur votre telephone. Aucune donnee n'est transmise a un serveur externe. Il n'y a ni analytics, ni tracking, ni telemetrie. Le code source est ouvert et verifiable sur GitHub.</p>
+                        <p class="text-slate-400 leading-relaxed">L'application fonctionne a 100% en local sur votre telephone. Il n'y a ni analytics, ni tracking, ni telemetrie. Si vous configurez un webhook, les messages correspondant a cette regle sont envoyes uniquement vers l'URL que vous avez definie — vous gardez le controle total. Le code source est ouvert et verifiable sur GitHub.</p>
                     </div>
                 </div>
 
                 <!-- FAQ 4 -->
                 <div class="glass-static overflow-hidden">
                     <button class="faq-toggle w-full flex items-center justify-between p-5 sm:p-6 text-left cursor-pointer" aria-expanded="false">
-                        <span class="font-display font-semibold text-slate-50 pr-4">L'app fonctionne-t-elle avec les messages RCS ?</span>
+                        <span class="font-display font-semibold text-slate-50 pr-4">Comment fonctionnent les regles de transfert ?</span>
                         <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 faq-chevron flex-shrink-0"></i>
                     </button>
                     <div class="faq-answer px-5 sm:px-6">
-                        <p class="text-slate-400 leading-relaxed">Oui. L'app utilise un NotificationListenerService pour capturer les messages RCS affiches dans les notifications. Le contenu du message RCS est ensuite transfere par SMS classique vers le numero de destination configure.</p>
+                        <p class="text-slate-400 leading-relaxed">Chaque message entrant est analyse par vos regles, dans l'ordre de priorite. Une regle peut matcher sur l'expediteur (regex) et/ou un mot-cle dans le contenu. Si une regle correspond, le message est envoye vers la destination definie dans cette regle (SMS ou webhook). Si aucune regle ne correspond, le fallback utilise la destination globale. Vous pouvez tester chaque regle interact- tivement avant de l'activer.</p>
                     </div>
                 </div>
 
                 <!-- FAQ 5 -->
                 <div class="glass-static overflow-hidden">
                     <button class="faq-toggle w-full flex items-center justify-between p-5 sm:p-6 text-left cursor-pointer" aria-expanded="false">
-                        <span class="font-display font-semibold text-slate-50 pr-4">Que se passe-t-il apres un redemarrage du telephone ?</span>
+                        <span class="font-display font-semibold text-slate-50 pr-4">Peut-on transferer les notifications WhatsApp, Telegram, etc. ?</span>
                         <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 faq-chevron flex-shrink-0"></i>
                     </button>
                     <div class="faq-answer px-5 sm:px-6">
-                        <p class="text-slate-400 leading-relaxed">L'app se relance automatiquement grace a un BootReceiver. Votre configuration et l'etat d'activation sont conserves. Le transfert reprend sans aucune intervention de votre part.</p>
+                        <p class="text-slate-400 leading-relaxed">Oui. L'app intercepte les notifications des applications que vous ajoutez a la whitelist (WhatsApp, Telegram, Allo, Ringover, Onoff...). Le contenu de la notification est alors transfere comme un SMS ou via webhook, avec un <code class="text-orange-400 text-sm bg-orange-500/10 px-1.5 py-0.5 rounded">sourceLabel</code> indiquant l'app d'origine.</p>
                     </div>
                 </div>
 
                 <!-- FAQ 6 -->
+                <div class="glass-static overflow-hidden">
+                    <button class="faq-toggle w-full flex items-center justify-between p-5 sm:p-6 text-left cursor-pointer" aria-expanded="false">
+                        <span class="font-display font-semibold text-slate-50 pr-4">Que se passe-t-il apres un redemarrage du telephone ?</span>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 faq-chevron flex-shrink-0"></i>
+                    </button>
+                    <div class="faq-answer px-5 sm:px-6">
+                        <p class="text-slate-400 leading-relaxed">L'app se relance automatiquement grace a un BootReceiver. Votre configuration, vos regles et l'etat d'activation sont conserves en base Room. Le transfert reprend sans aucune intervention de votre part.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ 7 -->
                 <div class="glass-static overflow-hidden">
                     <button class="faq-toggle w-full flex items-center justify-between p-5 sm:p-6 text-left cursor-pointer" aria-expanded="false">
                         <span class="font-display font-semibold text-slate-50 pr-4">Comment eviter une boucle de transfert ?</span>
@@ -676,6 +861,17 @@
                     </button>
                     <div class="faq-answer px-5 sm:px-6">
                         <p class="text-slate-400 leading-relaxed">L'app detecte automatiquement les messages qu'elle a elle-meme envoyes et les exclut du transfert. De plus, le numero de destination est automatiquement ajoute a la liste noire. Il est donc impossible de creer une boucle infinie.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ 8 -->
+                <div class="glass-static overflow-hidden">
+                    <button class="faq-toggle w-full flex items-center justify-between p-5 sm:p-6 text-left cursor-pointer" aria-expanded="false">
+                        <span class="font-display font-semibold text-slate-50 pr-4">Le webhook fonctionne-t-il sans connexion internet ?</span>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 faq-chevron flex-shrink-0"></i>
+                    </button>
+                    <div class="faq-answer px-5 sm:px-6">
+                        <p class="text-slate-400 leading-relaxed">Le webhook necessite une connexion data. En cas d'echec (reseau indisponible, endpoint injoignable), l'app retente automatiquement selon votre politique de retry configurable (jusqu'a 10 tentatives avec backoff exponentiel). Vous pouvez configurer un fallback SMS pour les regles critiques.</p>
                     </div>
                 </div>
             </div>
@@ -698,7 +894,7 @@
                         </svg>
                         <span class="font-display font-bold text-lg text-slate-50">SMS Forwarder</span>
                     </div>
-                    <p class="text-slate-400 text-sm leading-relaxed max-w-xs">Application Android open source de transfert automatique de SMS et RCS. Legere, fiable, respectueuse de votre vie privee.</p>
+                    <p class="text-slate-400 text-sm leading-relaxed max-w-xs">Application Android open source de transfert automatique de SMS, RCS et notifications d'apps. Legere, fiable, configurable, respectueuse de votre vie privee.</p>
                 </div>
 
                 <!-- Links -->
@@ -708,6 +904,7 @@
                         <li><a href="https://github.com/ronylicha/SMS-Forwarder" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-slate-200 text-sm transition-colors duration-200 cursor-pointer">GitHub</a></li>
                         <li><a href="https://github.com/ronylicha/SMS-Forwarder/wiki" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-slate-200 text-sm transition-colors duration-200 cursor-pointer">Wiki</a></li>
                         <li><a href="https://github.com/ronylicha/SMS-Forwarder/releases" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-slate-200 text-sm transition-colors duration-200 cursor-pointer">Releases</a></li>
+                        <li><a href="https://github.com/ronylicha/SMS-Forwarder/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-slate-200 text-sm transition-colors duration-200 cursor-pointer">Changelog</a></li>
                     </ul>
                 </div>
 
