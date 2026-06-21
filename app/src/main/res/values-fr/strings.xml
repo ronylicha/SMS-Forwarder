@@ -390,4 +390,26 @@
     <string name="onboarding_destination_hint">Vous pourrez ajouter des regles avec d\'autres destinations (webhook, email) plus tard.</string>
     <string name="onboarding_test_desc">Envoyez un SMS de test au numero configure pour valider l\'envoi.</string>
 
+    <!-- New strings for full i18n (hardcoded text externalization) -->
+    <string name="action_refresh">Actualiser</string>
+    <string name="rule_edit_title_edit">Modifier la regle</string>
+    <string name="rule_edit_identity">Identite</string>
+    <string name="rule_edit_match_criteria">Critere de match</string>
+    <string name="rule_edit_save">Enregistrer la regle</string>
+    <string name="rule_edit_test_example">Tester avec un exemple</string>
+    <string name="main_view_trends">Voir les tendances</string>
+    <string name="onboarding_test_pipeline">Tester le pipeline</string>
+    <string name="diag_audit_title">Audit du systeme</string>
+    <string name="diag_global_state">Etat global</string>
+    <string name="diag_phone_state">Etat du telephone</string>
+    <string name="diag_battery_optimization">Optimisation batterie</string>
+    <string name="diag_internet_connectivity">Connectivite Internet</string>
+    <string name="notif_mark_all_read">Tout marquer lu</string>
+    <string name="rules_empty_hint">Creez une regle pour router les SMS selon l expediteur, le mot-cle ou le contenu.</string>
+    <string name="rules_create_button">Creer une regle</string>
+    <string name="rule_edit_forward_desc">Renvoyer le message vers un numero de telephone</string>
+    <string name="onboarding_feature_sms">Transfert automatique des SMS et RCS</string>
+    <string name="onboarding_feature_rules">Regles de routage par expediteur ou mot-cle</string>
+    <string name="notif_empty_desc">Les erreurs de regles, problemes de destinations et alertes apparaitront ici.</string>
+
 </resources>

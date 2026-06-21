@@ -92,7 +92,7 @@ fun HistoryScreen(
                 title = { Text(stringResource(R.string.history_title), fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Retour")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.nav_back))
                     }
                 },
                 actions = {
@@ -338,7 +338,7 @@ private fun HistoryContent(
                         IconButton(onClick = { onRetry(record.id) }) {
                             Icon(
                                 Icons.Filled.Refresh,
-                                contentDescription = "Renvoyer",
+                                contentDescription = stringResource(R.string.action_resend),
                                 tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.size(24.dp),
                             )

@@ -369,4 +369,26 @@
     <string name="onboarding_destination_hint">You can add rules with other destinations (webhook, email) later.</string>
     <string name="onboarding_test_desc">Send a test SMS to the configured number to validate sending.</string>
 
+    <!-- New strings for full i18n (hardcoded text externalization) -->
+    <string name="action_refresh">Refresh</string>
+    <string name="rule_edit_title_edit">Edit rule</string>
+    <string name="rule_edit_identity">Identity</string>
+    <string name="rule_edit_match_criteria">Match criteria</string>
+    <string name="rule_edit_save">Save rule</string>
+    <string name="rule_edit_test_example">Test with example</string>
+    <string name="main_view_trends">View trends</string>
+    <string name="onboarding_test_pipeline">Test pipeline</string>
+    <string name="diag_audit_title">System audit</string>
+    <string name="diag_global_state">Overall status</string>
+    <string name="diag_phone_state">Phone state</string>
+    <string name="diag_battery_optimization">Battery optimization</string>
+    <string name="diag_internet_connectivity">Internet connectivity</string>
+    <string name="notif_mark_all_read">Mark all as read</string>
+    <string name="rules_empty_hint">Create a rule to route SMS by sender, keyword or content.</string>
+    <string name="rules_create_button">Create rule</string>
+    <string name="rule_edit_forward_desc">Forward message to a phone number</string>
+    <string name="onboarding_feature_sms">Automatic SMS and RCS forwarding</string>
+    <string name="onboarding_feature_rules">Routing rules by sender or keyword</string>
+    <string name="notif_empty_desc">Rule errors, destination issues and alerts will appear here.</string>
+
 </resources>

@@ -147,7 +147,7 @@ fun MainScreen(
                 val rate = if (total > 0) uiState.totalForwarded.toFloat() / total else 0f
                 StatTile(
                     value = "%.0f%%".format(rate * 100),
-                    label = "Taux de succes",
+                    label = stringResource(R.string.stats_success_rate),
                     valueColor = MaterialTheme.colorScheme.tertiary,
                     progress = rate,
                     progressColor = MaterialTheme.colorScheme.tertiary,
@@ -189,12 +189,12 @@ fun MainScreen(
                 NavigationCard(
                     icon = Icons.Filled.BarChart,
                     title = stringResource(R.string.main_statistics),
-                    subtitle = "Voir les tendances",
+                    subtitle = stringResource(R.string.main_view_trends),
                     onClick = onNavigateToStats,
                 )
                 NavigationCard(
                     icon = Icons.Filled.Settings,
-                    title = "Reglages",
+                    title = stringResource(R.string.settings_title),
                     subtitle = stringResource(R.string.main_configure_forwarding),
                     onClick = onNavigateToSettings,
                 )

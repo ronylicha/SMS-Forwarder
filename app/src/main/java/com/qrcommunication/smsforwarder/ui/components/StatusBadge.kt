@@ -31,7 +31,7 @@ fun StatusBadge(
             containerColor = MaterialTheme.colorScheme.tertiaryContainer,
             contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
             icon = Icons.Filled.CheckCircle,
-            label = "Envoye"
+            label = stringResource(R.string.status_sent)
         )
         SmsStatus.FAILED.value -> StatusInfo(
             containerColor = MaterialTheme.colorScheme.errorContainer,
@@ -43,7 +43,7 @@ fun StatusBadge(
             containerColor = MaterialTheme.colorScheme.secondaryContainer,
             contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
             icon = Icons.Filled.Schedule,
-            label = "En attente"
+            label = stringResource(R.string.stats_pending)
         )
         SmsStatus.FILTERED.value -> StatusInfo(
             containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,

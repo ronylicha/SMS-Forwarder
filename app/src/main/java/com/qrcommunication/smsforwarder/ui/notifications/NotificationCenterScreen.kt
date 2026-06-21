@@ -82,13 +82,13 @@ fun NotificationCenterScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Retour")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.nav_back))
                     }
                 },
                 actions = {
                     AnimatedVisibility(visible = uiState.unreadCount > 0) {
                         IconButton(onClick = viewModel::markAllAsRead) {
-                            Icon(Icons.Filled.DoneAll, contentDescription = "Tout marquer lu")
+                            Icon(Icons.Filled.DoneAll, contentDescription = stringResource(R.string.notif_mark_all_read))
                         }
                     }
                     AnimatedVisibility(visible = uiState.notifications.isNotEmpty()) {
@@ -110,7 +110,7 @@ fun NotificationCenterScreen(
                 EmptyState(
                     icon = Icons.Filled.NotificationsNone,
                     title = stringResource(R.string.notifications_empty),
-                    description = "Les erreurs de regles, problemes de destinations et alertes apparaitront ici.",
+                    description = stringResource(R.string.notif_empty_desc),
                 )
             }
             return@Scaffold

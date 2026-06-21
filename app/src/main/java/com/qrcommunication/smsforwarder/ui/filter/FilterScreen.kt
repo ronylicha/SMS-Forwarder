@@ -73,7 +73,7 @@ fun FilterScreen(
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Retour"
+                            contentDescription = stringResource(R.string.nav_back)
                         )
                     }
                 },

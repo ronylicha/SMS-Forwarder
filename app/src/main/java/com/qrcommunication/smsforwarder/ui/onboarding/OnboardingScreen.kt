@@ -144,8 +144,8 @@ private fun WelcomePage() {
         title = stringResource(R.string.onboarding_title_v2),
         subtitle = stringResource(R.string.onboarding_subtitle_v2),
     ) {
-        FeatureBullet("Transfert automatique des SMS et RCS")
-        FeatureBullet("Regles de routage par expediteur ou mot-cle")
+        FeatureBullet(stringResource(R.string.onboarding_feature_sms))
+        FeatureBullet(stringResource(R.string.onboarding_feature_rules))
         FeatureBullet("Destinations multiples : SMS, webhook, email")
         FeatureBullet("Historique complet et retry manuel")
     }
@@ -161,7 +161,7 @@ private fun PermissionsPage() {
         PermissionRow("Reception SMS", "Pour detecter les SMS entrants en temps reel.")
         PermissionRow("Envoi SMS", "Pour transferer vers le numero de destination.")
         PermissionRow("Lecture SMS", "Pour reconstituer les messages multipart correctement.")
-        PermissionRow("Etat du telephone", "Pour gerer le multi-SIM si applicable.")
+        PermissionRow(stringResource(R.string.diag_phone_state), "Pour gerer le multi-SIM si applicable.")
         PermissionRow("Notifications", "Pour le service en arriere-plan + capture des RCS et apps tierces.")
         PermissionRow(
             "Avertissement securite",
@@ -191,7 +191,7 @@ private fun DestinationPage(state: OnboardingUiState, onChange: (String) -> Unit
 private fun TestPage(state: OnboardingUiState, onSendTest: () -> Unit) {
     OnboardingPageScaffold(
         icon = Icons.AutoMirrored.Filled.Send,
-        title = "Tester le pipeline",
+        title = stringResource(R.string.onboarding_test_pipeline),
         subtitle = stringResource(R.string.onboarding_test_desc) +
             "Pour tester la reception, envoyez vous un SMS depuis un autre telephone.",
     ) {
@@ -214,7 +214,7 @@ private fun TestPage(state: OnboardingUiState, onSendTest: () -> Unit) {
             TestStatus.SENT -> StatusLine(
                 icon = Icons.Filled.CheckCircle,
                 color = MaterialTheme.colorScheme.primary,
-                text = "SMS de test envoye - verifiez sa reception sur le numero destination.",
+                text = stringResource(R.string.settings_test_success),
             )
             TestStatus.FAILED -> StatusLine(
                 icon = Icons.Filled.Error,

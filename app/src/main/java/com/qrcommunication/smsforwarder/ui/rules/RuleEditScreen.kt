@@ -70,13 +70,13 @@ fun RuleEditScreen(
             TopAppBar(
                 title = {
                     Text(
-                        if (uiState.id == 0L) "Nouvelle regle" else "Modifier la regle",
+                        if (uiState.id == 0L) stringResource(R.string.rules_new) else stringResource(R.string.rule_edit_title_edit),
                         fontWeight = FontWeight.Bold,
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Retour")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.nav_back))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -94,7 +94,7 @@ fun RuleEditScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            SettingsCard(title = "Identite", icon = Icons.Filled.Tune) {
+            SettingsCard(title = stringResource(R.string.rule_edit_identity), icon = Icons.Filled.Tune) {
                 OutlinedTextField(
                     value = uiState.name,
                     onValueChange = viewModel::updateName,
@@ -108,7 +108,7 @@ fun RuleEditScreen(
                 }
             }
 
-            SettingsCard(title = "Critere de match") {
+            SettingsCard(title = stringResource(R.string.rule_edit_match_criteria)) {
                 OutlinedTextField(
                     value = uiState.senderPattern,
                     onValueChange = viewModel::updateSenderPattern,
@@ -132,7 +132,7 @@ fun RuleEditScreen(
                 )
             }
 
-            SettingsCard(title = "Destination") {
+            SettingsCard(title = stringResource(R.string.detail_destination)) {
                 DestinationType.entries.forEach { type ->
                     ConfigOption(
                         label = type.toLabel(),
@@ -151,7 +151,7 @@ fun RuleEditScreen(
                 )
             }
 
-            SettingsCard(title = "Tester avec un exemple", icon = Icons.AutoMirrored.Filled.Send) {
+            SettingsCard(title = stringResource(R.string.rule_edit_test_example), icon = Icons.AutoMirrored.Filled.Send) {
                 OutlinedTextField(
                     value = uiState.testSampleSender,
                     onValueChange = viewModel::updateTestSender,
@@ -175,7 +175,7 @@ fun RuleEditScreen(
                 enabled = !uiState.isSaving,
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Text(if (uiState.isSaving) "Enregistrement..." else "Enregistrer la regle")
+                Text(if (uiState.isSaving) "Enregistrement..." else stringResource(R.string.rule_edit_save))
             }
         }
     }
@@ -186,8 +186,9 @@ private fun DestinationType.toLabel(): String = when (this) {
     DestinationType.WEBHOOK -> "Webhook (HTTP POST)"
 }
 
+@Composable
 private fun DestinationType.toHint(): String = when (this) {
-    DestinationType.SMS -> "Renvoyer le message vers un numero de telephone"
+    DestinationType.SMS -> stringResource(R.string.rule_edit_forward_desc)
     DestinationType.WEBHOOK -> "Envoyer un POST JSON a une URL"
 }
 

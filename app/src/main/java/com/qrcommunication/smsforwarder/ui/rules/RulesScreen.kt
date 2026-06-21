@@ -60,7 +60,7 @@ fun RulesScreen(
                 title = { Text(stringResource(R.string.settings_rules_transfer), fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Retour")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.nav_back))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -81,9 +81,8 @@ fun RulesScreen(
                 EmptyState(
                     icon = Icons.AutoMirrored.Filled.Rule,
                     title = stringResource(R.string.rules_empty),
-                    description = "Creez une regle pour router les SMS selon l'expediteur, " +
-                        "des mots-cles, vers SMS / webhook / email.",
-                    actionLabel = "Creer une regle",
+                    description = stringResource(R.string.rules_empty_hint),
+                    actionLabel = stringResource(R.string.rules_create_button),
                     onAction = { onNavigateToEdit(0L) },
                 )
             }

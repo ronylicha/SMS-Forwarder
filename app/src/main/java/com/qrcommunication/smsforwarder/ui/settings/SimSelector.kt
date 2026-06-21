@@ -111,7 +111,7 @@ fun SimSelector(
             } else {
                 // Automatic option
                 SimOption(
-                    label = "Automatique (par defaut)",
+                    label = stringResource(R.string.sim_auto),
                     subtitle = stringResource(R.string.sim_use_default),
                     selected = selectedSlot == -1,
                     onClick = { onSlotSelected(-1) }

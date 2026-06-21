@@ -91,7 +91,7 @@ fun DetailScreen(
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Retour"
+                            contentDescription = stringResource(R.string.nav_back)
                         )
                     }
                 },
@@ -205,13 +205,13 @@ fun DetailScreen(
                         maxItemsInEachRow = 2
                     ) {
                         InfoCard(
-                            label = "Destination",
+                            label = stringResource(R.string.detail_destination),
                             value = PhoneValidator.formatDisplay(record.destination),
                             modifier = Modifier.weight(1f)
                         )
 
                         InfoCard(
-                            label = "Recu le",
+                            label = stringResource(R.string.detail_received_at),
                             value = DateFormatter.formatFull(record.receivedAt),
                             modifier = Modifier.weight(1f)
                         )

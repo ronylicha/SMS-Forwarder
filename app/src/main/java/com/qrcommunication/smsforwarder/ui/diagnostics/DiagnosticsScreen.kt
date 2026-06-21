@@ -55,13 +55,13 @@ fun DiagnosticsScreen(
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Retour",
+                            contentDescription = stringResource(R.string.nav_back),
                         )
                     }
                 },
                 actions = {
                     IconButton(onClick = viewModel::refresh) {
-                        Icon(Icons.Filled.Refresh, contentDescription = "Actualiser")
+                        Icon(Icons.Filled.Refresh, contentDescription = stringResource(R.string.action_refresh))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -97,7 +97,7 @@ fun DiagnosticsScreen(
             }
             item {
                 SettingsCard(
-                    title = "Audit du systeme",
+                    title = stringResource(R.string.diag_audit_title),
                     icon = Icons.Filled.HealthAndSafety,
                 ) {
                     Spacer(modifier = Modifier.height(4.dp))
@@ -135,7 +135,7 @@ private fun SummaryCard(errors: Int, warnings: Int, total: Int) {
     SettingsCard {
         StatusItem(
             severity = severity,
-            title = "Etat global",
+            title = stringResource(R.string.diag_global_state),
             description = message,
         )
     }

@@ -73,7 +73,7 @@ fun StatsScreen(
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Retour"
+                            contentDescription = stringResource(R.string.nav_back)
                         )
                     }
                 },
@@ -177,7 +177,7 @@ private fun OverallStatsCard(stats: SmsStats) {
             ) {
                 StatItem(
                     icon = Icons.Filled.Mail,
-                    label = "Total",
+                    label = stringResource(R.string.stats_total),
                     value = stats.totalCount.toString(),
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.weight(1f)
@@ -217,7 +217,7 @@ private fun OverallStatsCard(stats: SmsStats) {
             ) {
                 StatItem(
                     icon = Icons.Filled.HourglassEmpty,
-                    label = "En attente",
+                    label = stringResource(R.string.stats_pending),
                     value = stats.pendingCount.toString(),
                     color = Color(0xFF2196F3),
                     modifier = Modifier.weight(1f)

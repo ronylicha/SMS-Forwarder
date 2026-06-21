@@ -52,7 +52,7 @@ class DiagnosticsRunner @Inject constructor(
             Manifest.permission.RECEIVE_SMS to "Reception SMS",
             Manifest.permission.SEND_SMS to "Envoi SMS",
             Manifest.permission.READ_SMS to "Lecture SMS",
-            Manifest.permission.READ_PHONE_STATE to "Etat du telephone",
+            Manifest.permission.READ_PHONE_STATE to context.getString(R.string.diag_phone_state),
         )
         return perms.map { (perm, label) ->
             val granted = ContextCompat.checkSelfPermission(context, perm) == PackageManager.PERMISSION_GRANTED
@@ -106,7 +106,7 @@ class DiagnosticsRunner @Inject constructor(
         }
         return DiagnosticCheck(
             id = "battery_optimization",
-            title = "Optimisation batterie",
+            title = context.getString(R.string.diag_battery_optimization),
             description = if (ignoring) {
                 "Exception accordee - le service ne sera pas suspendu"
             } else {
@@ -126,7 +126,7 @@ class DiagnosticsRunner @Inject constructor(
             capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
         return DiagnosticCheck(
             id = "network",
-            title = "Connectivite Internet",
+            title = context.getString(R.string.diag_internet_connectivity),
             description = if (online) {
                 "En ligne (necessaire pour les destinations webhook)"
             } else {
