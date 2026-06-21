@@ -63,6 +63,7 @@ class HistoryViewModelTest {
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
+        whenever(context.getString(any())).thenReturn("test")
     }
 
     @After
