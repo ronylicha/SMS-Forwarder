@@ -1,6 +1,7 @@
 package com.qrcommunication.smsforwarder.ui.settings
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.telephony.SubscriptionInfo
@@ -170,6 +171,7 @@ private fun SimOption(
     }
 }
 
+@SuppressLint("MissingPermission")
 private fun getAvailableSims(context: Context): List<SimInfo> {
     return try {
         val subscriptionManager = context.getSystemService(SubscriptionManager::class.java)
