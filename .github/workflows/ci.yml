@@ -159,9 +159,16 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      - name: Build Release APK
+      - name: Decode Keystore
         env:
           KEYSTORE_FILE: ${{ secrets.KEYSTORE_FILE }}
+        run: |
+          echo "$KEYSTORE_FILE" | base64 -d > app/release-keystore.jks
+          export KEYSTORE_FILE=app/release-keystore.jks
+          echo "KEYSTORE_FILE=app/release-keystore.jks" >> $GITHUB_ENV
+
+      - name: Build Release APK
+        env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
