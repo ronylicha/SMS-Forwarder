@@ -2,7 +2,7 @@
 <html lang="fr" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>SMS Forwarder — Transfert automatique SMS, RCS et notifications</title>
     <meta name="description" content="Application Android gratuite de transfert automatique de SMS, RCS et notifications d'apps. Règles configurables, webhook, dashboard temps réel. 100% locale.">
     <meta property="og:title" content="SMS Forwarder v1.3.1">
@@ -35,6 +35,22 @@
         *, *::before, *::after { box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; }
         h1, h2, h3, h4, h5, h6 { font-family: 'Space Grotesk', sans-serif'; }
+
+        /* Safe area for phones with nav bar / gesture bar */
+        body {
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+        }
+        nav#navbar {
+            padding-top: env(safe-area-inset-top, 0px);
+            padding-left: env(safe-area-inset-left, 0px);
+            padding-right: env(safe-area-inset-right, 0px);
+        }
+        footer {
+            padding-bottom: calc(3rem + env(safe-area-inset-bottom, 0px));
+        }
+        section#download .relative > .max-w-3xl {
+            padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px));
+        }
 
         .glass {
             background: rgba(255,255,255,0.05);
@@ -377,7 +393,6 @@
                                 <img src="assets/screenshots/3-settings.jpg" alt="Parametres et filtrage" width="256" height="512" loading="lazy">
                                 <img src="assets/screenshots/4-filters.jpg" alt="Gestion des filtres" width="256" height="512" loading="lazy">
                                 <img src="assets/screenshots/5-stats.jpg" alt="Statistiques de transfert" width="256" height="512" loading="lazy">
-                                <img src="assets/screenshots/6-widget.jpg" alt="Widget de raccourci" width="256" height="512" loading="lazy">
                             </div>
                         </div>
                     </div>
@@ -388,7 +403,6 @@
                         <button class="slider-dot" data-slide="2" aria-label="Screenshot 3"></button>
                         <button class="slider-dot" data-slide="3" aria-label="Screenshot 4"></button>
                         <button class="slider-dot" data-slide="4" aria-label="Screenshot 5"></button>
-                        <button class="slider-dot" data-slide="5" aria-label="Screenshot 6"></button>
                     </div>
                 </div>
             </div>
