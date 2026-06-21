@@ -5,6 +5,30 @@ Toutes les modifications notables de ce projet sont documentees dans ce fichier.
 Le format est base sur [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 
+## [1.4.0] - 2026-06-21
+
+### Added
+
+- **Internationalisation FR/EN complete** : 312 chaines traduites dans les deux langues
+- **Selecteur de langue** dans les Parametres (Systeme / Francais / English)
+- **Detection automatique** : FR par defaut si le telephone est en francais, EN sinon
+- **LocaleManager** : gestionnaire de locale avec `attachBaseContext` dans MainActivity
+- **Toast de confirmation** lors de la modification du numero de destination (etait silencieux)
+
+### Changed
+
+- `values/strings.xml` devient l'Anglais (default/fallback), `values-fr/` le Francais, `values-en/` l'Anglais explicite
+- Tous les ViewModels utilisent `context.getString()` pour les messages localises (SettingsViewModel, DetailViewModel, HistoryViewModel, RuleEditViewModel)
+- 100% des chaines hardcodees remplacees par `stringResource()` dans 20+ fichiers Kotlin
+- `SettingsScreen` enrichi avec carte de selection de langue et `activity.recreate()` au changement
+- Activity.recreate() au changement de langue avec toast de confirmation
+
+### Technical
+
+- Nouveau fichier `util/LocaleManager.kt` — gestionnaire centralise de locale
+- `MainActivity.attachBaseContext()` applique la locale avant `onCreate`
+- Preference `app_language` ajoutee au `PreferencesManager`
+
 ## [1.3.1] - 2026-05-01
 
 ### Changed

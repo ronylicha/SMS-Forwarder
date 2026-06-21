@@ -107,7 +107,7 @@ app/build/outputs/apk/release/app-release.apk
 
 ### Tests unitaires
 
-107 tests couvrant les utilitaires, les use cases, les ViewModels et les services.
+185 tests couvrant les utilitaires, les use cases, les ViewModels et les services (dont Robolectric pour DiagnosticsRunner et serveur HTTP local pour WebhookSender).
 
 ```bash
 ./gradlew testDebugUnitTest

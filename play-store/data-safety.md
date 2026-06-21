@@ -12,7 +12,9 @@ Ce document contient les reponses a fournir dans la section "Data safety" de la 
 
 ## Collecte de donnees
 
-**L'application ne collecte ni ne partage aucune donnee avec des tiers.**
+**L'application ne collecte ni ne partage aucune donnee avec des tiers par defaut.**
+
+> **Note** : Si l'utilisateur configure un webhook HTTP, les messages correspondant aux regles definies sont envoyes vers l'URL configuree par l'utilisateur. Cette fonctionnalite est optionnelle, controlee par l'utilisateur, et l'URL est stockee localement. L'application elle-meme n'envoie aucune donnee a un serveur externe.
 
 ### Types de donnees (toutes les cases a decocher) :
 

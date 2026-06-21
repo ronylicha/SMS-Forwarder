@@ -20,12 +20,14 @@ La configuration Room :
 
 ```kotlin
 @Database(
-    entities = [SmsRecord::class, FilterRule::class],
-    version = 1,
+    entities = [SmsRecord::class, FilterRule::class, ForwardingRule::class, AppNotification::class],
+    version = 2,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase()
 ```
+
+La migration v1 -> v2 est non destructive : ajout des tables `forwarding_rules` et `app_notifications` via `MIGRATION_1_2`.
 
 `exportSchema = false` désactive la génération du fichier JSON de schéma. Pour un projet en production avec des migrations, il est recommandé de passer cette option à `true` et de versionner les schémas exportés.
 
@@ -54,9 +56,33 @@ erDiagram
         INTEGER is_active "NOT NULL DEFAULT 1"
         INTEGER created_at "NOT NULL (epoch ms)"
     }
+
+    FORWARDING_RULES {
+        INTEGER id PK "AUTOINCREMENT NOT NULL"
+        TEXT name "NOT NULL"
+        INTEGER priority "NOT NULL DEFAULT 0"
+        TEXT sender_pattern "NULL (regex)"
+        TEXT keyword_pattern "NULL (regex)"
+        TEXT destination_type "NOT NULL (SMS or WEBHOOK)"
+        TEXT destination "NOT NULL"
+        INTEGER is_enabled "NOT NULL DEFAULT 1"
+        INTEGER success_count "NOT NULL DEFAULT 0"
+        INTEGER failure_count "NOT NULL DEFAULT 0"
+        INTEGER created_at "NOT NULL (epoch ms)"
+        INTEGER updated_at "NOT NULL (epoch ms)"
+    }
+
+    APP_NOTIFICATIONS {
+        INTEGER id PK "AUTOINCREMENT NOT NULL"
+        TEXT type "NOT NULL"
+        TEXT title "NOT NULL"
+        TEXT message "NULL"
+        INTEGER is_read "NOT NULL DEFAULT 0"
+        INTEGER created_at "NOT NULL (epoch ms)"
+    }
 ```
 
-Les deux tables sont indépendantes. Un `SmsRecord` n'a pas de clé étrangère vers `FilterRule` : la règle qui a causé le filtrage est consignée dans le champ `error_message` sous forme de texte lisible (ex. `"Not in whitelist"`).
+Les quatre tables sont independantes (pas de cles etrangeres). `ForwardingRule` est distinct de `FilterRule` (SRP : filtrage vs routage).
 
 ---
 

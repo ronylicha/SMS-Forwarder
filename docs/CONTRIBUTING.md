@@ -126,18 +126,24 @@ app-pass-sms/
 │       │       │   └── NotificationHelper.kt
 │       │       ├── ui/
 │       │       │   ├── components/             # Composants Compose réutilisables
+│       │       │   ├── appwhitelist/           # Surveillance d'apps tierces
 │       │       │   ├── detail/
+│       │       │   ├── diagnostics/            # Audit système
 │       │       │   ├── filter/
 │       │       │   ├── history/
-│       │       │   ├── main/
+│       │       │   ├── main/                   # Dashboard temps réel
 │       │       │   ├── navigation/
+│       │       │   ├── notifications/          # Centre de notifications
 │       │       │   ├── onboarding/
-│       │       │   ├── settings/
+│       │       │   ├── rules/                  # Règles de transfert (CRUD)
+│       │       │   ├── settings/               # Configuration + langue
 │       │       │   ├── stats/
 │       │       │   ├── theme/
 │       │       │   └── widget/
 │       │       └── util/
 │       │           ├── DateFormatter.kt
+│       │           ├── DiagnosticsRunner.kt
+│       │           ├── LocaleManager.kt        # Gestionnaire i18n FR/EN
 │       │           ├── PhoneValidator.kt
 │       │           └── SmsFormatter.kt
 │       └── test/                   # Tests unitaires (JVM)

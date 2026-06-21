@@ -6,102 +6,144 @@ Questions frequentes sur l'utilisation de SMS Forwarder.
 
 ## L'application consomme-t-elle beaucoup de batterie ?
 
-SMS Forwarder fonctionne via un service Android de premier plan (visible par sa notification permanente). Ce type de service est concu pour avoir une empreinte reduite sur la batterie : il ne fait rien tant qu'aucun SMS n'arrive.
+SMS Forwarder fonctionne via un Foreground Service (visible par sa notification permanente). Ce type de service est concu pour avoir une empreinte reduite : il ne fait rien tant qu'aucun message n'arrive.
 
-Dans la pratique, la consommation est negligeable sur la plupart des telephones. Si votre telephone est tres restrictif sur la batterie (marques comme Xiaomi, Huawei, Samsung avec leur mode d'economie agressive), vous devrez peut-etre exclure SMS Forwarder de l'optimisation de batterie pour garantir son bon fonctionnement en arriere-plan.
+Dans la pratique, la consommation est negligeable. Si votre telephone est restrictif sur la batterie (Xiaomi, Huawei, Samsung), excluez SMS Forwarder de l'optimisation batterie :
 
-Pour ce faire : **Parametres > Applications > SMS Forwarder > Batterie > Non optimisee**.
+**Parametres > Applications > SMS Forwarder > Batterie > Non optimisee**
+
+Vous pouvez verifier l'etat dans l'ecran **Diagnostics** de l'application.
 
 ---
 
 ## Les SMS transferes me coutent-ils de l'argent ?
 
-Oui. Chaque transfert envoie un vrai SMS via le reseau de votre operateur. Si votre forfait inclut des SMS illimites, il n'y aura aucun cout supplementaire. Dans le cas contraire, chaque SMS transfère sera decompte comme un SMS envoye ordinaire.
+Chaque transfert SMS envoie un vrai SMS via le reseau de votre operateur. Si votre forfait inclut des SMS illimites, il n'y aura aucun cout supplementaire.
 
-Les SMS de plus de 160 caracteres sont decoupes en plusieurs parties par le reseau GSM et peuvent compter pour plusieurs SMS selon votre operateur.
+**Le transfert via webhook HTTP est en revanche gratuit** (utilise votre connexion data).
+
+Les SMS de plus de 160 caracteres sont decoupes en plusieurs parties par le reseau GSM et peuvent compter pour plusieurs SMS.
 
 ---
 
 ## Mes donnees sont-elles envoyees a un serveur ?
 
-Non. SMS Forwarder ne communique avec aucun serveur externe. Toutes vos donnees (historique, reglages, filtres) sont stockees exclusivement sur votre appareil dans une base de donnees locale. Le seul flux reseau que l'application genere est l'envoi de SMS via votre operateur, ce qui est le comportement attendu.
+Non. SMS Forwarder ne communique avec aucun serveur externe par defaut. Toutes vos donnees sont stockees exclusivement sur votre appareil.
+
+**Exception** : si vous configurez un webhook, les messages correspondant a cette regle sont envoyes uniquement vers l'URL que vous avez definie. Vous gardez le controle total. Le code source est ouvert et verifiable sur GitHub.
 
 ---
 
 ## L'application fonctionne-t-elle avec les messages RCS ?
 
-Oui, avec une configuration supplementaire. Les messages RCS (le protocole de messagerie avance de Google et des operateurs) ne passent pas par le canal SMS traditionnel. SMS Forwarder les capture via deux mecanismes complementaires :
+Oui. Les messages RCS sont captures via deux mecanismes complementaires :
 
-- **ContentObserver** : surveille la boite de reception SMS/RCS du systeme.
-- **NotificationListener** : intercepte les notifications de Google Messages, Samsung Messages et AOSP Messages.
+- **ContentObserver** : surveille la boite de reception SMS/RCS du systeme
+- **NotificationListener** : intercepte les notifications de Google Messages, Samsung Messages et AOSP Messages
 
-Pour activer la capture RCS, vous devez autoriser l'acces aux notifications dans **Reglages > Acces aux notifications > Configurer l'acces**, puis activer SMS Forwarder dans la liste systeme.
+Activez l'acces aux notifications dans **Reglages > Acces aux notifications > Configurer l'acces**.
 
 ---
 
-## Que se passe-t-il si je n'ai pas de reseau au moment de la reception d'un SMS ?
+## Puis-je transferer les notifications WhatsApp, Telegram, etc. ?
 
-L'application enregistre le SMS en statut **En attente** et tente l'envoi des que le reseau est disponible. Si la tentative echoue, elle reessaie automatiquement jusqu'a 3 fois, avec un delai croissant entre chaque essai (2 secondes, puis 4 secondes, puis 8 secondes).
+Oui. SMS Forwarder peut surveiller les notifications d'applications tierces et les transferer comme des SMS ou via webhook.
 
-Au-dela de 3 tentatives, le SMS passe en statut **Echoue** et vous pouvez le renvoyer manuellement depuis l'ecran de detail de l'historique.
+1. Allez dans **Reglages > Applications tierces**.
+2. Activez la surveillance.
+3. Ajoutez les apps souhaitees (WhatsApp, Telegram, Allo, Ringover, Onoff...).
+
+Le champ `sourceLabel` indique l'app d'origine dans le payload webhook.
+
+---
+
+## Comment fonctionnent les regles de transfert ?
+
+Chaque message entrant est analyse par vos regles, dans l'ordre de priorite :
+
+1. **Pattern expediteur (regex)** : filtre par numero ou motif
+2. **Mot-cle (regex)** : condition sur le contenu
+3. **Destination** : SMS ou webhook, specifique a cette regle
+
+Si une regle correspond, le message est envoye vers sa destination. Si aucune regle ne correspond, le fallback utilise la destination globale.
+
+Vous pouvez tester chaque regle interactivement avant de l'activer.
+
+---
+
+## Que se passe-t-il en cas d'echec d'envoi ?
+
+L'application retente automatiquement selon votre **politique de retry configurable** :
+
+- **Tentatives max** : 1 a 10
+- **Delai initial** : 30s, 1min, 5min ou 15min
+- **Backoff exponentiel** : x1.5, x2 ou x3
+
+Au-dela du nombre de tentatives, le message passe en statut **Echoue** et vous pouvez le renvoyer manuellement depuis l'historique.
+
+---
+
+## Le webhook fonctionne-t-il sans connexion internet ?
+
+Non. Le webhook necessite une connexion data. En cas d'echec (reseau indisponible, endpoint injoignable), l'app retente selon votre politique de retry. Le centre de notifications vous alerte des erreurs repetees.
 
 ---
 
 ## Comment eviter une boucle de transfert ?
 
-Une boucle se produit quand le numero de destination est le meme que le numero de votre telephone. Le SMS transfère arriverait sur votre telephone, serait a nouveau transfere, et ainsi de suite indefiniment.
-
-SMS Forwarder integre une protection anti-boucle automatique. L'application compare le numero de destination avec le numero de votre carte SIM et bloque le transfert si une correspondance est detectee.
-
-Si la protection automatique ne suffisait pas (cas rares, numeros avec prefixes differents), vous pouvez ajouter le numero de votre propre telephone en **liste noire** via l'ecran **Filtres**.
+SMS Forwarder detecte automatiquement les messages qu'elle a elle-meme envoyes et les exclut. De plus, le numero de destination est automatiquement ajoute a la liste noire. Il est impossible de creer une boucle infinie.
 
 ---
 
 ## L'application fonctionne-t-elle apres un redemarrage du telephone ?
 
-Oui, si le transfert etait actif avant l'extinction du telephone. Au redemarrage, l'application detecte automatiquement que le service devait etre en marche et le relance. Vous n'avez rien a faire.
+Oui. Au redemarrage, le BootReceiver relance automatiquement le service si le transfert etait actif. Votre configuration, vos regles et l'etat d'activation sont conserves.
 
-Si vous aviez desactive le transfert avant d'eteindre le telephone, il restera desactive au redemarrage.
+---
+
+## Puis-je changer la langue de l'application ?
+
+Oui. L'application est bilingue FR/EN avec detection automatique (FR si le telephone est en francais, EN sinon).
+
+**Reglages > Langue** : Suivre le systeme / Francais / English. Le changement est immediat (redemarrage de l'activity).
 
 ---
 
 ## Puis-je filtrer les SMS par expediteur ?
 
-Oui. Rendez-vous dans **Reglages > Gerer les regles de filtrage** ou dans l'ecran **Filtres**. Activez le mode **Liste blanche** ou **Liste noire**, puis ajoutez le numero de telephone de l'expediteur que vous souhaitez inclure ou exclure.
+Oui, de deux facons :
 
-Vous pouvez aussi filtrer par mot-cle si vous souhaitez, par exemple, bloquer tous les SMS contenant le mot `promo` ou ne transfèrer que ceux contenant `code`.
+1. **Filtres globaux** (Reglages > Filtrage) : liste blanche / liste noire par numero ou mot-cle
+2. **Regles de transfert** (Reglages > Regles de transfert) : routing avance avec regex, destination par regle et test interactif
 
 ---
 
 ## Comment exporter mon historique ?
 
-1. Ouvrez l'ecran **Statistiques** ou **Historique**.
-2. Appuyez sur le bouton **Exporter CSV**.
-3. Choisissez l'emplacement de sauvegarde sur votre telephone.
-4. Le fichier est enregistre au format `.csv` (lisible dans Excel, Google Sheets ou LibreOffice Calc).
+1. Ouvrez **Statistiques** ou **Historique**.
+2. Appuyez sur **Exporter CSV**.
+3. Choisissez l'emplacement de sauvegarde.
 
-Le fichier contient pour chaque SMS : l'expediteur, le contenu, la date de reception, la date de transfert, le statut et le nombre de tentatives.
-
----
-
-## L'application fonctionne-t-elle en mode avion ?
-
-Non. Le mode avion coupe le reseau GSM, ce qui empeche a la fois la reception des SMS entrants et l'envoi des SMS de transfert. Si un SMS arrive juste avant l'activation du mode avion, il sera mis en file d'attente et tente des que le reseau est retabli.
+Le fichier contient pour chaque message : expediteur, contenu, date de reception, date de transfert, statut et nombre de tentatives.
 
 ---
 
 ## Quelle version d'Android est necessaire ?
 
-SMS Forwarder necessite **Android 8.0 (Oreo)** minimum. Les fonctionnalites de premier plan (notification permanente, redemarrage au boot) et la gestion du multi-SIM sont disponibles a partir de cette version. Le design Material You (adaptation automatique aux couleurs de votre fond d'ecran) est disponible sur Android 12 et superieur.
+**Android 8.0 (Oreo)** minimum (API 26). Le design Material You est disponible sur Android 12+.
 
 ---
 
-## Comment desinstaller proprement l'application ?
+## L'application est-elle disponible en open source ?
 
-1. Appuyez longuement sur l'icone SMS Forwarder sur votre ecran d'accueil.
-2. Appuyez sur **Desinstaller** (ou faites glisser l'icone vers la corbeille selon votre telephone).
-3. Confirmez la desinstallation.
+Oui, sous licence **AGPL-3.0**. Le code source est integralment disponible sur [GitHub](https://github.com/ronylicha/SMS-Forwarder). Vous pouvez l'auditer, le modifier et le redistribuer.
 
-Toutes les donnees de l'application (historique, reglages, filtres) sont supprimees automatiquement lors de la desinstallation. Aucune trace ne subsiste sur votre appareil.
+---
 
-Si vous souhaitez conserver votre historique avant de desinstaller, pensez a l'exporter en CSV au prealable (voir la question precedente).
+## Comment desinstaller proprement ?
+
+1. Appuyez longuement sur l'icone SMS Forwarder.
+2. **Desinstaller**.
+3. Confirmez.
+
+Toutes les donnees sont supprimees. Exportez votre historique en CSV au prealable si vous souhaitez le conserver.

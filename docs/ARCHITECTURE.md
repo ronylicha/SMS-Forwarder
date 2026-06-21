@@ -31,7 +31,7 @@
 | Architecture | MVVM + Clean Architecture |
 | DI | Hilt 2.51.1 |
 | Base de données | Room 2.6.1 |
-| Version | 1.0.0 |
+| Version | 1.4.0 |
 
 ---
 
@@ -200,7 +200,15 @@ Les repositories exposent des interfaces stables pour que le domain ne dépende 
 | `first_launch` | `Boolean` | `true` | Affichage de l'onboarding |
 | `filter_mode` | `String` | `"NONE"` | Mode de filtrage actif |
 | `sms_forwarded_count` | `Int` | `0` | Compteur de SMS transférés avec succès |
-| `selected_sim_slot` | `Int` | `-1` | Slot SIM sélectionné (-1 = défaut) |
+| `selected_sim_slot` | `Int` | `-1` | Slot SIM d'envoi (-1 = défaut) |
+| `receiving_sim_slot` | `Int` | `-1` | Slot SIM de réception (-1 = toutes) |
+| `app_whitelist_enabled` | `Boolean` | `false` | Surveillance d'apps tierces activée |
+| `app_whitelist_packages` | `Set<String>` | `emptySet()` | Packages des apps surveillées |
+| `retry_max_attempts` | `Int` | `3` | Tentatives max de retry |
+| `retry_initial_delay_ms` | `Long` | `2000` | Délai initial avant retry |
+| `retry_backoff` | `Float` | `2.0` | Multiplicateur de backoff |
+| `retry_max_delay_ms` | `Long` | `30000` | Délai max entre retries |
+| `app_language` | `String` | `"system"` | Langue (system/fr/en) |
 
 ---
 
