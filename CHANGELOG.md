@@ -5,6 +5,18 @@ Toutes les modifications notables de ce projet sont documentees dans ce fichier.
 Le format est base sur [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 
+## [1.4.1] - 2026-06-21
+
+### Fixed
+
+- **37 chaines hardcodees FR restantes** : tous les textes UI restants en dur dans le code Kotlin ont ete externalises vers `strings.xml`
+- **Ecrans affectes** : StatusBadge, Detail, Diagnostics, Filter, History, Main, NotificationCenter, Onboarding, RuleEdit, Rules, Settings, SimSelector, Stats, DiagnosticsRunner
+- **19 nouvelles ressources de chaines** ajoutees aux 3 fichiers de langues (values/, values-fr/, values-en/)
+
+### Changed
+
+- Bump versionCode 6 -> 7, versionName 1.4.0 -> 1.4.1
+
 ## [1.4.0] - 2026-06-21
 
 ### Added

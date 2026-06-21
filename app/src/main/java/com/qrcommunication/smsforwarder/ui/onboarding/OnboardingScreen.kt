@@ -105,7 +105,7 @@ fun OnboardingScreen(
                 enabled = canAdvance(pagerState.currentPage, uiState),
                 modifier = Modifier.weight(1f),
             ) {
-                Text(if (pagerState.currentPage == PAGE_COUNT - 1) "Terminer" else "Suivant")
+                Text(if (pagerState.currentPage == PAGE_COUNT - 1) stringResource(R.string.onboarding_finish) else stringResource(R.string.onboarding_next))
             }
         }
     }
@@ -146,8 +146,8 @@ private fun WelcomePage() {
     ) {
         FeatureBullet(stringResource(R.string.onboarding_feature_sms))
         FeatureBullet(stringResource(R.string.onboarding_feature_rules))
-        FeatureBullet("Destinations multiples : SMS, webhook, email")
-        FeatureBullet("Historique complet et retry manuel")
+        FeatureBullet(stringResource(R.string.onboarding_feature_multi_dest))
+        FeatureBullet(stringResource(R.string.onboarding_feature_history))
     }
 }
 
@@ -158,14 +158,14 @@ private fun PermissionsPage() {
         title = stringResource(R.string.onboarding_permissions_title),
         subtitle = stringResource(R.string.onboarding_permissions_desc),
     ) {
-        PermissionRow("Reception SMS", "Pour detecter les SMS entrants en temps reel.")
-        PermissionRow("Envoi SMS", "Pour transferer vers le numero de destination.")
-        PermissionRow("Lecture SMS", "Pour reconstituer les messages multipart correctement.")
+        PermissionRow(stringResource(R.string.onboarding_perm_receive_sms_title), stringResource(R.string.onboarding_perm_receive_sms_desc))
+        PermissionRow(stringResource(R.string.onboarding_perm_send_sms_title), stringResource(R.string.onboarding_perm_send_sms_desc))
+        PermissionRow(stringResource(R.string.onboarding_perm_read_sms_title), stringResource(R.string.onboarding_perm_read_sms_desc))
         PermissionRow(stringResource(R.string.diag_phone_state), "Pour gerer le multi-SIM si applicable.")
-        PermissionRow("Notifications", "Pour le service en arriere-plan + capture des RCS et apps tierces.")
+        PermissionRow(stringResource(R.string.main_notifications), stringResource(R.string.onboarding_perm_notifications_desc))
         PermissionRow(
-            "Avertissement securite",
-            "Les codes 2FA seront aussi transferes. Assurez-vous que la destination est de confiance.",
+            stringResource(R.string.onboarding_security_warning_title),
+            stringResource(R.string.onboarding_security_warning_desc),
             error = true,
         )
     }
@@ -193,7 +193,7 @@ private fun TestPage(state: OnboardingUiState, onSendTest: () -> Unit) {
         icon = Icons.AutoMirrored.Filled.Send,
         title = stringResource(R.string.onboarding_test_pipeline),
         subtitle = stringResource(R.string.onboarding_test_desc) +
-            "Pour tester la reception, envoyez vous un SMS depuis un autre telephone.",
+            stringResource(R.string.onboarding_test_pipeline_desc),
     ) {
         Button(
             onClick = onSendTest,
@@ -219,7 +219,7 @@ private fun TestPage(state: OnboardingUiState, onSendTest: () -> Unit) {
             TestStatus.FAILED -> StatusLine(
                 icon = Icons.Filled.Error,
                 color = MaterialTheme.colorScheme.error,
-                text = "Echec : ${state.testError ?: "erreur inconnue"}",
+                text = stringResource(R.string.onboarding_test_failed, state.testError ?: stringResource(R.string.onboarding_test_unknown_error)),
             )
             TestStatus.NOT_RUN -> Unit
         }

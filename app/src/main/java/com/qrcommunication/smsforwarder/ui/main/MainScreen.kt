@@ -161,9 +161,9 @@ fun MainScreen(
                     icon = Icons.Filled.Notifications,
                     title = stringResource(R.string.main_notifications),
                     subtitle = if (uiState.unreadNotifications > 0) {
-                        "${uiState.unreadNotifications} non lues"
+                        stringResource(R.string.main_unread_count, uiState.unreadNotifications)
                     } else {
-                        "Aucun nouvel evenement"
+                        stringResource(R.string.main_no_new_events)
                     },
                     badgeCount = uiState.unreadNotifications,
                     onClick = onNavigateToNotifications,
@@ -275,7 +275,7 @@ private fun HeroToggleCard(
                 ),
             )
             Text(
-                text = if (isEnabled) "Transfert actif" else "Transfert inactif",
+                text = if (isEnabled) stringResource(R.string.main_transfer_active_short) else stringResource(R.string.main_transfer_inactive_short),
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
                 color = if (isEnabled) MaterialTheme.colorScheme.onPrimaryContainer
@@ -285,7 +285,7 @@ private fun HeroToggleCard(
                 text = when {
                     isDestinationConfigured -> PhoneValidator.formatDisplay(destinationNumber)
                     activeRulesCount > 0 -> "$activeRulesCount regle(s) active(s)"
-                    else -> "Non configure"
+                    else -> stringResource(R.string.main_not_configured)
                 },
                 style = MaterialTheme.typography.bodyMedium,
                 color = if (canToggle) {

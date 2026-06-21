@@ -74,10 +74,10 @@ class DiagnosticsRunner @Inject constructor(
         return DiagnosticCheck(
             id = "post_notifications",
             title = context.getString(R.string.diagnostics_notification_display),
-            description = if (granted) "Autorise" else "Refuse - le service foreground ne peut pas afficher de status",
+            description = if (granted) context.getString(R.string.diag_granted) else context.getString(R.string.diag_post_notif_denied),
             severity = if (granted) CheckSeverity.OK else CheckSeverity.WARNING,
             fixIntent = if (granted) null else appSettingsIntent(),
-            fixLabel = if (granted) null else "Activer",
+            fixLabel = if (granted) null else context.getString(R.string.diag_action_enable),
         )
     }
 
@@ -87,13 +87,13 @@ class DiagnosticsRunner @Inject constructor(
             id = "notification_listener",
             title = context.getString(R.string.diagnostics_notification_access_rcs),
             description = if (enabled) {
-                "Active - les RCS et apps tierces peuvent etre interceptes"
+                context.getString(R.string.diag_notif_listener_active)
             } else {
-                "Desactive - les RCS et apps tierces ne seront pas captures"
+                context.getString(R.string.diag_notif_listener_inactive)
             },
             severity = if (enabled) CheckSeverity.OK else CheckSeverity.WARNING,
             fixIntent = if (enabled) null else Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"),
-            fixLabel = if (enabled) null else "Activer",
+            fixLabel = if (enabled) null else context.getString(R.string.diag_action_enable),
         )
     }
 

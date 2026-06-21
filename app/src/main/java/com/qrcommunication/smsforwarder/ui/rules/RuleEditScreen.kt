@@ -183,18 +183,19 @@ fun RuleEditScreen(
 
 private fun DestinationType.toLabel(): String = when (this) {
     DestinationType.SMS -> "SMS"
-    DestinationType.WEBHOOK -> "Webhook (HTTP POST)"
+    DestinationType.WEBHOOK -> stringResource(R.string.rule_edit_webhook_type_label)
 }
 
 @Composable
 private fun DestinationType.toHint(): String = when (this) {
-    DestinationType.SMS -> stringResource(R.string.rule_edit_forward_desc)
-    DestinationType.WEBHOOK -> "Envoyer un POST JSON a une URL"
+    DestinationType.SMS -> stringResource(R.string.settings_destination_label)
+    DestinationType.WEBHOOK -> stringResource(R.string.rule_edit_webhook_hint)
 }
 
+@Composable
 private fun DestinationType.toFieldLabel(): String = when (this) {
-    DestinationType.SMS -> "Numero de destination"
-    DestinationType.WEBHOOK -> "URL du webhook"
+    DestinationType.SMS -> stringResource(R.string.settings_destination_label)
+    DestinationType.WEBHOOK -> stringResource(R.string.rule_edit_webhook_url_label)
 }
 
 private fun DestinationType.toPlaceholder(): String = when (this) {

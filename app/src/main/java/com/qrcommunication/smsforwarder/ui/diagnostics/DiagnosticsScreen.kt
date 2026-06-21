@@ -130,7 +130,7 @@ private fun SummaryCard(errors: Int, warnings: Int, total: Int) {
     val message = when {
         errors > 0 -> "$errors probleme(s) bloquant(s) detecte(s)"
         warnings > 0 -> "$warnings avertissement(s) - le service peut etre limite"
-        else -> "Tous les checks passent ($total/$total)"
+        else -> stringResource(R.string.diag_all_pass, total, total)
     }
     SettingsCard {
         StatusItem(

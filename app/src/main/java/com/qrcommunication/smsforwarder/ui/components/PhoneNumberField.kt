@@ -21,13 +21,13 @@ fun PhoneNumberField(
     value: String,
     onValueChange: (String) -> Unit,
     isValid: Boolean,
-    label: String = "Numero de destination",
+    label: String? = null,
     modifier: Modifier = Modifier
 ) {
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
-        label = { Text(label) },
+        label = { Text(label ?: stringResource(R.string.settings_destination_label)) },
         placeholder = { Text(stringResource(R.string.phone_hint_placeholder)) },
         leadingIcon = {
             Icon(

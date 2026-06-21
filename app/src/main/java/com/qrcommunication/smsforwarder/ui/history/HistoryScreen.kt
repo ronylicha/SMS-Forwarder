@@ -260,11 +260,11 @@ private fun StatusFilterRow(selected: SmsStatus?, onSelect: (SmsStatus?) -> Unit
         contentPadding = PaddingValues(horizontal = 24.dp, vertical = 4.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        item { StatusChip("Tous", selected == null) { onSelect(null) } }
-        item { StatusChip("Envoyes", selected == SmsStatus.SENT) { onSelect(SmsStatus.SENT) } }
-        item { StatusChip("Echoues", selected == SmsStatus.FAILED) { onSelect(SmsStatus.FAILED) } }
-        item { StatusChip("En attente", selected == SmsStatus.PENDING) { onSelect(SmsStatus.PENDING) } }
-        item { StatusChip("Filtres", selected == SmsStatus.FILTERED) { onSelect(SmsStatus.FILTERED) } }
+        item { StatusChip(stringResource(R.string.history_filter_all), selected == null) { onSelect(null) } }
+        item { StatusChip(stringResource(R.string.history_filter_sent), selected == SmsStatus.SENT) { onSelect(SmsStatus.SENT) } }
+        item { StatusChip(stringResource(R.string.history_filter_failed), selected == SmsStatus.FAILED) { onSelect(SmsStatus.FAILED) } }
+        item { StatusChip(stringResource(R.string.history_filter_pending), selected == SmsStatus.PENDING) { onSelect(SmsStatus.PENDING) } }
+        item { StatusChip(stringResource(R.string.history_filter_filtered), selected == SmsStatus.FILTERED) { onSelect(SmsStatus.FILTERED) } }
     }
 }
 
@@ -278,7 +278,7 @@ private fun DestinationFilterRow(
         contentPadding = PaddingValues(horizontal = 24.dp, vertical = 4.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        item { StatusChip("Toutes destinations", selected == null) { onSelect(null) } }
+        item { StatusChip(stringResource(R.string.history_all_destinations), selected == null) { onSelect(null) } }
         DestinationType.entries.forEach { type ->
             item { StatusChip(type.name, selected == type) { onSelect(type) } }
         }
@@ -314,8 +314,8 @@ private fun HistoryContent(
 
         records.isEmpty() -> EmptyState(
             icon = Icons.Outlined.Inbox,
-            title = if (searchQuery.isNotBlank()) "Aucun resultat pour \"$searchQuery\""
-            else "Aucun SMS transfere",
+            title = if (searchQuery.isNotBlank()) stringResource(R.string.history_no_results, searchQuery)
+            else stringResource(R.string.history_empty),
         )
 
         else -> LazyColumn(

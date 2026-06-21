@@ -148,7 +148,7 @@ private fun RuleItem(
             )
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = rule.name.ifBlank { "Regle #${rule.id}" },
+                    text = rule.name.ifBlank { stringResource(R.string.rule_default_name, rule.id) },
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.SemiBold,
                 )
@@ -158,8 +158,8 @@ private fun RuleItem(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 buildString {
-                    rule.senderPattern?.takeIf { it.isNotBlank() }?.let { append("De: $it ") }
-                    rule.keywordPattern?.takeIf { it.isNotBlank() }?.let { append("Mot: $it") }
+                    rule.senderPattern?.takeIf { it.isNotBlank() }?.let { append(stringResource(R.string.rule_from_prefix, it) + " ") }
+                    rule.keywordPattern?.takeIf { it.isNotBlank() }?.let { append(stringResource(R.string.rule_keyword_prefix, it)) }
                 }.takeIf { it.isNotBlank() }?.let {
                     Text(
                         text = it,

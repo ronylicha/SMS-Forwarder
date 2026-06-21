@@ -220,9 +220,9 @@ private fun FilterModeSection(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 val modes = listOf(
-                    FilterMode.NONE to "Aucun",
-                    FilterMode.WHITELIST to "Liste blanche",
-                    FilterMode.BLACKLIST to "Liste noire"
+                    FilterMode.NONE to stringResource(R.string.filter_mode_none),
+                    FilterMode.WHITELIST to stringResource(R.string.filter_whitelist),
+                    FilterMode.BLACKLIST to stringResource(R.string.filter_blacklist)
                 )
 
                 modes.forEachIndexed { index, (mode, label) ->
@@ -245,9 +245,9 @@ private fun FilterModeSection(
 
             Text(
                 text = when (currentMode) {
-                    FilterMode.NONE -> "Tous les SMS sont transferes sans filtrage."
-                    FilterMode.WHITELIST -> "Seuls les SMS correspondant aux regles sont transferes."
-                    FilterMode.BLACKLIST -> "Les SMS correspondant aux regles sont bloques."
+                    FilterMode.NONE -> stringResource(R.string.filter_none_desc_short)
+                    FilterMode.WHITELIST -> stringResource(R.string.filter_whitelist_desc)
+                    FilterMode.BLACKLIST -> stringResource(R.string.filter_blacklist_desc)
                 },
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -301,8 +301,8 @@ private fun AddRuleSection(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     val types = listOf(
-                        FilterType.WHITELIST to "Liste blanche",
-                        FilterType.BLACKLIST to "Liste noire"
+                        FilterType.WHITELIST to stringResource(R.string.filter_whitelist),
+                        FilterType.BLACKLIST to stringResource(R.string.filter_blacklist)
                     )
 
                     types.forEachIndexed { index, (type, label) ->
@@ -380,8 +380,8 @@ private fun FilterRuleItem(
                         label = {
                             Text(
                                 text = when (type) {
-                                    FilterType.WHITELIST -> "Liste blanche"
-                                    FilterType.BLACKLIST -> "Liste noire"
+                                    FilterType.WHITELIST -> stringResource(R.string.filter_whitelist)
+                                    FilterType.BLACKLIST -> stringResource(R.string.filter_blacklist)
                                 },
                                 style = MaterialTheme.typography.labelSmall
                             )
